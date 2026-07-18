@@ -56,44 +56,7 @@
       position: relative;
       container-type: inline-size;
       border-radius: 18px;
-      padding-top: 40px;
-    }
-
-    .collapse-btn {
-      position: absolute;
-      top: 14px;
-      left: 16px;
-      z-index: 10;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      border: 1px solid var(--line);
-      background: var(--bg);
-      color: var(--muted);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: color 0.15s ease, border-color 0.15s ease;
-    }
-
-    .collapse-btn:hover { color: var(--fg); border-color: var(--fg); }
-    .collapse-btn svg {
-      width: 10px;
-      height: 10px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2.2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      transition: transform 0.2s ease;
-    }
-
-    .page.collapsed .collapse-btn svg { transform: rotate(180deg); }
-    .page.collapsed .card,
-    .page.collapsed .notes-section,
-    .page.collapsed .video-section {
-      display: none;
+      padding-top: 24px;
     }
 
     .card {
@@ -262,7 +225,7 @@
       font-size: clamp(9px, calc(var(--embed-w) * 0.015), 11px);
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--fg); /* darkened from muted */
       margin-top: 4px;
       white-space: nowrap;
     }
@@ -706,7 +669,7 @@
     }
 
     @container (max-width: 640px) {
-      .page { border-radius: 0; padding-top: 34px; }
+      .page { border-radius: 0; padding-top: 18px; }
       .card { grid-template-columns: 1fr; gap: var(--space-4); }
       .wallclock {
         border-right: none;
@@ -737,10 +700,6 @@
 </head>
 <body>
   <div class="page" id="page">
-    <button class="collapse-btn" id="collapseBtn" aria-label="Collapse widget" title="Collapse">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
-    </button>
-
     <div class="card">
       <div class="wallclock" data-section="time">
         <div class="wallclock-label">Current Time</div>
@@ -896,7 +855,6 @@
       const settingsToggle = document.getElementById('settingsToggle');
       const settingsPanel = document.getElementById('settings');
       const pageEl = document.getElementById('page');
-      const collapseBtn = document.getElementById('collapseBtn');
 
       function updateEmbedWidth() {
         const width = Math.max(320, Math.round((pageEl.getBoundingClientRect().width || window.innerWidth || 760)));
@@ -1184,21 +1142,6 @@
 
       updateClock();
       setInterval(updateClock, 15000);
-
-      function setCollapsed(collapsed) {
-        pageEl.classList.toggle('collapsed', collapsed);
-        collapseBtn.setAttribute('aria-label', collapsed ? 'Expand widget' : 'Collapse widget');
-        collapseBtn.setAttribute('title', collapsed ? 'Expand' : 'Collapse');
-        try { localStorage.setItem('pomodoro-collapsed', collapsed ? '1' : '0'); } catch (e) {}
-      }
-
-      collapseBtn.addEventListener('click', () => {
-        setCollapsed(!pageEl.classList.contains('collapsed'));
-      });
-
-      try {
-        if (localStorage.getItem('pomodoro-collapsed') === '1') setCollapsed(true);
-      } catch (e) {}
 
       document.querySelectorAll('.section-block').forEach((section, idx) => {
         const toggle = section.querySelector('.section-toggle');
