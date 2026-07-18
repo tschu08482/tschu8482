@@ -14,10 +14,6 @@
       --fg: #0a0a0a;
       --muted: #8a8a8a;
       --line: #e5e5e5;
-      --space-1: 6px;
-      --space-2: 10px;
-      --space-3: 14px;
-      --space-4: 18px;
       --radius: 16px;
       --radius-sm: 10px;
       --label-size: 10px;
@@ -113,6 +109,7 @@
     .mode-row {
       display: inline-flex;
       gap: 4px;
+      align-items: center;
     }
 
     .mode {
@@ -125,12 +122,32 @@
       letter-spacing: 0.16em;
       text-transform: uppercase;
       cursor: pointer;
+      font-family: inherit;
     }
 
     .mode.active {
       background: var(--fg);
       border-color: var(--fg);
       color: #fff;
+    }
+
+    .alarm-header-btn {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--fg);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 8px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .alarm-header-btn.armed {
+      background: #b00020;
+      color: #fff;
+      border-color: #b00020;
     }
 
     .timer-main {
@@ -280,10 +297,84 @@
       -moz-appearance: textfield;
     }
 
-    .stepper input::-webkit-outerspin-button,
+    .stepper input::-webkit-outer-spin-button,
     .stepper input::-webkit-inner-spin-button {
       -webkit-appearance: none;
       margin: 0;
+    }
+
+    /* Alarm modal */
+    .alarm-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 999;
+    }
+
+    .alarm-modal.open { display: flex; }
+
+    .alarm-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px;
+      width: 100%;
+      max-width: 300px;
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    .alarm-card-title {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .alarm-input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      text-align: center;
+      outline: none;
+    }
+
+    .alarm-input:focus { border-color: var(--fg); }
+
+    .alarm-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .alarm-countdown {
+      display: none;
+      margin-top: 8px;
+      padding: 8px 10px;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--fg);
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+
+    .alarm-countdown.visible { display: block; }
+
+    .alarm-countdown .cd-time {
+      font-size: 18px;
+      display: block;
+      margin-top: 2px;
+      letter-spacing: -0.02em;
     }
 
     details.section summary {
@@ -311,10 +402,7 @@
 
     .section-body { margin-top: 8px; }
 
-    .perplexity-panel {
-      display: grid;
-      gap: 6px;
-    }
+    .perplexity-panel { display: grid; gap: 6px; }
 
     .perplexity-form {
       display: grid;
@@ -353,11 +441,7 @@
       margin-bottom: 8px;
     }
 
-    .notes-add {
-      width: 22px;
-      height: 22px;
-      font-size: 14px;
-    }
+    .notes-add { width: 22px; height: 22px; font-size: 14px; }
 
     .notes-clear {
       padding: 0 8px;
@@ -371,9 +455,7 @@
     .notes-clear:disabled { opacity: 0.35; cursor: not-allowed; }
     .notes-clear.armed { background: #b00020; color: #fff; border-color: #b00020; }
 
-    .notes-list {
-      display: block;
-    }
+    .notes-list { display: block; }
 
     .sticky {
       position: relative;
@@ -499,13 +581,14 @@
           <div class="mode-row" role="tablist" aria-label="Timer modes">
             <button class="mode active" data-mode="focus" type="button">Focus</button>
             <button class="mode" data-mode="break" type="button">Break</button>
+            <button class="alarm-header-btn" id="alarmBtn" type="button">Alarm</button>
           </div>
         </div>
 
         <div class="timer-main">
           <div>
             <div class="timer-time" id="timeDisplay" contenteditable="true" spellcheck="false">25:00</div>
-            <div class="status" id="statusText">Ready</div>
+            <div class="status" id="statusText">Focus ready</div>
           </div>
           <div class="progress-bar" aria-hidden="true">
             <div class="progress-fill" id="progressFill"></div>
@@ -522,9 +605,9 @@
           </button>
         </div>
 
-        <div class="controls-row" style="margin-top:4px;">
-          <button class="mini-btn" id="alarmToggle" type="button">Alarm Off</button>
-          <span class="clock-date" id="alarmStatus" style="font-size:8px; text-align:left; width:auto;">No alarm</span>
+        <div class="alarm-countdown" id="alarmCountdown">
+          <span id="alarmCountdownLabel">Alarm set for --:--</span>
+          <span class="cd-time" id="alarmCountdownTime">--:--:--</span>
         </div>
 
         <div class="settings" id="settingsPanel" hidden>
@@ -598,6 +681,18 @@
     </div>
   </div>
 
+  <div class="alarm-modal" id="alarmModal" role="dialog" aria-modal="true" aria-labelledby="alarmModalTitle">
+    <div class="alarm-card">
+      <div class="alarm-card-title" id="alarmModalTitle">Set Alarm Time</div>
+      <input class="alarm-input" id="alarmTimeInput" type="time" step="60">
+      <div class="alarm-actions">
+        <button class="mini-btn" id="alarmCancel" type="button">Cancel</button>
+        <button class="mini-btn" id="alarmClear" type="button">Clear</button>
+        <button class="btn primary" id="alarmSet" type="button">Set</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const state = {
       durations: { focus: 25, break: 5 },
@@ -608,7 +703,8 @@
       intervalId: null,
       clearArmed: false,
       notes: [],
-      alarmEnabled: false
+      alarmTarget: null,
+      alarmIntervalId: null
     };
 
     const modes = document.querySelectorAll('.mode');
@@ -619,8 +715,6 @@
     const resetBtn = document.getElementById('resetBtn');
     const settingsToggle = document.getElementById('settingsToggle');
     const settingsPanel = document.getElementById('settingsPanel');
-    const alarmToggle = document.getElementById('alarmToggle');
-    const alarmStatus = document.getElementById('alarmStatus');
     const wallclockTime = document.getElementById('wallclockTime');
     const wallclockDate = document.getElementById('wallclockDate');
     const focusMinutes = document.getElementById('focusMinutes');
@@ -633,6 +727,16 @@
     const perplexityInput = document.getElementById('perplexityInput');
     const videoFrame = document.getElementById('videoFrame');
     const videoPlaylists = document.getElementById('videoPlaylists');
+
+    const alarmBtn = document.getElementById('alarmBtn');
+    const alarmModal = document.getElementById('alarmModal');
+    const alarmTimeInput = document.getElementById('alarmTimeInput');
+    const alarmSet = document.getElementById('alarmSet');
+    const alarmCancel = document.getElementById('alarmCancel');
+    const alarmClear = document.getElementById('alarmClear');
+    const alarmCountdown = document.getElementById('alarmCountdown');
+    const alarmCountdownLabel = document.getElementById('alarmCountdownLabel');
+    const alarmCountdownTime = document.getElementById('alarmCountdownTime');
 
     const playlists = [
       { label: 'Relax', url: 'https://www.youtube-nocookie.com/embed/oPVte6aMprI?autoplay=0&rel=0&list=RDoPVte6aMprI' },
@@ -658,22 +762,30 @@
       timeDisplay.textContent = formatTime(state.remainingSeconds);
       const ratio = state.totalSeconds > 0 ? state.remainingSeconds / state.totalSeconds : 0;
       progressFill.style.transform = `scaleX(${ratio})`;
-      statusText.textContent = state.running ? 'Running' : (state.remainingSeconds === 0 ? 'Complete' : 'Ready');
+      const label = state.mode === 'focus' ? 'Focus' : 'Break';
+      statusText.textContent = state.running
+        ? label + ' running'
+        : (state.remainingSeconds === 0 ? label + ' done' : label + ' ready');
       startPauseBtn.textContent = state.running ? 'Pause' : 'Start';
     }
 
-    function playAlarm() {
+    function playAlarmSound() {
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.value = 880;
-        gain.gain.setValueAtTime(0.2, ctx.currentTime);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 1.2);
+        for (let i = 0; i < 6; i++) {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = 880;
+          const start = ctx.currentTime + i * 0.5;
+          gain.gain.setValueAtTime(0, start);
+          gain.gain.linearRampToValueAtTime(0.25, start + 0.05);
+          gain.gain.linearRampToValueAtTime(0, start + 0.35);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(start);
+          osc.stop(start + 0.4);
+        }
       } catch (e) {
         console.warn('Alarm sound unavailable');
       }
@@ -698,7 +810,6 @@
         state.running = false;
         clearInterval(state.intervalId);
         state.intervalId = null;
-        if (state.alarmEnabled) playAlarm();
         updateDisplay();
       }
     }
@@ -754,19 +865,96 @@
     function updateWallclock() {
       const now = new Date();
       const time = new Intl.DateTimeFormat('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true,
-        timeZone: 'America/New_York'
+        hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'America/New_York'
       }).format(now);
       const date = new Intl.DateTimeFormat('en-US', {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric',
-        timeZone: 'America/New_York'
+        weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/New_York'
       }).format(now);
       wallclockTime.textContent = time;
       wallclockDate.textContent = `${date} · Eastern Time`;
+    }
+
+    function formatClock12(date) {
+      return new Intl.DateTimeFormat('en-US', {
+        hour: 'numeric', minute: '2-digit', hour12: true
+      }).format(date);
+    }
+
+    function formatHMS(totalSeconds) {
+      const h = Math.floor(totalSeconds / 3600);
+      const m = Math.floor((totalSeconds % 3600) / 60);
+      const s = totalSeconds % 60;
+      const pad = n => String(n).padStart(2, '0');
+      return h > 0 ? `${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+    }
+
+    function openAlarmModal() {
+      let seed = state.alarmTarget ? new Date(state.alarmTarget) : new Date(Date.now() + 5 * 60 * 1000);
+      const hh = String(seed.getHours()).padStart(2, '0');
+      const mm = String(seed.getMinutes()).padStart(2, '0');
+      alarmTimeInput.value = `${hh}:${mm}`;
+      alarmModal.classList.add('open');
+      setTimeout(() => alarmTimeInput.focus(), 50);
+    }
+
+    function closeAlarmModal() { alarmModal.classList.remove('open'); }
+
+    function setAlarmFromInput() {
+      const val = alarmTimeInput.value;
+      if (!val) return;
+      const [h, m] = val.split(':').map(Number);
+      const now = new Date();
+      const target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0, 0);
+      if (target.getTime() <= now.getTime()) target.setDate(target.getDate() + 1);
+      state.alarmTarget = target;
+      startAlarmCountdown();
+      closeAlarmModal();
+    }
+
+    function clearAlarm() {
+      state.alarmTarget = null;
+      if (state.alarmIntervalId) {
+        clearInterval(state.alarmIntervalId);
+        state.alarmIntervalId = null;
+      }
+      alarmCountdown.classList.remove('visible');
+      alarmBtn.classList.remove('armed');
+      alarmBtn.textContent = 'Alarm';
+      closeAlarmModal();
+    }
+
+    function startAlarmCountdown() {
+      if (state.alarmIntervalId) {
+        clearInterval(state.alarmIntervalId);
+        state.alarmIntervalId = null;
+      }
+      alarmBtn.classList.add('armed');
+      alarmBtn.textContent = 'Alarm ●';
+      alarmCountdown.classList.add('visible');
+      updateAlarmCountdown();
+      state.alarmIntervalId = setInterval(updateAlarmCountdown, 1000);
+    }
+
+    function updateAlarmCountdown() {
+      if (!state.alarmTarget) return;
+      const now = new Date();
+      const diffMs = state.alarmTarget.getTime() - now.getTime();
+      const diffSec = Math.max(0, Math.floor(diffMs / 1000));
+      alarmCountdownLabel.textContent = `Alarm set for ${formatClock12(state.alarmTarget)}`;
+      alarmCountdownTime.textContent = formatHMS(diffSec);
+      if (diffSec <= 0) {
+        playAlarmSound();
+        clearInterval(state.alarmIntervalId);
+        state.alarmIntervalId = null;
+        alarmCountdownLabel.textContent = `Alarm — ${formatClock12(state.alarmTarget)}`;
+        alarmCountdownTime.textContent = '00:00';
+        state.alarmTarget = null;
+        setTimeout(() => {
+          alarmBtn.classList.remove('armed');
+          alarmBtn.textContent = 'Alarm';
+          alarmCountdown.classList.remove('visible');
+        }, 30000);
+      }
     }
 
     function renderNotes() {
@@ -778,7 +966,6 @@
       state.notes.forEach((note, index) => {
         const card = document.createElement('div');
         card.className = 'sticky';
-
         const del = document.createElement('button');
         del.className = 'sticky-del';
         del.type = 'button';
@@ -791,15 +978,11 @@
           clearNotesBtn.textContent = 'Clear';
           renderNotes();
         });
-
         const text = document.createElement('textarea');
         text.className = 'sticky-text';
         text.value = note;
         text.placeholder = 'Write here...';
-        text.addEventListener('input', () => {
-          state.notes[index] = text.value;
-        });
-
+        text.addEventListener('input', () => { state.notes[index] = text.value; });
         card.appendChild(del);
         card.appendChild(text);
         notesList.appendChild(card);
@@ -879,10 +1062,7 @@
 
     timeDisplay.addEventListener('blur', () => {
       const parsed = parseTime(timeDisplay.textContent);
-      if (parsed === null || parsed <= 0) {
-        updateDisplay();
-        return;
-      }
+      if (parsed === null || parsed <= 0) { updateDisplay(); return; }
       state.running = false;
       clearInterval(state.intervalId);
       state.intervalId = null;
@@ -892,20 +1072,20 @@
     });
 
     timeDisplay.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        timeDisplay.blur();
-      }
+      if (e.key === 'Enter') { e.preventDefault(); timeDisplay.blur(); }
     });
 
     addNoteBtn.addEventListener('click', addNote);
     clearNotesBtn.addEventListener('click', clearNotes);
     perplexityForm.addEventListener('submit', handlePerplexitySearch);
 
-    alarmToggle.addEventListener('click', () => {
-      state.alarmEnabled = !state.alarmEnabled;
-      alarmToggle.textContent = state.alarmEnabled ? 'Alarm On' : 'Alarm Off';
-      alarmStatus.textContent = state.alarmEnabled ? 'Alarm will ring at 0:00' : 'No alarm';
+    alarmBtn.addEventListener('click', openAlarmModal);
+    alarmCancel.addEventListener('click', closeAlarmModal);
+    alarmSet.addEventListener('click', setAlarmFromInput);
+    alarmClear.addEventListener('click', clearAlarm);
+    alarmModal.addEventListener('click', (e) => { if (e.target === alarmModal) closeAlarmModal(); });
+    alarmTimeInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); setAlarmFromInput(); }
     });
 
     updateDisplay();
