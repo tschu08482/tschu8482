@@ -753,8 +753,6 @@
           <div class="panel-body">
             <div class="modes" role="tablist" aria-label="Timer modes">
               <button class="mode active" data-mode="focus" type="button">Focus</button>
-              <button class="mode" data-mode="short" type="button">Short</button>
-              <button class="mode" data-mode="long" type="button">Long</button>
             </div>
 
             <div class="controls">
@@ -803,6 +801,45 @@
       </section>
     </main>
 
+    <section class="dial-col">
+      <div class="dial-label">Break</div>
+      <div class="dial-row">
+        <div class="dial-wrap">
+          <svg class="dial" viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="track" cx="60" cy="60" r="54"></circle>
+            <circle class="progress" id="breakProgressRing" cx="60" cy="60" r="54"></circle>
+          </svg>
+          <div class="ticks" id="breakTicks"></div>
+          <div class="readout">
+            <div class="time" id="breakTimeDisplay">05:00</div>
+            <div class="status" id="breakStatusText">Ready</div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="controls">
+            <button class="btn primary" id="breakStartPauseBtn" type="button">Start Break</button>
+            <button class="btn icon" id="breakResetBtn" type="button" aria-label="Reset break">
+              <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 3v6h6"></path></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="perplexity-section section-block" id="perplexitySection">
+      <button class="section-toggle" type="button" aria-expanded="true" aria-controls="perplexityContent">
+        <span class="dial-label" style="margin:0; text-align:left;">Perplexity Search</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </button>
+      <div class="section-content" id="perplexityContent">
+        <form class="perplexity-form" id="perplexityForm">
+          <label class="sr-only" for="perplexityInput">Ask Perplexity</label>
+          <input id="perplexityInput" class="perplexity-input" type="text" placeholder="Ask Perplexity anything..." autocomplete="off" required>
+          <button class="btn perplexity-btn" type="submit">Search</button>
+        </form>
+      </div>
+    </section>
+
     <section class="notes-section section-block" id="notesSection">
       <button class="section-toggle" type="button" aria-expanded="true" aria-controls="notesContent">
         <span class="dial-label" style="margin:0; text-align:left;">Sticky Notes</span>
@@ -826,7 +863,7 @@
 
     <section class="video-section section-block collapsed" id="videoSection">
       <button class="section-toggle" type="button" aria-expanded="false" aria-controls="videoContent">
-        <span class="dial-label" style="margin:0; text-align:left;">Focus Videos</span>
+        <span class="dial-label" style="margin:0; text-align:left;">Music</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
       </button>
       <div class="section-content" id="videoContent">
@@ -846,28 +883,15 @@
         </div>
       </div>
     </section>
-
-    <section class="perplexity-section section-block" id="perplexitySection">
-      <button class="section-toggle" type="button" aria-expanded="true" aria-controls="perplexityContent">
-        <span class="dial-label" style="margin:0; text-align:left;">Perplexity Search</span>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
-      </button>
-      <div class="section-content" id="perplexityContent">
-        <form class="perplexity-form" id="perplexityForm">
-          <label class="sr-only" for="perplexityInput">Ask Perplexity</label>
-          <input id="perplexityInput" class="perplexity-input" type="text" placeholder="Ask Perplexity anything..." autocomplete="off" required>
-          <button class="btn perplexity-btn" type="submit">Search</button>
-        </form>
-      </div>
-    </section>
   </div>
 
   <script>
     const state = {
-      durations: { focus: 25, short: 5, long: 15 },
+      durations: { focus: 25 },
       mode: 'focus',
       totalSeconds: 25 * 60,
       remainingSeconds: 25 * 60,
+      breakSeconds: 5 * 60,
       running: false,
       intervalId: null,
       clearArmed: false,
@@ -876,6 +900,12 @@
     };
 
     const modes = document.querySelectorAll('.mode');
+    const breakProgressRing = document.getElementById('breakProgressRing');
+    const breakTicks = document.getElementById('breakTicks');
+    const breakTimeDisplay = document.getElementById('breakTimeDisplay');
+    const breakStatusText = document.getElementById('breakStatusText');
+    const breakStartPauseBtn = document.getElementById('breakStartPauseBtn');
+    const breakResetBtn = document.getElementById('breakResetBtn');
     const timeDisplay = document.getElementById('timeDisplay');
     const statusText = document.getElementById('statusText');
     const startPauseBtn = document.getElementById('startPauseBtn');
@@ -900,11 +930,54 @@
     const videoPlaylists = document.getElementById('videoPlaylists');
 
     const playlists = [
-      { label: 'Lofi', url: 'https://www.youtube-nocookie.com/embed/jfKfPfyJRdk?autoplay=0&rel=0' },
-      { label: 'Jazz', url: 'https://www.youtube-nocookie.com/embed/DWcJFNfaw9c?autoplay=0&rel=0' },
-      { label: 'Ambient', url: 'https://www.youtube-nocookie.com/embed/S_MOd40zlYU?autoplay=0&rel=0' },
-      { label: 'Country', url: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI' }
+      { label: 'Relax', url: 'https://www.youtube-nocookie.com/embed/oPVte6aMprI?autoplay=0&rel=0&list=RDoPVte6aMprI' },
+      { label: 'Country', url: 'https://www.youtube-nocookie.com/embed/TsfDpW7PYN8?autoplay=0&rel=0&list=RDTsfDpW7PYN8' }
     ];
+
+    function createBreakTicks() {
+      breakTicks.innerHTML = '';
+      for (let i = 0; i < 60; i++) {
+        const tick = document.createElement('div');
+        tick.className = 'tick' + (i % 5 === 0 ? ' major' : '');
+        tick.style.transform = `translateX(-50%) rotate(${i * 6}deg)`;
+        breakTicks.appendChild(tick);
+      }
+    }
+
+    function updateBreakDisplay() {
+      breakTimeDisplay.textContent = formatTime(state.breakSeconds);
+      const radius = 54;
+      const circumference = 2 * Math.PI * radius;
+      breakProgressRing.style.strokeDasharray = `${circumference}`;
+      const ratio = 300 > 0 ? state.breakSeconds / 300 : 0;
+      breakProgressRing.style.strokeDashoffset = `${circumference * (1 - ratio)}`;
+      breakStatusText.textContent = state.breakSeconds === 0 ? 'Complete' : 'Ready';
+    }
+
+    function toggleBreak() {
+      if (state.breakSeconds === 0) {
+        state.breakSeconds = 300;
+      }
+      breakStatusText.textContent = 'Running';
+      const interval = setInterval(() => {
+        if (state.breakSeconds > 0) {
+          state.breakSeconds -= 1;
+          updateBreakDisplay();
+        } else {
+          clearInterval(interval);
+          breakStatusText.textContent = 'Complete';
+          breakStartPauseBtn.textContent = 'Start Break';
+        }
+      }, 1000);
+      breakStartPauseBtn.textContent = 'Pause';
+    }
+
+    function resetBreak() {
+      state.breakSeconds = 300;
+      updateBreakDisplay();
+      breakStatusText.textContent = 'Ready';
+      breakStartPauseBtn.textContent = 'Start Break';
+    }
 
     function createTicks() {
       ticks.innerHTML = '';
@@ -1203,12 +1276,16 @@
       }
     });
 
+    breakStartPauseBtn.addEventListener('click', toggleBreak);
+    breakResetBtn.addEventListener('click', resetBreak);
     addNoteBtn.addEventListener('click', addNote);
     clearNotesBtn.addEventListener('click', clearNotes);
     perplexityForm.addEventListener('submit', handlePerplexitySearch);
 
     createTicks();
+    createBreakTicks();
     updateDisplay();
+    updateBreakDisplay();
     updateWallclock();
     setInterval(updateWallclock, 1000);
     renderNotes();
