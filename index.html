@@ -118,10 +118,29 @@
       min-height: var(--dial-size);
     }
 
+    .wallclock-label {
+      font-size: var(--label-size);
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--fg);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
     .dial-col {
       display: flex;
       flex-direction: column;
       gap: var(--space-2);
+    }
+
+    .dial-label {
+      font-size: var(--label-size);
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--fg);
+      font-weight: 700;
+      padding-left: 2px;
+      margin-bottom: 6px;
     }
 
     .dial-row {
@@ -433,51 +452,6 @@
       margin: 0;
     }
 
-    .section-block:first-child {
-      border-top: none;
-      padding-top: 0;
-    }
-
-    .section-toggle {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--space-2);
-      background: transparent;
-      border: none;
-      padding: 0;
-      cursor: pointer;
-      text-align: left;
-    }
-
-    .section-toggle svg {
-      width: 12px;
-      height: 12px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2;
-      color: var(--muted);
-      transition: transform 0.2s ease;
-      flex-shrink: 0;
-    }
-
-    .section-block.collapsed .section-toggle svg { transform: rotate(-90deg); }
-
-    .section-content {
-      overflow: hidden;
-      max-height: 1400px;
-      opacity: 1;
-      transition: max-height 0.25s ease, opacity 0.2s ease, margin-top 0.2s ease;
-      margin-top: var(--space-2);
-    }
-
-    .section-block.collapsed .section-content {
-      max-height: 0;
-      opacity: 0;
-      margin-top: 0;
-    }
-
     .notes-section,
     .video-section {
       width: 100%;
@@ -504,6 +478,45 @@
       flex-direction: column;
       gap: 8px;
       width: 100%;
+    }
+
+    .section-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+      background: transparent;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .section-toggle svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      color: var(--muted);
+      transition: transform 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .section-content {
+      overflow: hidden;
+      max-height: 1400px;
+      opacity: 1;
+      transition: max-height 0.25s ease, opacity 0.2s ease, margin-top 0.2s ease;
+      margin-top: var(--space-2);
+    }
+
+    .section-block.collapsed .section-toggle svg { transform: rotate(-90deg); }
+    .section-block.collapsed .section-content {
+      max-height: 0;
+      opacity: 0;
+      margin-top: 0;
     }
 
     .notes-header {
@@ -728,84 +741,77 @@
     </button>
 
     <div class="card">
-      <div class="wallclock section-block" data-section="time">
-        <button class="section-toggle" type="button" aria-expanded="true">
-          <span class="toggle-label">Current Time</span>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-        </button>
-        <div class="section-content">
-          <div class="wallclock-body">
-            <span class="wallclock-time" id="clockTime">—</span>
-            <span class="wallclock-date" id="clockDate">Eastern Time</span>
-          </div>
+      <div class="wallclock" data-section="time">
+        <div class="wallclock-label">Current Time</div>
+        <div class="wallclock-body">
+          <span class="wallclock-time" id="clockTime">—</span>
+          <span class="wallclock-date" id="clockDate">Eastern Time</span>
         </div>
       </div>
 
-      <div class="dial-col section-block" data-section="pomodoro">
-        <button class="section-toggle" type="button" aria-expanded="true">
-          <span class="toggle-label">Pomodoro Clock</span>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-        </button>
-        <div class="section-content">
-          <div class="dial-row">
-            <div class="dial-wrap">
-              <svg class="dial" viewBox="0 0 180 180" aria-hidden="true">
-                <circle class="track" cx="90" cy="90" r="84"></circle>
-                <circle class="progress" cx="90" cy="90" r="84" stroke-dasharray="527.79" stroke-dashoffset="0"></circle>
-              </svg>
-              <div class="ticks" id="ticks"></div>
-              <div class="readout">
-                <div class="time" id="time" contenteditable="true" spellcheck="false" inputmode="numeric" title="Click to set a custom time (MM:SS or minutes)">25:00</div>
-                <div class="status" id="status">Ready</div>
-              </div>
+      <div class="dial-col" data-section="pomodoro">
+        <div class="dial-label">Pomodoro Clock</div>
+
+        <div class="dial-row">
+          <div class="dial-wrap">
+            <svg class="dial" viewBox="0 0 180 180" aria-hidden="true">
+              <circle class="track" cx="90" cy="90" r="84"></circle>
+              <circle class="progress" cx="90" cy="90" r="84" stroke-dasharray="527.79" stroke-dashoffset="0"></circle>
+            </svg>
+            <div class="ticks" id="ticks"></div>
+            <div class="readout">
+              <div class="time" id="time" contenteditable="true" spellcheck="false" inputmode="numeric" title="Click to set a custom time (MM:SS or minutes)">25:00</div>
+              <div class="status" id="status">Ready</div>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <div class="modes" role="tablist">
+              <button class="mode active" data-mode="focus">Focus</button>
+              <button class="mode" data-mode="short">Short</button>
+              <button class="mode" data-mode="long">Long</button>
             </div>
 
-            <div class="panel-body">
-              <div class="modes" role="tablist">
-                <button class="mode active" data-mode="focus">Focus</button>
-                <button class="mode" data-mode="short">Short</button>
-                <button class="mode" data-mode="long">Long</button>
-              </div>
-
-              <div class="controls">
-                <button class="btn icon" id="reset" aria-label="Reset">
-                  <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
-                </button>
-                <button class="btn primary" id="startPause">Start</button>
-                <button class="btn icon" id="skip" aria-label="Skip">
-                  <svg viewBox="0 0 24 24"><path d="M5 4l10 8-10 8V4z"/><path d="M19 5v14"/></svg>
-                </button>
-              </div>
-
-              <button class="settings-toggle" id="settingsToggle" aria-expanded="false">
-                <span>Customize</span>
-                <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            <div class="controls">
+              <button class="btn icon" id="reset" aria-label="Reset">
+                <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
               </button>
+              <button class="btn primary" id="startPause">Start</button>
+              <button class="btn icon" id="skip" aria-label="Skip">
+                <svg viewBox="0 0 24 24"><path d="M5 4l10 8-10 8V4z"/><path d="M19 5v14"/></svg>
+              </button>
+            </div>
 
-              <div class="settings" id="settings" aria-hidden="true">
-                <div class="field">
-                  <label>Focus</label>
-                  <div class="stepper">
-                    <button data-step="-1" data-field="focus" aria-label="Decrease focus">−</button>
-                    <input type="number" id="input-focus" min="1" max="120" value="25" />
-                    <button data-step="1" data-field="focus" aria-label="Increase focus">+</button>
-                  </div>
+            <button class="settings-toggle" id="settingsToggle" aria-expanded="false">
+              <span>Customize</span>
+              <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+
+            <div class="settings" id="settings" aria-hidden="true">
+              <div class="field">
+                <label>Focus</label>
+                <div class="stepper">
+                  <button data-step="-1" data-field="focus" aria-label="Decrease focus">−</button>
+                  <input type="number" id="input-focus" min="1" max="120" value="25" />
+                  <button data-step="1" data-field="focus" aria-label="Increase focus">+</button>
                 </div>
-                <div class="field">
-                  <label>Short</label>
-                  <div class="stepper">
-                    <button data-step="-1" data-field="short" aria-label="Decrease short break">−</button>
-                    <input type="number" id="input-short" min="1" max="60" value="5" />
-                    <button data-step="1" data-field="short" aria-label="Increase short break">+</button>
-                  </div>
+              </div>
+
+              <div class="field">
+                <label>Short</label>
+                <div class="stepper">
+                  <button data-step="-1" data-field="short" aria-label="Decrease short break">−</button>
+                  <input type="number" id="input-short" min="1" max="60" value="5" />
+                  <button data-step="1" data-field="short" aria-label="Increase short break">+</button>
                 </div>
-                <div class="field">
-                  <label>Long</label>
-                  <div class="stepper">
-                    <button data-step="-1" data-field="long" aria-label="Decrease long break">−</button>
-                    <input type="number" id="input-long" min="1" max="60" value="15" />
-                    <button data-step="1" data-field="long" aria-label="Increase long break">+</button>
-                  </div>
+              </div>
+
+              <div class="field">
+                <label>Long</label>
+                <div class="stepper">
+                  <button data-step="-1" data-field="long" aria-label="Decrease long break">−</button>
+                  <input type="number" id="input-long" min="1" max="60" value="15" />
+                  <button data-step="1" data-field="long" aria-label="Increase long break">+</button>
                 </div>
               </div>
             </div>
@@ -819,6 +825,7 @@
         <span class="toggle-label">Sticky Notes</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
       </button>
+
       <div class="section-content">
         <div class="notes-shell">
           <div class="notes">
@@ -839,6 +846,7 @@
         <span class="toggle-label">Playlist</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
       </button>
+
       <div class="section-content">
         <div class="video-shell">
           <div class="video-playlists">
@@ -852,7 +860,7 @@
               class="video-playlist-btn"
               type="button"
               data-pl="RDoPVte6aMprI">
-              Dark Focus Mix
+              Deep Focus Mix
             </button>
           </div>
 
@@ -1157,13 +1165,13 @@
             timeZone: 'America/New_York',
             hour: 'numeric',
             minute: '2-digit',
-            hour12: true,
+            hour12: true
           });
           const date = now.toLocaleDateString('en-US', {
             timeZone: 'America/New_York',
             weekday: 'long',
             month: 'long',
-            day: 'numeric',
+            day: 'numeric'
           });
           clockTimeEl.textContent = time;
           clockDateEl.textContent = `${date} · ET`;
@@ -1195,15 +1203,18 @@
         const toggle = section.querySelector('.section-toggle');
         const key = `pomodoro-section-${idx}`;
         if (!toggle) return;
+
         const setOpen = (open) => {
           section.classList.toggle('collapsed', !open);
           toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
           try { localStorage.setItem(key, open ? '1' : '0'); } catch (e) {}
         };
+
         toggle.addEventListener('click', () => {
           const open = toggle.getAttribute('aria-expanded') === 'true';
           setOpen(!open);
         });
+
         try {
           const saved = localStorage.getItem(key);
           if (saved === '0') setOpen(false);
@@ -1242,6 +1253,7 @@
 
       function renderNotes() {
         notesListEl.innerHTML = '';
+
         if (notes.length === 0) {
           const empty = document.createElement('div');
           empty.className = 'notes-empty';
