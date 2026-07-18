@@ -478,16 +478,18 @@
     }
 
     .section-content {
-      overflow: hidden;
-      max-height: 1400px;
+      overflow: visible;
+      max-height: none;
       opacity: 1;
-      transition: max-height 0.25s ease, opacity 0.2s ease, margin-top 0.2s ease;
+      transition: opacity 0.2s ease, margin-top 0.2s ease;
       margin-top: var(--space-2);
     }
 
     .section-block.collapsed .section-toggle svg { transform: rotate(-90deg); }
+
     .section-block.collapsed .section-content {
       max-height: 0;
+      overflow: hidden;
       opacity: 0;
       margin-top: 0;
     }
@@ -550,6 +552,7 @@
     }
 
     .notes-add { width: 20px; font-size: 13px; }
+
     .notes-clear {
       padding: 0 8px;
       font-size: 7px;
@@ -692,7 +695,7 @@
     .video-frame {
       position: relative;
       width: 100%;
-      max-width: 240px;
+      max-width: 320px;
       aspect-ratio: 16 / 9;
       border: 1px solid var(--line);
       border-radius: 14px;
