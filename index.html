@@ -50,39 +50,41 @@
     .page {
       display: flex;
       flex-direction: column;
+      align-items: center;
       background: var(--bg);
       width: 100%;
       max-width: 100%;
-      position: relative;
       container-type: inline-size;
       border-radius: 18px;
-      padding-top: 24px;
+      padding: 24px 0 20px;
     }
 
     .card {
-      display: grid;
-      grid-template-columns: minmax(220px, 1fr) minmax(300px, 1.1fr);
-      align-items: stretch;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       gap: var(--space-5);
       padding: clamp(14px, calc(var(--embed-w) * 0.022), 20px);
       width: 100%;
-      margin: 0 auto;
+      max-width: 420px;
     }
 
     .wallclock,
-    .dial-col { min-width: 0; }
+    .dial-col {
+      width: 100%;
+      min-width: 0;
+    }
 
     .wallclock {
       display: flex;
       flex-direction: column;
+      align-items: center;
       gap: var(--space-2);
-      padding-right: var(--space-4);
-      padding-left: 40px; /* tightened from 52px */
-      border-right: 1px solid var(--line);
-      min-height: var(--dial-size);
+      padding-inline: 24px;
+      padding-bottom: var(--space-4);
+      border-bottom: 1px solid var(--line);
     }
 
-    /* Unified header label style */
     .wallclock-label,
     .dial-label,
     .toggle-label {
@@ -92,32 +94,33 @@
       color: var(--fg);
       font-weight: 700;
       margin-bottom: 6px;
+      text-align: center;
     }
 
     .dial-col {
       display: flex;
       flex-direction: column;
-      gap: var(--space-2);
-      padding-right: 52px;
+      align-items: center;
+      gap: var(--space-3);
+      padding-inline: 24px;
     }
 
     .dial-label {
-      padding-left: 0; /* align with Current Time */
+      margin-top: var(--space-1);
     }
 
     .dial-row {
-      display: grid;
-      grid-template-columns: minmax(0, var(--dial-size)) minmax(0, 1fr);
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: var(--space-5);
+      gap: var(--space-4);
+      width: 100%;
     }
 
     .dial-wrap {
       position: relative;
       width: var(--dial-size);
       height: var(--dial-size);
-      justify-self: center;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -197,10 +200,8 @@
     }
 
     .wallclock-body {
-      flex: 1;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
       gap: 6px;
       text-align: center;
@@ -226,6 +227,15 @@
       white-space: nowrap;
     }
 
+    .panel-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-3);
+      width: 100%;
+    }
+
     .modes {
       display: flex;
       gap: 2px;
@@ -234,6 +244,7 @@
       padding: 2px;
       border-radius: 999px;
       width: 100%;
+      max-width: 320px;
       overflow: hidden;
     }
 
@@ -257,21 +268,13 @@
     .mode:hover { color: var(--fg); }
     .mode.active { background: var(--fg); color: #fff; }
 
-    .panel-body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: var(--space-3);
-      width: 100%;
-    }
-
     .controls {
       display: grid;
       grid-template-columns: auto minmax(0, 1fr) auto;
       gap: var(--space-2);
       align-items: center;
       width: 100%;
+      max-width: 320px;
     }
 
     .btn {
@@ -416,8 +419,9 @@
     .notes-section,
     .video-section {
       width: 100%;
+      max-width: 420px;
       margin-top: var(--space-4);
-      padding: var(--space-4) 40px 0; /* aligned with wallclock */
+      padding: var(--space-4) 24px 0;
       border-top: 1px solid var(--line);
     }
 
@@ -430,7 +434,7 @@
     .video-shell {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: center;
       gap: 8px;
     }
 
@@ -615,6 +619,7 @@
       gap: 6px;
       margin-bottom: 4px;
       flex-wrap: wrap;
+      justify-content: center;
     }
 
     .video-playlist-btn {
@@ -662,34 +667,15 @@
       color: var(--muted);
       margin-top: 6px;
       padding-left: 2px;
+      text-align: center;
     }
 
     @container (max-width: 640px) {
       .page { border-radius: 0; padding-top: 18px; }
-      .card { grid-template-columns: 1fr; gap: var(--space-4); }
-      .wallclock {
-        border-right: none;
-        border-bottom: 1px solid var(--line);
-        padding-right: 0;
-        padding-left: 40px;
-        padding-bottom: var(--space-4);
-        min-height: auto;
-      }
-      .dial-col { padding-right: 40px; }
-      .dial-row {
-        grid-template-columns: 1fr;
-        justify-items: center;
-      }
-      .panel-body {
-        max-width: min(100%, 320px);
-        margin: 0 auto;
-      }
+      .card { padding-inline: 12px; }
       .notes-section,
       .video-section {
-        padding-inline: 40px;
-      }
-      .video-frame {
-        max-width: 220px;
+        padding-inline: 16px;
       }
     }
   </style>
@@ -1010,7 +996,7 @@
             g2.gain.exponentialRampToValueAtTime(n.gain * 0.25, now + n.start + 0.06);
             g2.gain.exponentialRampToValueAtTime(0.0001, now + n.start + n.dur * 0.7);
             o1.connect(g1).connect(master);
-            o2.connect(g2).connect(master);
+            o2.connect(g2).connectmaster);
             o1.start(now + n.start);
             o2.start(now + n.start);
             o1.stop(now + n.start + n.dur + 0.1);
