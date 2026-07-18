@@ -505,16 +505,40 @@
   </div>
 
   <script>
+    // ---------- PERSISTENCE ----------
+    const STORAGE_KEY = 'tsWidget_v1';
+
+    function loadStore() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return {};
+        return JSON.parse(raw) || {};
+      } catch (e) { return {}; }
+    }
+
+    function saveStore(patch) {
+      try {
+        const current = loadStore();
+        const next = Object.assign({}, current, patch);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      } catch (e) { /* localStorage may be blocked */ }
+    }
+
+    const stored = loadStore();
+
     const state = {
-      durations: { focus: 25, break: 5 },
+      durations: {
+        focus: (stored.durations && stored.durations.focus) || 25,
+        break: (stored.durations && stored.durations.break) || 5
+      },
       mode: 'focus',
       totalSeconds: 25 * 60,
       remainingSeconds: 25 * 60,
       running: false,
       intervalId: null,
       clearArmed: false,
-      notes: [],
-      alarmTarget: null,
+      notes: Array.isArray(stored.notes) ? stored.notes : [],
+      alarmTarget: stored.alarmTarget ? new Date(stored.alarmTarget) : null,
       alarmIntervalId: null,
       alertSoundIntervalId: null,
       titleFlashIntervalId: null,
@@ -522,6 +546,11 @@
       audioCtx: null
     };
 
+    // Initialize timer values from stored durations
+    state.totalSeconds = state.durations.focus * 60;
+    state.remainingSeconds = state.totalSeconds;
+
+    // ---------- ELEMENT REFS ----------
     const modes = document.querySelectorAll('.mode');
     const timeDisplay = document.getElementById('timeDisplay');
     const statusText = document.getElementById('statusText');
@@ -556,6 +585,10 @@
     const alertOverlay = document.getElementById('alertOverlay');
     const alertTime = document.getElementById('alertTime');
     const alertDismiss = document.getElementById('alertDismiss');
+
+    // Prefill duration inputs from storage
+    focusMinutes.value = state.durations.focus;
+    breakMinutes.value = state.durations.break;
 
     const playlists = [
       { label: 'Relax', url: 'https://www.youtube-nocookie.com/embed/oPVte6aMprI?autoplay=0&rel=0&list=RDoPVte6aMprI' },
@@ -686,6 +719,7 @@
       stopTitleFlash();
       if (navigator.vibrate) { try { navigator.vibrate(0); } catch (e) {} }
       state.alarmTarget = null;
+      saveStore({ alarmTarget: null });
       alarmCountdown.classList.remove('visible');
       alarmBtn.classList.remove('armed');
       alarmBtn.textContent = 'Alarm';
@@ -754,6 +788,7 @@
     function applyDurations() {
       state.durations.focus = clampInputValue(focusMinutes);
       state.durations.break = clampInputValue(breakMinutes);
+      saveStore({ durations: state.durations });
       state.totalSeconds = state.durations[state.mode] * 60;
       state.remainingSeconds = state.totalSeconds;
       state.running = false;
@@ -809,12 +844,14 @@
       const target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0, 0);
       if (target.getTime() <= now.getTime()) target.setDate(target.getDate() + 1);
       state.alarmTarget = target;
+      saveStore({ alarmTarget: target.toISOString() });
       startAlarmCountdown();
       closeAlarmModal();
     }
 
     function clearAlarm() {
       state.alarmTarget = null;
+      saveStore({ alarmTarget: null });
       if (state.alarmIntervalId) {
         clearInterval(state.alarmIntervalId);
         state.alarmIntervalId = null;
@@ -853,6 +890,11 @@
       }
     }
 
+    // ---------- NOTES (with persistence) ----------
+    function persistNotes() {
+      saveStore({ notes: state.notes });
+    }
+
     function renderNotes() {
       notesList.innerHTML = '';
       notesEmpty.style.display = state.notes.length ? 'none' : 'block';
@@ -869,6 +911,7 @@
         del.textContent = '×';
         del.addEventListener('click', () => {
           state.notes.splice(index, 1);
+          persistNotes();
           state.clearArmed = false;
           clearNotesBtn.classList.remove('armed');
           clearNotesBtn.textContent = 'Clear';
@@ -878,7 +921,10 @@
         text.className = 'sticky-text';
         text.value = note;
         text.placeholder = 'Write here...';
-        text.addEventListener('input', () => { state.notes[index] = text.value; });
+        text.addEventListener('input', () => {
+          state.notes[index] = text.value;
+          persistNotes();
+        });
         card.appendChild(del);
         card.appendChild(text);
         notesList.appendChild(card);
@@ -887,6 +933,7 @@
 
     function addNote() {
       state.notes.unshift('');
+      persistNotes();
       state.clearArmed = false;
       clearNotesBtn.classList.remove('armed');
       clearNotesBtn.textContent = 'Clear';
@@ -908,6 +955,7 @@
         return;
       }
       state.notes = [];
+      persistNotes();
       state.clearArmed = false;
       clearNotesBtn.classList.remove('armed');
       clearNotesBtn.textContent = 'Clear';
@@ -935,6 +983,19 @@
       if (!query) return;
       const url = 'https://www.perplexity.ai/search?q=' + encodeURIComponent(query);
       window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
+    // Restore alarm if one was saved and it's still in the future
+    function restoreAlarm() {
+      if (!state.alarmTarget) return;
+      const now = new Date();
+      if (state.alarmTarget.getTime() <= now.getTime()) {
+        // Alarm expired while the widget was closed — clear silently
+        state.alarmTarget = null;
+        saveStore({ alarmTarget: null });
+        return;
+      }
+      startAlarmCountdown();
     }
 
     modes.forEach(btn => btn.addEventListener('click', () => setMode(btn.dataset.mode)));
@@ -991,6 +1052,7 @@
     setInterval(updateWallclock, 1000);
     renderNotes();
     setupVideoPlaylists();
+    restoreAlarm();
   </script>
 </body>
 </html>
