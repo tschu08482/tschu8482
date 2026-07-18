@@ -351,7 +351,7 @@
       max-height: 0;
       overflow: hidden;
       opacity: 0;
-      transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.35s ease;
+      transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.35s.ease;
       padding: 0;
     }
 
@@ -417,7 +417,8 @@
     }
 
     .notes-section,
-    .video-section {
+    .video-section,
+    .perplexity-section {
       width: 100%;
       max-width: 420px;
       margin-top: var(--space-4);
@@ -510,7 +511,7 @@
       align-items: center;
       justify-content: center;
       padding: 0;
-      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s.ease;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
     }
 
     .notes-add { width: 20px; font-size: 13px; }
@@ -527,10 +528,10 @@
     .notes-clear:disabled { opacity: 0.35; cursor: not-allowed; }
     .notes-clear.armed { background: #b00020; color: #fff; border-color: #b00020; }
 
-    /* Bigger scrollable notes area */
+    /* bigger scrollable notes */
     .notes-shell {
-      max-height: 380px;   /* increased height */
-      overflow-y: auto;    /* scrollbar when overflowing */
+      max-height: 380px;
+      overflow-y: auto;
       padding-right: 4px;
     }
 
@@ -681,7 +682,8 @@
       .page { border-radius: 0; padding-top: 24px; padding-bottom: 24px; }
       .card { padding-inline: 12px; }
       .notes-section,
-      .video-section {
+      .video-section,
+      .perplexity-section {
         padding-inline: 16px;
       }
     }
@@ -758,6 +760,35 @@
         </div>
       </div>
     </div>
+
+    <!-- Perplexity search bar section -->
+    <section class="perplexity-section section-block" aria-label="Perplexity search" data-section="perplexity">
+      <button class="section-toggle" type="button" aria-expanded="true">
+        <span class="toggle-label">Ask Perplexity</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+
+      <div class="section-content">
+        <form
+          onsubmit="window.open('https://www.perplexity.ai/search?q=' + encodeURIComponent(this.query.value), '_blank'); return false;"
+          style="margin-top: 8px; display: flex; gap: 6px;"
+        >
+          <input
+            type="text"
+            name="query"
+            placeholder="Ask a question…"
+            style="flex: 1; padding: 6px 10px; border-radius: 999px; border: 1px solid #e5e5e5; font-size: 11px;"
+          />
+          <button
+            type="submit"
+            class="btn"
+            style="font-size: 9px; padding-inline: 14px;"
+          >
+            Search
+          </button>
+        </form>
+      </div>
+    </section>
 
     <section class="notes-section section-block" aria-label="Sticky notes" data-section="notes">
       <button class="section-toggle" type="button" aria-expanded="true">
@@ -966,48 +997,48 @@
       function beep() {
         try {
           const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const now = ctx.currentTime;
-        const master = ctx.createGain();
-        master.gain.value = 0.9;
-        const filter = ctx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.value = 2200;
-        master.connect(filter).connect(ctx.destination);
+          const now = ctx.currentTime;
+          const master = ctx.createGain();
+          master.gain.value = 0.9;
+          const filter = ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.value = 2200;
+          master.connect(filter).connect(ctx.destination);
 
-        const tones = [
-          { freq: 1046.5, start: 0.0, dur: 2.4, gain: 0.14 },
-          { freq: 1567.98, start: 0.35, dur: 2.0, gain: 0.09 }
-        ];
+          const tones = [
+            { freq: 1046.5, start: 0.0, dur: 2.4, gain: 0.14 },
+            { freq: 1567.98, start: 0.35, dur: 2.0, gain: 0.09 }
+          ];
 
-        tones.forEach(n => {
-          const o1 = ctx.createOscillator();
-          const o2 = ctx.createOscillator();
-          const g1 = ctx.createGain();
-          const g2 = ctx.createGain();
+          tones.forEach(n => {
+            const o1 = ctx.createOscillator();
+            const o2 = ctx.createOscillator();
+            const g1 = ctx.createGain();
+            const g2 = ctx.createGain();
 
-          o1.type = 'sine';
-          o2.type = 'sine';
-          o1.frequency.value = n.freq;
-          o2.frequency.value = n.freq * 2;
+            o1.type = 'sine';
+            o2.type = 'sine';
+            o1.frequency.value = n.freq;
+            o2.frequency.value = n.freq * 2;
 
-          g1.gain.setValueAtTime(0.0001, now + n.start);
-          g1.gain.exponentialRampToValueAtTime(n.gain, now + n.start + 0.06);
-          g1.gain.exponentialRampToValueAtTime(0.0001, now + n.start + n.dur);
+            g1.gain.setValueAtTime(0.0001, now + n.start);
+            g1.gain.exponentialRampToValueAtTime(n.gain, now + n.start + 0.06);
+            g1.gain.exponentialRampToValueAtTime(0.0001, now + n.start + n.dur);
 
-          g2.gain.setValueAtTime(0.0001, now + n.start);
-          g2.gain.exponentialRampToValueAtTime(n.gain * 0.25, now + n.start + 0.06);
-          g2.gain.exponentialRampToValueAtTime(0.0001, now + n.start + n.dur * 0.7);
+            g2.gain.setValueAtTime(0.0001, now + n.start);
+            g2.gain.exponentialRampToValueAtTime(n.gain * 0.25, now + n.start + 0.06);
+            g2.gain.exponentialRampToValueAtTime(0.0001, now + n.start + n.dur * 0.7);
 
-          o1.connect(g1).connect(master);
-          o2.connect(g2).connect(master);
+            o1.connect(g1).connect(master);
+            o2.connect(g2).connect(master);
 
-          o1.start(now + n.start);
-          o2.start(now + n.start);
-          o1.stop(now + n.start + n.dur + 0.1);
-          o2.stop(now + n.start + n.dur + 0.1);
-        });
+            o1.start(now + n.start);
+            o2.start(now + n.start);
+            o1.stop(now + n.start + n.dur + 0.1);
+            o2.stop(now + n.start + n.dur + 0.1);
+          });
 
-        setTimeout(() => ctx.close(), 3200);
+          setTimeout(() => ctx.close(), 3200);
         } catch (e) {}
       }
 
@@ -1193,7 +1224,6 @@
           return;
         }
 
-        // render from index 0 downwards so first element is visually at the top
         notes.forEach((n, idx) => {
           const s = document.createElement('div');
           s.className = 'sticky';
@@ -1298,9 +1328,8 @@
         if (clearArmed && e.target !== notesClearEl) disarmClear();
       });
 
-      // New sticky at top of list
       notesAddEl.addEventListener('click', () => {
-        notes.unshift('');   // add to beginning of array [web:447][web:461]
+        notes.unshift('');   // new sticky at top
         saveNotes();
         renderNotes();
         const stickies = notesListEl.querySelectorAll('.sticky-text');
