@@ -38,8 +38,6 @@
       width: 100%;
       max-width: 380px;
       background: var(--bg);
-      border: 1px solid var(--line);
-      border-radius: 22px;
       padding: 14px;
     }
 
@@ -180,7 +178,6 @@
     }
     .stepper input::-webkit-outer-spin-button, .stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
-    /* Alarm setup modal */
     .alarm-modal {
       position: fixed; inset: 0;
       background: rgba(0,0,0,0.35);
@@ -216,7 +213,6 @@
     .alarm-countdown.visible { display: block; }
     .alarm-countdown .cd-time { font-size: 18px; display: block; margin-top: 2px; letter-spacing: -0.02em; }
 
-    /* ALERT OVERLAY (when alarm fires) */
     .alert-overlay {
       position: fixed; inset: 0;
       background: rgba(0,0,0,0.55);
@@ -268,10 +264,7 @@
       font-size: 28px; font-weight: 400;
       color: var(--fg); margin-bottom: 4px;
     }
-    .alert-sub {
-      font-size: 11px; color: var(--muted);
-      margin-bottom: 16px;
-    }
+    .alert-sub { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
     .alert-dismiss {
       background: #b00020; color: #fff;
       border: 1px solid #b00020;
@@ -282,7 +275,6 @@
     }
     .alert-dismiss:hover { background: #900018; }
 
-    /* Body flash when firing */
     body.alarm-firing { animation: bodyFlash 1s ease-in-out infinite; }
     @keyframes bodyFlash {
       0%, 100% { background: var(--bg); }
@@ -489,7 +481,6 @@
     </div>
   </div>
 
-  <!-- Alarm setup modal -->
   <div class="alarm-modal" id="alarmModal" role="dialog" aria-modal="true" aria-labelledby="alarmModalTitle">
     <div class="alarm-card">
       <div class="alarm-card-title" id="alarmModalTitle">Set Alarm Time</div>
@@ -502,7 +493,6 @@
     </div>
   </div>
 
-  <!-- Full-screen ALERT when alarm fires -->
   <div class="alert-overlay" id="alertOverlay" role="alertdialog" aria-modal="true" aria-labelledby="alertTitle">
     <div class="alert-card">
       <div class="alert-icon" aria-hidden="true">🔔</div>
@@ -609,7 +599,6 @@
     function playBeepBurst() {
       const ctx = getAudioCtx();
       if (!ctx) return;
-      // Two-tone alarm pattern
       const pattern = [880, 660, 880, 660];
       pattern.forEach((freq, i) => {
         const osc = ctx.createOscillator();
@@ -628,7 +617,6 @@
     }
 
     function startAlertSound() {
-      // Play immediately, then repeat every 1.2s until dismissed
       playBeepBurst();
       state.alertSoundIntervalId = setInterval(playBeepBurst, 1200);
     }
@@ -673,28 +661,18 @@
           requireInteraction: true
         });
         n.onclick = () => { window.focus(); n.close(); };
-      } catch (e) { /* ignore */ }
+      } catch (e) {}
     }
 
     function fireAlert() {
       const target = state.alarmTarget || new Date();
       const timeStr = formatClock12(target);
-
-      // Visual: overlay + body flash
       alertTime.textContent = timeStr;
       alertOverlay.classList.add('open');
       document.body.classList.add('alarm-firing');
-
-      // Audio: repeating beep
       startAlertSound();
-
-      // Tab title flash
       startTitleFlash(timeStr);
-
-      // Browser notification (works if tab is in background)
       sendBrowserNotification(timeStr);
-
-      // Vibrate on mobile (Android/Chrome)
       if (navigator.vibrate) {
         try { navigator.vibrate([500, 250, 500, 250, 500, 250, 500]); } catch (e) {}
       }
@@ -706,8 +684,6 @@
       stopAlertSound();
       stopTitleFlash();
       if (navigator.vibrate) { try { navigator.vibrate(0); } catch (e) {} }
-
-      // Reset alarm state
       state.alarmTarget = null;
       alarmCountdown.classList.remove('visible');
       alarmBtn.classList.remove('armed');
@@ -818,9 +794,7 @@
       alarmTimeInput.value = `${hh}:${mm}`;
       alarmModal.classList.add('open');
       setTimeout(() => alarmTimeInput.focus(), 50);
-      // Ask for notification permission on user gesture
       requestNotificationPermission();
-      // Prime audio context so it can play later without user gesture
       getAudioCtx();
     }
 
