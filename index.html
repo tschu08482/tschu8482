@@ -24,7 +24,6 @@
       --wallclock-size: clamp(30px, calc(var(--embed-w) * 0.06), 44px);
       --timer-size: clamp(26px, calc(var(--embed-w) * 0.05), 34px);
       --label-size: clamp(7px, calc(var(--embed-w) * 0.0105), 8px);
-      --micro-size: clamp(6px, calc(var(--embed-w) * 0.009), 7px);
       --button-size: clamp(9px, calc(var(--embed-w) * 0.012), 10px);
       --tick-origin: calc(var(--dial-size) * 0.475);
     }
@@ -63,25 +62,20 @@
       top: var(--space-2);
       left: var(--space-3);
       z-index: 10;
-      width: clamp(20px, calc(var(--embed-w) * 0.03), 24px);
-      height: clamp(20px, calc(var(--embed-w) * 0.03), 24px);
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
       border: 1px solid var(--line);
       background: var(--bg);
       color: var(--muted);
       cursor: pointer;
-      padding: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: color 0.15s ease, border-color 0.15s ease;
     }
 
-    .collapse-btn:hover {
-      color: var(--fg);
-      border-color: var(--fg);
-    }
-
+    .collapse-btn:hover { color: var(--fg); border-color: var(--fg); }
     .collapse-btn svg {
       width: 10px;
       height: 10px;
@@ -93,14 +87,8 @@
       transition: transform 0.2s ease;
     }
 
-    .page.collapsed .collapse-btn svg {
-      transform: rotate(180deg);
-    }
-
-    .page.collapsed .dial-col {
-      display: none;
-    }
-
+    .page.collapsed .collapse-btn svg { transform: rotate(180deg); }
+    .page.collapsed .dial-col { display: none; }
     .page.collapsed .wallclock {
       border-right: none;
       padding-right: 0;
@@ -113,23 +101,27 @@
       align-items: stretch;
       gap: var(--space-5);
       padding: clamp(14px, calc(var(--embed-w) * 0.022), 20px);
-      background: var(--bg);
       width: 100%;
       margin: 0 auto;
     }
 
     .wallclock,
-    .dial-col {
-      min-width: 0;
+    .dial-col { min-width: 0; }
+
+    .wallclock {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      padding-right: var(--space-4);
+      padding-left: 14px;
+      border-right: 1px solid var(--line);
+      min-height: var(--dial-size);
     }
 
     .dial-col {
       display: flex;
       flex-direction: column;
-      align-items: stretch;
       gap: var(--space-2);
-      align-self: stretch;
-      min-width: 0;
     }
 
     .dial-row {
@@ -138,8 +130,6 @@
       align-items: center;
       justify-content: center;
       gap: var(--space-5);
-      flex: 1;
-      min-width: 0;
     }
 
     .dial-wrap {
@@ -188,10 +178,7 @@
       transform-origin: 50% var(--tick-origin);
     }
 
-    .tick.major {
-      background: #a5a5a5;
-      height: 7px;
-    }
+    .tick.major { background: #a5a5a5; height: 7px; }
 
     .readout {
       position: absolute;
@@ -227,29 +214,6 @@
       text-transform: uppercase;
       color: var(--fg);
       font-weight: 700;
-    }
-
-    .panel-body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: var(--space-3);
-      min-width: 0;
-      width: 100%;
-    }
-
-    .wallclock {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      justify-content: flex-start;
-      gap: var(--space-2);
-      padding-right: var(--space-4);
-      padding-left: 14px;
-      border-right: 1px solid var(--line);
-      align-self: stretch;
-      min-height: var(--dial-size);
     }
 
     .wallclock-body {
@@ -313,6 +277,15 @@
     .mode:hover { color: var(--fg); }
     .mode.active { background: var(--fg); color: #fff; }
 
+    .panel-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-3);
+      width: 100%;
+    }
+
     .controls {
       display: grid;
       grid-template-columns: auto minmax(0, 1fr) auto;
@@ -333,13 +306,11 @@
       border: 1px solid var(--line);
       background: transparent;
       color: var(--fg);
-      min-width: 0;
       white-space: nowrap;
     }
 
     .btn:hover { border-color: #b5b5b5; }
     .btn:active { transform: scale(0.97); }
-
     .btn.primary {
       background: var(--fg);
       color: #fff;
@@ -347,11 +318,9 @@
       width: 100%;
     }
 
-    .btn.primary:hover { background: #222; }
-
     .btn.icon {
-      width: clamp(30px, calc(var(--embed-w) * 0.042), 34px);
-      height: clamp(30px, calc(var(--embed-w) * 0.042), 34px);
+      width: 34px;
+      height: 34px;
       padding: 0;
       display: flex;
       align-items: center;
@@ -375,14 +344,10 @@
       letter-spacing: 0.24em;
       text-transform: uppercase;
       cursor: pointer;
-      padding: 0;
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      transition: color 0.2s ease;
     }
-
-    .settings-toggle:hover { color: var(--fg); }
 
     .settings-toggle svg {
       width: 8px;
@@ -393,9 +358,7 @@
       transition: transform 0.3s ease;
     }
 
-    .settings-toggle.open svg {
-      transform: rotate(180deg);
-    }
+    .settings-toggle.open svg { transform: rotate(180deg); }
 
     .settings {
       width: 100%;
@@ -407,7 +370,6 @@
       opacity: 0;
       transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.35s ease;
       padding: 0;
-      border-top: 1px solid var(--line);
     }
 
     .settings.open {
@@ -423,7 +385,7 @@
     }
 
     .field label {
-      font-size: clamp(6px, calc(var(--embed-w) * 0.008), 7px);
+      font-size: 7px;
       letter-spacing: 0.24em;
       text-transform: uppercase;
       color: var(--muted);
@@ -439,12 +401,12 @@
     }
 
     .stepper button {
-      width: clamp(18px, calc(var(--embed-w) * 0.026), 20px);
-      height: clamp(22px, calc(var(--embed-w) * 0.03), 24px);
+      width: 20px;
+      height: 24px;
       border: none;
       background: transparent;
       color: var(--fg);
-      font-size: clamp(10px, calc(var(--embed-w) * 0.014), 11px);
+      font-size: 11px;
       cursor: pointer;
       font-family: inherit;
       transition: background 0.15s ease;
@@ -455,14 +417,12 @@
     .stepper input {
       flex: 1;
       width: 100%;
-      min-width: 0;
       border: none;
       background: transparent;
       color: var(--fg);
       text-align: center;
       font-family: 'JetBrains Mono', monospace;
       font-size: var(--button-size);
-      font-weight: 400;
       padding: 0;
       -moz-appearance: textfield;
     }
@@ -471,13 +431,6 @@
     .stepper input::-webkit-inner-spin-button {
       -webkit-appearance: none;
       margin: 0;
-    }
-
-    .stepper input:focus { outline: none; }
-
-    .section-block {
-      border-top: 1px solid var(--line);
-      padding-top: var(--space-3);
     }
 
     .section-block:first-child {
@@ -509,9 +462,7 @@
       flex-shrink: 0;
     }
 
-    .section-block.collapsed .section-toggle svg {
-      transform: rotate(-90deg);
-    }
+    .section-block.collapsed .section-toggle svg { transform: rotate(-90deg); }
 
     .section-content {
       overflow: hidden;
@@ -535,13 +486,10 @@
       border-top: 1px solid var(--line);
     }
 
-    .notes-shell {
+    .notes-shell,
+    .video-shell {
       width: 100%;
       padding: 8px 14px 0;
-    }
-
-    .notes-shell * {
-      box-sizing: border-box;
     }
 
     .notes {
@@ -554,16 +502,8 @@
     .notes-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-end;
       gap: 8px;
-    }
-
-    .notes-title {
-      font-size: 10px;
-      letter-spacing: 0.26em;
-      text-transform: uppercase;
-      color: var(--fg);
-      font-weight: 700;
     }
 
     .notes-actions {
@@ -588,11 +528,7 @@
       transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
     }
 
-    .notes-add {
-      width: 20px;
-      font-size: 13px;
-    }
-
+    .notes-add { width: 20px; font-size: 13px; }
     .notes-clear {
       padding: 0 8px;
       font-size: 7px;
@@ -601,27 +537,10 @@
       color: var(--muted);
     }
 
-    .notes-add:hover {
-      background: var(--fg);
-      color: #fff;
-      border-color: var(--fg);
-    }
-
-    .notes-clear:hover {
-      color: #b00020;
-      border-color: #b00020;
-    }
-
-    .notes-clear:disabled {
-      opacity: 0.35;
-      cursor: not-allowed;
-    }
-
-    .notes-clear.armed {
-      background: #b00020;
-      color: #fff;
-      border-color: #b00020;
-    }
+    .notes-add:hover { background: var(--fg); color: #fff; border-color: var(--fg); }
+    .notes-clear:hover { color: #b00020; border-color: #b00020; }
+    .notes-clear:disabled { opacity: 0.35; cursor: not-allowed; }
+    .notes-clear.armed { background: #b00020; color: #fff; border-color: #b00020; }
 
     .notes-list {
       display: grid;
@@ -638,18 +557,13 @@
       background: #fff9c4;
       border-radius: 4px;
       padding: 10px 12px 8px;
-      box-shadow:
-        0 1px 1px rgba(0,0,0,0.04),
-        0 2px 6px rgba(0,0,0,0.06),
-        0 8px 14px -6px rgba(0,0,0,0.08);
+      box-shadow: 0 1px 1px rgba(0,0,0,0.04), 0 2px 6px rgba(0,0,0,0.06), 0 8px 14px -6px rgba(0,0,0,0.08);
       display: flex;
       flex-direction: column;
-      font-family: 'Inter', sans-serif;
       transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
       cursor: grab;
     }
 
-    .sticky:active { cursor: grabbing; }
     .sticky:nth-child(4n+1) { background: #fff9c4; transform: rotate(-1.4deg); }
     .sticky:nth-child(4n+2) { background: #ffe0b2; transform: rotate(1.2deg); }
     .sticky:nth-child(4n+3) { background: #ffccbc; transform: rotate(-0.6deg); }
@@ -657,10 +571,7 @@
 
     .sticky:hover {
       transform: rotate(0deg) translateY(-2px);
-      box-shadow:
-        0 2px 2px rgba(0,0,0,0.05),
-        0 6px 12px rgba(0,0,0,0.08),
-        0 14px 20px -8px rgba(0,0,0,0.12);
+      box-shadow: 0 2px 2px rgba(0,0,0,0.05), 0 6px 12px rgba(0,0,0,0.08), 0 14px 20px -8px rgba(0,0,0,0.12);
       z-index: 2;
     }
 
@@ -670,10 +581,7 @@
     }
 
     .sticky.drop-target {
-      box-shadow:
-        0 0 0 2px var(--fg),
-        0 2px 6px rgba(0,0,0,0.06),
-        0 8px 14px -6px rgba(0,0,0,0.08);
+      box-shadow: 0 0 0 2px var(--fg), 0 2px 6px rgba(0,0,0,0.06), 0 8px 14px -6px rgba(0,0,0,0.08);
     }
 
     .sticky-text {
@@ -689,11 +597,6 @@
       padding: 0 20px 0 0;
       width: 100%;
       min-height: 26px;
-      cursor: text;
-    }
-
-    .sticky-text::placeholder {
-      color: rgba(0,0,0,0.35);
     }
 
     .sticky-del {
@@ -706,11 +609,8 @@
       background: transparent;
       color: rgba(0,0,0,0.4);
       font-size: 14px;
-      line-height: 1;
       cursor: pointer;
       opacity: 0.35;
-      z-index: 2;
-      transition: opacity 0.15s ease, color 0.15s ease, background 0.15s ease;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -729,30 +629,51 @@
       align-self: center;
     }
 
-    .video-shell {
-      padding: 8px 14px 0;
+    .yt-search {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
     }
 
-    .video-frame {
-      position: relative;
+    .yt-search-input {
       width: 100%;
-      aspect-ratio: 16 / 9;
       border: 1px solid var(--line);
-      border-radius: 18px;
-      overflow: hidden;
-      background: #000;
-      box-shadow:
-        0 1px 1px rgba(0,0,0,0.04),
-        0 2px 6px rgba(0,0,0,0.06),
-        0 8px 14px -6px rgba(0,0,0,0.08);
+      background: var(--surface);
+      color: var(--fg);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font: inherit;
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
-    .video-frame iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
+    .yt-search-input:focus {
+      border-color: var(--fg);
+      box-shadow: 0 0 0 2px rgba(0,0,0,0.06);
+    }
+
+    .yt-search-btn {
+      border: 1px solid var(--fg);
+      background: var(--fg);
+      color: #fff;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-family: inherit;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .yt-search-btn:hover {
+      background: #222;
+    }
+
+    .yt-search-btn:active {
+      transform: scale(0.98);
     }
 
     .video-hint {
@@ -787,27 +708,13 @@
         max-width: min(100%, 320px);
         margin: 0 auto;
       }
-    }
 
-    @container (max-width: 430px) {
-      .card {
-        padding-top: calc(var(--space-4) + 10px);
+      .yt-search {
+        grid-template-columns: 1fr;
       }
 
-      .wallclock-time,
-      .wallclock-date,
-      .time {
-        white-space: normal;
-        text-align: center;
-      }
-
-      .mode {
-        letter-spacing: 0.08em;
-        padding-inline: 6px;
-      }
-
-      .btn {
-        letter-spacing: 0.16em;
+      .yt-search-btn {
+        width: 100%;
       }
     }
   </style>
@@ -815,9 +722,7 @@
 <body>
   <div class="page" id="page">
     <button class="collapse-btn" id="collapseBtn" aria-label="Collapse widget" title="Collapse">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M6 15l6-6 6 6"/>
-      </svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
     </button>
 
     <div class="card">
@@ -916,7 +821,6 @@
         <div class="notes-shell">
           <div class="notes">
             <div class="notes-header">
-              <span class="notes-title">Sticky Notes</span>
               <div class="notes-actions">
                 <button class="notes-clear" id="notesClear" aria-label="Clear all notes" title="Clear all notes">Clear</button>
                 <button class="notes-add" id="notesAdd" aria-label="Add sticky note">+</button>
@@ -928,24 +832,25 @@
       </div>
     </section>
 
-    <section class="video-section section-block" aria-label="Focus video" data-section="video">
+    <section class="video-section section-block" aria-label="YouTube search" data-section="video">
       <button class="section-toggle" type="button" aria-expanded="true" style="padding-left:14px;padding-right:14px;">
-        <span class="toggle-label">Focus Video</span>
+        <span class="toggle-label">YouTube Search</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
       </button>
       <div class="section-content">
         <div class="video-shell">
-          <div class="video-frame">
-            <iframe
-              src="https://www.youtube.com/embed/jfKfPfyJRdk?rel=0"
-              title="YouTube video player"
-              loading="lazy"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerpolicy="strict-origin-when-cross-origin"
-              allowfullscreen>
-            </iframe>
-          </div>
-          <div class="video-hint">Lo-fi focus stream</div>
+          <form id="ytSearchForm" class="yt-search" action="https://www.youtube.com/results" method="get" target="_blank">
+            <input
+              type="text"
+              name="search_query"
+              id="ytSearchInput"
+              class="yt-search-input"
+              placeholder="Search YouTube for focus music, rain, jazz, lo-fi..."
+              autocomplete="off"
+            />
+            <button type="submit" class="yt-search-btn">Search</button>
+          </form>
+          <div class="video-hint">Search opens YouTube in a new tab.</div>
         </div>
       </div>
     </section>
@@ -973,9 +878,7 @@
 
       updateEmbedWidth();
       window.addEventListener('resize', updateEmbedWidth);
-      if (window.ResizeObserver && pageEl) {
-        new ResizeObserver(updateEmbedWidth).observe(pageEl);
-      }
+      if (window.ResizeObserver && pageEl) new ResizeObserver(updateEmbedWidth).observe(pageEl);
 
       const TICKS = 60;
       for (let i = 0; i < TICKS; i++) {
@@ -1017,9 +920,7 @@
       }
 
       function render() {
-        if (document.activeElement !== timeEl) {
-          timeEl.textContent = fmt(remaining);
-        }
+        if (document.activeElement !== timeEl) timeEl.textContent = fmt(remaining);
         const pct = total > 0 ? remaining / total : 0;
         progressEl.style.strokeDashoffset = CIRC * (1 - pct);
         document.title = `${fmt(remaining)} — ${LABELS[mode]}`;
@@ -1056,7 +957,6 @@
         clearInterval(intervalId);
         total = parsed;
         remaining = parsed;
-        modeBtns.forEach(b => b.classList.remove('active'));
         render();
       }
 
@@ -1109,42 +1009,32 @@
           const filter = ctx.createBiquadFilter();
           filter.type = 'lowpass';
           filter.frequency.value = 2200;
-          filter.Q.value = 0.4;
           master.connect(filter).connect(ctx.destination);
-
-          const notes = [
-            { freq: 1046.50, start: 0.00, dur: 2.4, gain: 0.14 },
+          [
+            { freq: 1046.5, start: 0.0, dur: 2.4, gain: 0.14 },
             { freq: 1567.98, start: 0.35, dur: 2.0, gain: 0.09 }
-          ];
-
-          notes.forEach(n => {
+          ].forEach(n => {
             const o1 = ctx.createOscillator();
             const o2 = ctx.createOscillator();
             const g1 = ctx.createGain();
             const g2 = ctx.createGain();
-
             o1.type = 'sine';
             o2.type = 'sine';
             o1.frequency.value = n.freq;
             o2.frequency.value = n.freq * 2;
-
             g1.gain.setValueAtTime(0.0001, now + n.start);
             g1.gain.exponentialRampToValueAtTime(n.gain, now + n.start + 0.06);
             g1.gain.exponentialRampToValueAtTime(0.0001, now + n.start + n.dur);
-
             g2.gain.setValueAtTime(0.0001, now + n.start);
             g2.gain.exponentialRampToValueAtTime(n.gain * 0.25, now + n.start + 0.06);
             g2.gain.exponentialRampToValueAtTime(0.0001, now + n.start + n.dur * 0.7);
-
             o1.connect(g1).connect(master);
             o2.connect(g2).connect(master);
-
             o1.start(now + n.start);
             o2.start(now + n.start);
             o1.stop(now + n.start + n.dur + 0.1);
             o2.stop(now + n.start + n.dur + 0.1);
           });
-
           setTimeout(() => ctx.close(), 3200);
         } catch (e) {}
       }
@@ -1186,17 +1076,13 @@
           timeEl.blur();
         }
       });
-
       timeEl.addEventListener('blur', commitTimeEdit);
 
       document.addEventListener('keydown', (e) => {
         if (document.activeElement === timeEl) return;
         const tag = e.target.tagName;
         if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
-        if (e.code === 'Space') {
-          e.preventDefault();
-          running ? pause() : start();
-        }
+        if (e.code === 'Space') { e.preventDefault(); running ? pause() : start(); }
         if (e.key.toLowerCase() === 'r') reset();
         if (e.key.toLowerCase() === 's') skip();
       });
@@ -1241,7 +1127,6 @@
 
       const clockTimeEl = document.getElementById('clockTime');
       const clockDateEl = document.getElementById('clockDate');
-
       function updateClock() {
         try {
           const now = new Date();
@@ -1264,7 +1149,6 @@
           clockDateEl.textContent = 'Eastern Time';
         }
       }
-
       updateClock();
       setInterval(updateClock, 15000);
 
@@ -1272,9 +1156,7 @@
         pageEl.classList.toggle('collapsed', collapsed);
         collapseBtn.setAttribute('aria-label', collapsed ? 'Expand widget' : 'Collapse widget');
         collapseBtn.setAttribute('title', collapsed ? 'Expand' : 'Collapse');
-        try {
-          localStorage.setItem('pomodoro-collapsed', collapsed ? '1' : '0');
-        } catch (e) {}
+        try { localStorage.setItem('pomodoro-collapsed', collapsed ? '1' : '0'); } catch (e) {}
       }
 
       collapseBtn.addEventListener('click', () => {
@@ -1289,20 +1171,15 @@
         const toggle = section.querySelector('.section-toggle');
         const key = `pomodoro-section-${idx}`;
         if (!toggle) return;
-
         const setOpen = (open) => {
           section.classList.toggle('collapsed', !open);
           toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-          try {
-            localStorage.setItem(key, open ? '1' : '0');
-          } catch (e) {}
+          try { localStorage.setItem(key, open ? '1' : '0'); } catch (e) {}
         };
-
         toggle.addEventListener('click', () => {
           const open = toggle.getAttribute('aria-expanded') === 'true';
           setOpen(!open);
         });
-
         try {
           const saved = localStorage.getItem(key);
           if (saved === '0') setOpen(false);
