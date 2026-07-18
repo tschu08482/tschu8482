@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pomodoro Compact</title>
+  <title>Pomodoro Notes-First</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
@@ -14,7 +14,6 @@
       --fg: #0a0a0a;
       --muted: #8a8a8a;
       --line: #e5e5e5;
-      --panel: #fcfcfc;
       --space-1: 6px;
       --space-2: 10px;
       --space-3: 14px;
@@ -23,7 +22,7 @@
       --radius-sm: 10px;
       --label-size: 10px;
       --small: 9px;
-      --timer-size: 30px;
+      --timer-size: 24px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -52,17 +51,8 @@
       padding: 14px;
     }
 
-    .topbar {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: var(--space-2);
-      align-items: start;
-      margin-bottom: 14px;
-    }
-
     .clock-label,
-    .section-title,
-    .mini-label {
+    .section-title {
       font-size: var(--label-size);
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -71,51 +61,52 @@
     }
 
     .clock-box {
-      border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: 12px 14px;
-      background: var(--panel);
+      padding: 6px 2px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
     .clock-time {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 22px;
+      font-size: 18px;
       font-weight: 300;
       line-height: 1;
-      margin-top: 8px;
     }
 
     .clock-date {
-      margin-top: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 300;
       color: var(--muted);
-      font-size: var(--small);
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
 
     .stack {
       display: grid;
-      gap: 12px;
+      gap: 10px;
     }
 
-    .panel {
+    .panel,
+    details.section {
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: 14px;
+      padding: 10px 12px;
       background: var(--bg);
     }
 
-    .timer-head {
+    .timer-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
+      gap: 8px;
     }
 
     .mode-row {
-      display: flex;
-      gap: 6px;
+      display: inline-flex;
+      gap: 4px;
     }
 
     .mode {
@@ -123,8 +114,8 @@
       background: transparent;
       color: var(--muted);
       border-radius: 999px;
-      padding: 6px 12px;
-      font-size: 9px;
+      padding: 4px 9px;
+      font-size: 8px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
       cursor: pointer;
@@ -136,11 +127,11 @@
       color: #fff;
     }
 
-    .timer-display {
-      display: grid;
-      justify-items: center;
+    .timer-main {
+      display: flex;
+      align-items: center;
       gap: 8px;
-      padding: 10px 0 8px;
+      margin-top: 8px;
     }
 
     .timer-time {
@@ -157,20 +148,19 @@
     .timer-time:focus { background: #f5f5f5; }
 
     .status {
-      font-size: 9px;
-      letter-spacing: 0.22em;
+      font-size: 8px;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       font-weight: 700;
       color: var(--fg);
     }
 
     .progress-bar {
-      width: 100%;
-      height: 6px;
+      flex: 1;
+      height: 5px;
       background: #f0f0f0;
       border-radius: 999px;
       overflow: hidden;
-      margin-top: 8px;
     }
 
     .progress-fill {
@@ -182,11 +172,11 @@
       transition: transform 0.9s linear;
     }
 
-    .controls {
-      display: grid;
-      grid-template-columns: 36px 1fr 36px;
-      gap: 8px;
-      margin-top: 14px;
+    .controls-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
     }
 
     .btn,
@@ -204,9 +194,9 @@
     }
 
     .btn {
-      padding: 10px 14px;
-      font-size: 10px;
-      letter-spacing: 0.22em;
+      padding: 6px 12px;
+      font-size: 9px;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
     }
 
@@ -217,15 +207,15 @@
     }
 
     .icon-btn {
-      width: 36px;
-      height: 36px;
+      width: 28px;
+      height: 28px;
       display: grid;
       place-items: center;
     }
 
     .icon-btn svg {
-      width: 14px;
-      height: 14px;
+      width: 13px;
+      height: 13px;
       stroke: currentColor;
       fill: none;
       stroke-width: 1.5;
@@ -233,22 +223,22 @@
 
     .settings {
       display: grid;
-      gap: 10px;
-      margin-top: 12px;
-      padding-top: 12px;
+      gap: 8px;
+      margin-top: 8px;
+      padding-top: 8px;
       border-top: 1px solid var(--line);
     }
 
     .field-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 8px;
     }
 
     .field label {
       display: block;
-      margin-bottom: 4px;
-      font-size: 8px;
+      margin-bottom: 3px;
+      font-size: 7px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--muted);
@@ -264,8 +254,8 @@
     }
 
     .stepper button {
-      width: 26px;
-      height: 28px;
+      width: 22px;
+      height: 24px;
       border: none;
       background: transparent;
       cursor: pointer;
@@ -279,21 +269,14 @@
       background: transparent;
       text-align: center;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
+      font-size: 10px;
       -moz-appearance: textfield;
     }
 
-    .stepper input::-webkit-outer-spin-button,
+    .stepper input::-webkit-outerspin-button,
     .stepper input::-webkit-inner-spin-button {
       -webkit-appearance: none;
       margin: 0;
-    }
-
-    details.section {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 12px 14px;
-      background: var(--bg);
     }
 
     details.section summary {
@@ -308,8 +291,8 @@
     details.section summary::-webkit-details-marker { display: none; }
 
     .chev {
-      width: 10px;
-      height: 10px;
+      width: 9px;
+      height: 9px;
       border-right: 1.5px solid var(--muted);
       border-bottom: 1.5px solid var(--muted);
       transform: rotate(45deg);
@@ -317,23 +300,30 @@
       margin-right: 4px;
     }
 
-    details[open] .chev { transform: rotate(225deg); margin-top: 4px; }
+    details[open] .chev { transform: rotate(225deg); margin-top: 3px; }
 
-    .section-body { margin-top: 12px; }
+    .section-body { margin-top: 8px; }
+
+    .perplexity-panel {
+      display: grid;
+      gap: 6px;
+    }
 
     .perplexity-form {
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 6px;
+      margin-top: 4px;
     }
 
     .perplexity-input {
       width: 100%;
       border: 1px solid var(--line);
       border-radius: 999px;
-      padding: 9px 12px;
-      font-size: 11px;
+      padding: 8px 11px;
+      font-size: 10px;
       outline: none;
+      font-family: inherit;
     }
 
     .perplexity-input:focus {
@@ -342,8 +332,8 @@
     }
 
     .mini-btn {
-      padding: 9px 12px;
-      font-size: 9px;
+      padding: 8px 10px;
+      font-size: 8px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
       white-space: nowrap;
@@ -353,7 +343,7 @@
       display: flex;
       justify-content: flex-end;
       gap: 6px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .notes-add {
@@ -375,17 +365,16 @@
     .notes-clear.armed { background: #b00020; color: #fff; border-color: #b00020; }
 
     .notes-list {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      display: block;
     }
 
     .sticky {
       position: relative;
-      min-height: 92px;
       border-radius: 10px;
       padding: 10px;
       box-shadow: 0 1px 2px rgba(0,0,0,0.05), 0 6px 14px rgba(0,0,0,0.06);
+      margin-bottom: 8px;
+      min-height: 72px;
     }
 
     .sticky:nth-child(4n+1) { background: #fff9c4; }
@@ -395,7 +384,7 @@
 
     .sticky-text {
       width: 100%;
-      min-height: 72px;
+      min-height: 56px;
       border: none;
       background: transparent;
       resize: none;
@@ -424,7 +413,7 @@
       font-size: 9px;
       letter-spacing: 0.08em;
       font-style: italic;
-      padding-top: 4px;
+      padding-top: 2px;
     }
 
     .music-row {
@@ -432,12 +421,12 @@
       justify-content: center;
       gap: 6px;
       flex-wrap: wrap;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .music-btn {
-      padding: 6px 12px;
-      font-size: 9px;
+      padding: 5px 9px;
+      font-size: 8px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--muted);
@@ -453,7 +442,7 @@
       position: relative;
       width: 100%;
       aspect-ratio: 16 / 9;
-      border-radius: 14px;
+      border-radius: 12px;
       overflow: hidden;
       border: 1px solid var(--line);
       background: #000;
@@ -468,7 +457,7 @@
     }
 
     .video-hint {
-      margin-top: 8px;
+      margin-top: 6px;
       text-align: center;
       color: var(--muted);
       font-size: 8px;
@@ -490,17 +479,15 @@
 </head>
 <body>
   <div class="widget">
-    <div class="topbar">
-      <div class="clock-box">
-        <div class="clock-label">Current Time</div>
-        <div class="clock-time" id="wallclockTime">--:--</div>
-        <div class="clock-date" id="wallclockDate">Eastern Time</div>
-      </div>
+    <div class="clock-box">
+      <div class="clock-label">Current Time</div>
+      <div class="clock-time" id="wallclockTime">--:--</div>
+      <div class="clock-date" id="wallclockDate">Eastern Time</div>
     </div>
 
-    <div class="stack">
+    <div class="stack" style="margin-top: 10px;">
       <section class="panel">
-        <div class="timer-head">
+        <div class="timer-row">
           <div class="section-title">Pomodoro</div>
           <div class="mode-row" role="tablist" aria-label="Timer modes">
             <button class="mode active" data-mode="focus" type="button">Focus</button>
@@ -508,16 +495,17 @@
           </div>
         </div>
 
-        <div class="timer-display">
-          <div class="timer-time" id="timeDisplay" contenteditable="true" spellcheck="false">25:00</div>
-          <div class="status" id="statusText">Ready</div>
+        <div class="timer-main">
+          <div>
+            <div class="timer-time" id="timeDisplay" contenteditable="true" spellcheck="false">25:00</div>
+            <div class="status" id="statusText">Ready</div>
+          </div>
+          <div class="progress-bar" aria-hidden="true">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
         </div>
 
-        <div class="progress-bar" aria-hidden="true">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-
-        <div class="controls">
+        <div class="controls-row">
           <button class="icon-btn" id="resetBtn" type="button" aria-label="Reset timer">
             <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 3v6h6"></path></svg>
           </button>
@@ -551,20 +539,6 @@
 
       <details class="section" open>
         <summary>
-          <span class="section-title">Perplexity Search</span>
-          <span class="chev" aria-hidden="true"></span>
-        </summary>
-        <div class="section-body">
-          <form class="perplexity-form" id="perplexityForm">
-            <label class="sr-only" for="perplexityInput">Ask Perplexity</label>
-            <input id="perplexityInput" class="perplexity-input" type="text" placeholder="Ask Perplexity anything..." autocomplete="off" required>
-            <button class="mini-btn" type="submit">Search</button>
-          </form>
-        </div>
-      </details>
-
-      <details class="section" open>
-        <summary>
           <span class="section-title">Sticky Notes</span>
           <span class="chev" aria-hidden="true"></span>
         </summary>
@@ -577,6 +551,17 @@
           <div class="notes-empty" id="notesEmpty">No notes yet.</div>
         </div>
       </details>
+
+      <section class="panel">
+        <div class="perplexity-panel">
+          <div class="section-title">Perplexity Search</div>
+          <form class="perplexity-form" id="perplexityForm">
+            <label class="sr-only" for="perplexityInput">Ask Perplexity</label>
+            <input id="perplexityInput" class="perplexity-input" type="text" placeholder="Ask Perplexity anything..." autocomplete="off" required>
+            <button class="mini-btn" type="submit">Search</button>
+          </form>
+        </div>
+      </section>
 
       <details class="section">
         <summary>
