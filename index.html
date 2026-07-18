@@ -1302,12 +1302,13 @@
       });
 
       notesAddEl.addEventListener('click', () => {
-        notes.push('');
-        saveNotes();
-        renderNotes();
-        const stickies = notesListEl.querySelectorAll('.sticky-text');
-        if (stickies.length) stickies[stickies.length - 1].focus();
-      });
+  // insert new note at the top instead of the end
+  notes.unshift('');
+  saveNotes();
+  renderNotes();
+  const stickies = notesListEl.querySelectorAll('.sticky-text');
+  if (stickies.length) stickies[0].focus();
+});
 
       renderNotes();
       updateClearButton();
