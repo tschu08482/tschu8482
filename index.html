@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #ffffff;
+      --bg: transparent;
       --surface: #fafafa;
       --fg: #0a0a0a;
       --muted: #8a8a8a;
@@ -26,19 +26,20 @@
     html, body {
       width: 100%;
       min-height: 100%;
-      background: var(--bg);
+      background: transparent;
       color: var(--fg);
       font-family: 'Inter', sans-serif;
       -webkit-font-smoothing: antialiased;
     }
 
-    body { padding: 10px; display: flex; justify-content: center; }
+    body { padding: 0; display: flex; justify-content: center; }
 
     .widget {
       width: 100%;
       max-width: 380px;
-      background: var(--bg);
-      padding: 14px;
+      background: transparent;
+      padding: 0;
+      border: none;
     }
 
     .clock-label, .section-title {
@@ -79,7 +80,7 @@
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 10px 12px;
-      background: var(--bg);
+      background: #ffffff;
     }
 
     .timer-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
@@ -277,7 +278,7 @@
 
     body.alarm-firing { animation: bodyFlash 1s ease-in-out infinite; }
     @keyframes bodyFlash {
-      0%, 100% { background: var(--bg); }
+      0%, 100% { background: transparent; }
       50% { background: #ffe5ea; }
     }
 
