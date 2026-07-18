@@ -1,730 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pomodoro</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Upstate Nursing Informatics Clock</title>
   <style>
-    :root {
-      --bg: #ffffff;
-      --surface: #fafafa;
-      --fg: #0a0a0a;
-      --muted: #8a8a8a;
-      --line: #e5e5e5;
-      --embed-w: 760px;
-      --space-1: clamp(4px, calc(var(--embed-w) * 0.006), 6px);
-      --space-2: clamp(8px, calc(var(--embed-w) * 0.012), 10px);
-      --space-3: clamp(10px, calc(var(--embed-w) * 0.016), 14px);
-      --space-4: clamp(12px, calc(var(--embed-w) * 0.022), 18px);
-      --space-5: clamp(16px, calc(var(--embed-w) * 0.03), 24px);
-      --dial-size: clamp(118px, calc(var(--embed-w) * 0.22), 168px);
-      --wallclock-size: clamp(30px, calc(var(--embed-w) * 0.06), 44px);
-      --timer-size: clamp(26px, calc(var(--embed-w) * 0.05), 34px);
-      --label-size: clamp(9px, calc(var(--embed-w) * 0.015), 11px);
-      --button-size: clamp(9px, calc(var(--embed-w) * 0.012), 10px);
-      --tick-origin: calc(var(--dial-size) * 0.475);
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html, body {
-      min-height: 100%;
-      width: 100%;
-      background: var(--bg);
-      color: var(--fg);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      -webkit-font-smoothing: antialiased;
-    }
-
     body {
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding: var(--space-2);
-      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 24px;
+      background: #f5f7fb;
+      color: #111827;
     }
 
-    .page {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: var(--bg);
-      width: 100%;
-      max-width: 100%;
-      container-type: inline-size;
-      border-radius: 18px;
-      padding: 36px 0 32px;
+    h1 {
+      font-size: 1.75rem;
+      margin-bottom: 4px;
+    }
+
+    h2 {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #4b5563;
+      margin-top: 0;
+      margin-bottom: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
     }
 
     .card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: var(--space-5);
-      padding: clamp(14px, calc(var(--embed-w) * 0.022), 20px);
-      width: 100%;
-      max-width: 420px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+      padding: 20px 22px;
     }
 
-    .wallclock,
-    .dial-col {
-      width: 100%;
-      min-width: 0;
-    }
-
-    .wallclock {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: var(--space-2);
-      padding-inline: 24px;
-      padding-bottom: var(--space-4);
-      border-bottom: 1px solid var(--line);
-    }
-
-    .wallclock-label,
-    .dial-label,
-    .toggle-label {
-      font-size: var(--label-size);
-      letter-spacing: 0.18em;
+    .card h3 {
+      margin: 0 0 12px 0;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
       text-transform: uppercase;
-      color: var(--fg);
-      font-weight: 700;
-      margin-bottom: 6px;
-      text-align: center;
+      color: #6b7280;
     }
 
-    .dial-col {
+    /* --- Perplexity search --- */
+    .search-row {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: var(--space-3);
-      padding-inline: 24px;
-    }
-
-    .dial-label {
-      margin-top: var(--space-1);
-    }
-
-    .dial-row {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: var(--space-4);
-      width: 100%;
-    }
-
-    .dial-wrap {
-      position: relative;
-      width: var(--dial-size);
-      height: var(--dial-size);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    svg.dial {
-      width: 100%;
-      height: 100%;
-      transform: rotate(-90deg);
-    }
-
-    .track {
-      fill: none;
-      stroke: var(--line);
-      stroke-width: 2;
-    }
-
-    .progress {
-      fill: none;
-      stroke: var(--fg);
-      stroke-width: 2;
-      stroke-linecap: round;
-      transition: stroke-dashoffset 0.9s linear;
-    }
-
-    .ticks {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-
-    .tick {
-      position: absolute;
-      left: 50%;
-      top: 4px;
-      width: 1px;
-      height: 5px;
-      background: #d5d5d5;
-      transform-origin: 50% var(--tick-origin);
-    }
-
-    .tick.major { background: #a5a5a5; height: 7px; }
-
-    .readout {
-      position: absolute;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .time {
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 200;
-      font-size: var(--timer-size);
-      letter-spacing: -0.02em;
-      line-height: 1;
-      font-variant-numeric: tabular-nums;
-      cursor: text;
-      padding: 2px 4px;
-      border-radius: 4px;
-      outline: none;
-      transition: background 0.15s ease, box-shadow 0.15s ease;
-      caret-color: var(--fg);
-      white-space: nowrap;
-    }
-
-    .time:hover { background: #f4f4f4; }
-    .time:focus { background: #f0f0f0; box-shadow: 0 0 0 1px var(--line); }
-
-    .status {
-      font-size: clamp(8px, calc(var(--embed-w) * 0.012), 10px);
-      letter-spacing: 0.26em;
-      text-transform: uppercase;
-      color: var(--fg);
-      font-weight: 700;
-    }
-
-    .wallclock-body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      text-align: center;
-    }
-
-    .wallclock-time {
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 300;
-      font-size: var(--wallclock-size);
-      line-height: 1;
-      color: var(--fg);
-      font-variant-numeric: tabular-nums;
-      letter-spacing: -0.01em;
-      white-space: nowrap;
-    }
-
-    .wallclock-date {
-      font-size: clamp(9px, calc(var(--embed-w) * 0.015), 11px);
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--fg);
-      margin-top: 4px;
-      white-space: nowrap;
-    }
-
-    .panel-body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: var(--space-3);
-      width: 100%;
-    }
-
-    .modes {
-      display: flex;
-      gap: 2px;
-      background: var(--surface);
-      border: 1px solid var(--line);
-      padding: 2px;
-      border-radius: 999px;
-      width: 100%;
-      max-width: 320px;
-      overflow: hidden;
-    }
-
-    .mode {
-      background: transparent;
-      color: var(--muted);
-      border: none;
-      padding: clamp(5px, calc(var(--embed-w) * 0.008), 6px) clamp(8px, calc(var(--embed-w) * 0.015), 12px);
-      font-size: clamp(7px, calc(var(--embed-w) * 0.0105), 8px);
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      border-radius: 999px;
-      cursor: pointer;
-      font-family: inherit;
-      transition: color 0.2s ease, background 0.2s ease;
-      flex: 1 1 0;
-      min-width: 0;
-      white-space: nowrap;
-    }
-
-    .mode:hover { color: var(--fg); }
-    .mode.active { background: var(--fg); color: #fff; }
-
-    .controls {
-      display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto;
-      gap: var(--space-2);
-      align-items: center;
-      width: 100%;
-      max-width: 320px;
-    }
-
-    .btn {
-      font-family: inherit;
-      font-size: var(--button-size);
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      padding: clamp(8px, calc(var(--embed-w) * 0.012), 10px) clamp(14px, calc(var(--embed-w) * 0.022), 18px);
-      border-radius: 999px;
-      cursor: pointer;
-      transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-      border: 1px solid var(--line);
-      background: transparent;
-      color: var(--fg);
-      white-space: nowrap;
-    }
-
-    .btn:hover { border-color: #b5b5b5; }
-    .btn:active { transform: scale(0.97); }
-    .btn.primary {
-      background: var(--fg);
-      color: #fff;
-      border-color: var(--fg);
-      width: 100%;
-    }
-
-    .btn.icon {
-      width: 34px;
-      height: 34px;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .btn.icon svg {
-      width: 13px;
-      height: 13px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 1.5;
-    }
-
-    .settings-toggle {
-      background: transparent;
-      border: none;
-      color: var(--muted);
-      font-family: inherit;
-      font-size: clamp(7px, calc(var(--embed-w) * 0.0105), 8px);
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .settings-toggle svg {
-      width: 8px;
-      height: 8px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 1.5;
-      transition: transform 0.3s ease;
-    }
-
-    .settings-toggle.open svg { transform: rotate(180deg); }
-
-    .settings {
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: var(--space-2);
-      max-height: 0;
-      overflow: hidden;
-      opacity: 0;
-      transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.35s ease;
-      padding: 0;
-    }
-
-    .settings.open {
-      max-height: 260px;
-      opacity: 1;
-      padding: 12px 0 4px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    .field label {
-      font-size: 7px;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .stepper {
-      display: flex;
-      align-items: center;
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      background: var(--surface);
-      overflow: hidden;
-    }
-
-    .stepper button {
-      width: 20px;
-      height: 24px;
-      border: none;
-      background: transparent;
-      color: var(--fg);
-      font-size: 11px;
-      cursor: pointer;
-      font-family: inherit;
-      transition: background 0.15s ease;
-    }
-
-    .stepper button:hover { background: #f0f0f0; }
-
-    .stepper input {
-      flex: 1;
-      width: 100%;
-      border: none;
-      background: transparent;
-      color: var(--fg);
-      text-align: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: var(--button-size);
-      padding: 0;
-      -moz-appearance: textfield;
-    }
-
-    .stepper input::-webkit-outerspin-button,
-    .stepper input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
-    .notes-section,
-    .video-section,
-    .perplexity-section {
-      width: 100%;
-      max-width: 420px;
-      margin-top: var(--space-4);
-      padding: var(--space-4) 24px 0;
-      border-top: 1px solid var(--line);
-    }
-
-    .notes-shell,
-    .video-shell {
-      width: 100%;
-      padding: 8px 0 0;
-    }
-
-    .video-shell {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       gap: 8px;
+      margin-bottom: 8px;
     }
 
-    .notes {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      width: 100%;
-    }
-
-    .section-toggle {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--space-2);
-      background: transparent;
-      border: none;
-      padding: 0;
-      cursor: pointer;
-      text-align: left;
-    }
-
-    .section-toggle svg {
-      width: 12px;
-      height: 12px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2;
-      color: var(--muted);
-      transition: transform 0.2s ease;
-      flex-shrink: 0;
-    }
-
-    .section-content {
-      overflow: hidden;
-      max-height: 1400px;
-      opacity: 1;
-      transition: max-height 0.25s ease, opacity 0.2s ease, margin-top 0.2s ease;
-      margin-top: var(--space-2);
-    }
-
-    .section-block.collapsed .section-toggle svg { transform: rotate(-90deg); }
-    .section-block.collapsed .section-content {
-      max-height: 0;
-      opacity: 0;
-      margin-top: 0;
-    }
-
-    .perplexity-form {
-      margin-top: 8px;
-      display: flex;
-      gap: 6px;
-      width: 100%;
-    }
-
-    .perplexity-input {
+    .search-row input {
       flex: 1;
-      padding: 6px 10px;
+      padding: 8px 10px;
       border-radius: 999px;
-      border: 1px solid var(--line);
-      font-size: 11px;
-      font-family: inherit;
-      outline: none;
+      border: 1px solid #d1d5db;
+      font-size: 0.9rem;
     }
 
-    .perplexity-input:focus {
-      border-color: #4a72ff;
-      box-shadow: 0 0 0 1px #4a72ff33;
-    }
-
-    .perplexity-btn {
-      font-size: 9px;
-      padding-inline: 14px;
-      white-space: nowrap;
-    }
-
-    .notes-header {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 8px;
-    }
-
-    .notes-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .notes-add,
-    .notes-clear {
-      height: 20px;
+    .search-row button {
+      padding: 8px 14px;
       border-radius: 999px;
-      border: 1px solid var(--line);
-      background: transparent;
-      color: var(--fg);
-      line-height: 1;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-    }
-
-    .notes-add { width: 20px; font-size: 13px; }
-    .notes-clear {
-      padding: 0 8px;
-      font-size: 7px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .notes-add:hover { background: var(--fg); color: #fff; border-color: var(--fg); }
-    .notes-clear:hover { color: #b00020; border-color: #b00020; }
-    .notes-clear:disabled { opacity: 0.35; cursor: not-allowed; }
-    .notes-clear.armed { background: #b00020; color: #fff; border-color: #b00020; }
-
-    .notes-shell {
-      max-height: 380px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-
-    .notes-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 14px;
-      padding: 8px 2px 6px;
-      min-height: 60px;
-    }
-
-    .sticky {
-      position: relative;
-      width: 100%;
-      height: 130px;
-      background: #fff9c4;
-      border-radius: 4px;
-      padding: 10px 12px 8px;
-      box-shadow: 0 1px 1px rgba(0,0,0,0.04),
-                  0 2px 6px rgba(0,0,0,0.06),
-                  0 8px 14px -6px rgba(0,0,0,0.08);
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
-      cursor: grab;
-    }
-
-    .sticky:nth-child(4n+1) { background: #fff9c4; transform: rotate(-1.4deg); }
-    .sticky:nth-child(4n+2) { background: #ffe0b2; transform: rotate(1.2deg); }
-    .sticky:nth-child(4n+3) { background: #ffccbc; transform: rotate(-0.6deg); }
-    .sticky:nth-child(4n)   { background: #dcedc8; transform: rotate(1.6deg); }
-
-    .sticky:hover {
-      transform: rotate(0deg) translateY(-2px);
-      box-shadow: 0 2px 2px rgba(0,0,0,0.05),
-                  0 6px 12px rgba(0,0,0,0.08),
-                  0 14px 20px -8px rgba(0,0,0,0.12);
-      z-index: 2;
-    }
-
-    .sticky.dragging {
-      opacity: 0.4;
-      transform: rotate(0deg) scale(0.98);
-    }
-
-    .sticky.drop-target {
-      box-shadow: 0 0 0 2px var(--fg),
-                  0 2px 6px rgba(0,0,0,0.06),
-                  0 8px 14px -6px rgba(0,0,0,0.08);
-    }
-
-    .sticky-text {
-      flex: 1;
       border: none;
-      background: transparent;
-      outline: none;
-      resize: none;
-      font-family: inherit;
-      font-size: 11px;
-      line-height: 1.4;
-      color: #1a1a1a;
-      padding: 0 20px 0 0;
-      width: 100%;
-      min-height: 26px;
-    }
-
-    .sticky-del {
-      position: absolute;
-      top: 3px;
-      right: 4px;
-      width: 16px;
-      height: 16px;
-      border: none;
-      background: transparent;
-      color: rgba(0,0,0,0.4);
-      font-size: 14px;
+      background: #2563eb;
+      color: #ffffff;
+      font-size: 0.9rem;
       cursor: pointer;
-      opacity: 0.35;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
     }
 
-    .sticky:hover .sticky-del { opacity: 1; }
-    .sticky-del:hover { color: #000; background: rgba(0,0,0,0.06); }
-
-    .notes-empty {
-      font-size: 8px;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      padding: 6px 2px;
-      font-style: italic;
-      align-self: center;
+    .search-row button:hover {
+      background: #1d4ed8;
     }
 
-    .video-playlists {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 4px;
-      flex-wrap: wrap;
-      justify-content: center;
+    .search-hint {
+      font-size: 0.75rem;
+      color: #6b7280;
     }
 
-    .video-playlist-btn {
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: transparent;
-      color: var(--muted);
-      font-size: 7px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      padding: 4px 10px;
-      cursor: pointer;
-      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-    }
-
-    .video-playlist-btn.active {
-      background: var(--fg);
-      color: #fff;
-      border-color: var(--fg);
-    }
-
-    .video-frame {
-      position: relative;
-      width: 100%;
-      max-width: 240px;
-      aspect-ratio: 16 / 9;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      overflow: hidden;
-      background: #000;
-      box-shadow: 0 1px 1px rgba(0,0,0,0.04),
-                  0 2px 6px rgba(0,0,0,0.06);
-    }
-
-    .video-frame iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-
-    .video-hint {
-      font-size: 8px;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-      margin-top: 6px;
-      padding-left: 2px;
+    /* simple clock text placeholder */
+    .clock-display {
+      font-size: 2.5rem;
+      font-weight: 500;
       text-align: center;
-    }
-
-    @container (max-width: 640px) {
-      .page { border-radius: 0; padding-top: 24px; padding-bottom: 24px; }
-      .card { padding-inline: 12px; }
-      .notes-section,
-      .video-section,
-      .perplexity-section {
-        padding-inline: 16px;
-      }
+      margin: 18px 0;
     }
   </style>
 </head>
 <body>
-  <!-- BODY CONTENT SAME AS PREVIOUS ANSWER -->
-  <!-- (omitted here for brevity; use the full version from my last message) -->
+
+  <h1>Upstate Nursing Informatics</h1>
+  <h2>Pomodoro, Notes, and Perplexity Search</h2>
+
+  <div class="grid">
+    <!-- Left: Clock / Pomodoro -->
+    <div class="card">
+      <h3>Pomodoro Clock</h3>
+      <div class="clock-display" id="clock">25:00</div>
+      <!-- You can keep/extend your existing buttons here -->
+      <button id="start-btn">Start</button>
+      <button id="reset-btn">Reset</button>
+    </div>
+
+    <!-- Right: Perplexity search + notes -->
+    <div class="card">
+      <h3>Perplexity Search</h3>
+      <form id="perplexity-form">
+        <div class="search-row">
+          <input
+            type="text"
+            id="perplexity-query"
+            placeholder="Ask Perplexity anything…"
+            autocomplete="off"
+            required
+          />
+          <button type="submit">Search</button>
+        </div>
+        <div class="search-hint">
+          Opens a new tab to Perplexity with your query.
+        </div>
+      </form>
+
+      <hr style="margin: 16px 0; border: none; border-top: 1px solid #e5e7eb;">
+
+      <h3>Sticky Notes</h3>
+      <textarea
+        id="notes"
+        rows="6"
+        style="width:100%; border-radius:10px; border:1px solid #d1d5db; padding:8px; font-size:0.9rem;"
+        placeholder="Jot down quick ideas or reminders…"
+      ></textarea>
+      <div style="margin-top:8px; font-size:0.75rem; color:#6b7280;">
+        Notes are stored only in this browser; clearing cache will remove them.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Perplexity search handler ---
+    document.getElementById("perplexity-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const q = document.getElementById("perplexity-query").value.trim();
+      if (!q) return;
+
+      // Build Perplexity URL; encode query for safety
+      const url = "https://www.perplexity.ai/search?q=" + encodeURIComponent(q);
+      window.open(url, "_blank");
+    });
+
+    // --- Very simple notes persistence ---
+    const notesEl = document.getElementById("notes");
+    const NOTES_KEY = "ni_clock_notes";
+
+    notesEl.value = localStorage.getItem(NOTES_KEY) || "";
+    notesEl.addEventListener("input", () => {
+      localStorage.setItem(NOTES_KEY, notesEl.value);
+    });
+
+    // --- Minimal Pomodoro placeholder ---
+    let seconds = 25 * 60;
+    let timerId = null;
+
+    function renderClock() {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      document.getElementById("clock").textContent =
+        String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+    }
+
+    document.getElementById("start-btn").addEventListener("click", () => {
+      if (timerId) return;
+      timerId = setInterval(() => {
+        if (seconds > 0) {
+          seconds -= 1;
+          renderClock();
+        } else {
+          clearInterval(timerId);
+          timerId = null;
+          alert("Pomodoro complete!");
+        }
+      }, 1000);
+    });
+
+    document.getElementById("reset-btn").addEventListener("click", () => {
+      clearInterval(timerId);
+      timerId = null;
+      seconds = 25 * 60;
+      renderClock();
+    });
+
+    renderClock();
+  </script>
 </body>
 </html>
