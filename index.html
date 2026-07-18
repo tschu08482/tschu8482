@@ -549,8 +549,6 @@
     }
   }
 
-
-
   .notes-section {
     width: 100%;
     margin-top: var(--space-4);
@@ -579,43 +577,27 @@
     min-width: 0;
   }
 
-:root {
-    --bg: #ffffff;
-    --surface: #fafafa;
-    --fg: #0a0a0a;
-    --muted: #8a8a8a;
-    --line: #e5e5e5;
-  }
+  .notes-shell * { box-sizing: border-box; margin: 0; padding: 0; }
 
-.notes-shell * { box-sizing: border-box; margin: 0; padding: 0; }
-
-.notes-shell, .notes-shell body {
-    min-height: 100%;
-    background: var(--bg);
-    color: var(--fg);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    -webkit-font-smoothing: antialiased;
-  }
-
-.notes-shell {
+  .notes-shell {
     padding: 16px 20px;
   }
 
-.notes-shell .notes {
+  .notes-shell .notes {
     display: flex;
     flex-direction: column;
     gap: 8px;
     width: 100%;
   }
 
-.notes-shell .notes-header {
+  .notes-shell .notes-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
   }
 
-.notes-shell .notes-title {
+  .notes-shell .notes-title {
     font-size: 10px;
     letter-spacing: 0.26em;
     text-transform: uppercase;
@@ -623,14 +605,14 @@
     font-weight: 700;
   }
 
-.notes-shell .notes-actions {
+  .notes-shell .notes-actions {
     display: flex;
     align-items: center;
     gap: 6px;
   }
 
   .notes-add,
-.notes-shell .notes-clear {
+  .notes-shell .notes-clear {
     height: 20px;
     border-radius: 999px;
     border: 1px solid var(--line);
@@ -645,12 +627,12 @@
     transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   }
 
-.notes-shell .notes-add {
+  .notes-shell .notes-add {
     width: 20px;
     font-size: 13px;
   }
 
-.notes-shell .notes-clear {
+  .notes-shell .notes-clear {
     padding: 0 8px;
     font-size: 7px;
     letter-spacing: 0.22em;
@@ -658,18 +640,18 @@
     color: var(--muted);
   }
 
-.notes-shell .notes-add:hover { background: var(--fg); color: #fff; border-color: var(--fg); }
-.notes-shell .notes-clear:hover { color: #b00020; border-color: #b00020; }
-.notes-shell .notes-clear:disabled { opacity: 0.35; cursor: not-allowed; }
-.notes-shell .notes-clear:disabled:hover { color: var(--muted); border-color: var(--line); }
-.notes-shell .notes-clear.armed {
+  .notes-shell .notes-add:hover { background: var(--fg); color: #fff; border-color: var(--fg); }
+  .notes-shell .notes-clear:hover { color: #b00020; border-color: #b00020; }
+  .notes-shell .notes-clear:disabled { opacity: 0.35; cursor: not-allowed; }
+  .notes-shell .notes-clear:disabled:hover { color: var(--muted); border-color: var(--line); }
+  .notes-shell .notes-clear.armed {
     background: #b00020;
     color: #fff;
     border-color: #b00020;
   }
-.notes-shell .notes-clear.armed:hover { color: #fff; }
+  .notes-shell .notes-clear.armed:hover { color: #fff; }
 
-.notes-shell .notes-list {
+  .notes-shell .notes-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 14px;
@@ -677,7 +659,7 @@
     min-height: 60px;
   }
 
-.notes-shell .sticky {
+  .notes-shell .sticky {
     position: relative;
     width: 100%;
     height: 130px;
@@ -695,14 +677,14 @@
     cursor: grab;
   }
 
-.notes-shell .sticky:active { cursor: grabbing; }
+  .notes-shell .sticky:active { cursor: grabbing; }
 
-.notes-shell .sticky:nth-child(4n+1) { background: #fff9c4; transform: rotate(-1.4deg); }
-.notes-shell .sticky:nth-child(4n+2) { background: #ffe0b2; transform: rotate(1.2deg); }
-.notes-shell .sticky:nth-child(4n+3) { background: #ffccbc; transform: rotate(-0.6deg); }
-.notes-shell .sticky:nth-child(4n) { background: #dcedc8; transform: rotate(1.6deg); }
+  .notes-shell .sticky:nth-child(4n+1) { background: #fff9c4; transform: rotate(-1.4deg); }
+  .notes-shell .sticky:nth-child(4n+2) { background: #ffe0b2; transform: rotate(1.2deg); }
+  .notes-shell .sticky:nth-child(4n+3) { background: #ffccbc; transform: rotate(-0.6deg); }
+  .notes-shell .sticky:nth-child(4n) { background: #dcedc8; transform: rotate(1.6deg); }
 
-.notes-shell .sticky:hover {
+  .notes-shell .sticky:hover {
     transform: rotate(0deg) translateY(-2px);
     box-shadow:
       0 2px 2px rgba(0,0,0,0.05),
@@ -711,20 +693,20 @@
     z-index: 2;
   }
 
-.notes-shell .sticky.dragging {
+  .notes-shell .sticky.dragging {
     opacity: 0.4;
     transform: rotate(0deg) scale(0.98);
     cursor: grabbing;
   }
 
-.notes-shell .sticky.drop-target {
+  .notes-shell .sticky.drop-target {
     box-shadow:
       0 0 0 2px var(--fg),
       0 2px 6px rgba(0,0,0,0.06),
       0 8px 14px -6px rgba(0,0,0,0.08);
   }
 
-.notes-shell .sticky-text {
+  .notes-shell .sticky-text {
     flex: 1;
     border: none;
     background: transparent;
@@ -740,9 +722,9 @@
     cursor: text;
   }
 
-.notes-shell .sticky-text::placeholder { color: rgba(0,0,0,0.35); }
+  .notes-shell .sticky-text::placeholder { color: rgba(0,0,0,0.35); }
 
-.notes-shell .sticky-del {
+  .notes-shell .sticky-del {
     position: absolute;
     top: 3px;
     right: 4px;
@@ -763,10 +745,10 @@
     justify-content: center;
     border-radius: 50%;
   }
-.notes-shell .sticky:hover .sticky-del { opacity: 1; }
-.notes-shell .sticky-del:hover { color: #000; background: rgba(0,0,0,0.06); }
+  .notes-shell .sticky:hover .sticky-del { opacity: 1; }
+  .notes-shell .sticky-del:hover { color: #000; background: rgba(0,0,0,0.06); }
 
-.notes-shell .notes-empty {
+  .notes-shell .notes-empty {
     font-size: 8px;
     color: var(--muted);
     letter-spacing: 0.08em;
@@ -864,323 +846,20 @@
 
     </div>
 
-
     <section class="notes-section" aria-label="Sticky notes">
       <div class="notes-shell">
-<div class="notes">
-    <div class="notes-header">
-      <span class="notes-title">Sticky Notes</span>
-      <div class="notes-actions">
-        <button class="notes-clear" id="notesClear" aria-label="Clear all notes" title="Clear all notes">Clear</button>
-        <button class="notes-add" id="notesAdd" aria-label="Add sticky note">+</button>
-      </div>
-    </div>
-    <div class="notes-list" id="notesList"></div>
-  </div>
-
-<script>
-(function () {
-  const notesListEl  = document.getElementById('notesList');
-  const notesAddEl   = document.getElementById('notesAdd');
-  const notesClearEl = document.getElementById('notesClear');
-  let notes = JSON.parse(localStorage.getItem('pomodoro-notes') || '[]');
-
-  function saveNotes() {
-    localStorage.setItem('pomodoro-notes', JSON.stringify(notes));
-    updateClearButton();
-  }
-
-  function updateClearButton() {
-    if (notesClearEl) notesClearEl.disabled = notes.length === 0;
-  }
-
-  function renderNotes() {
-    notesListEl.innerHTML = '';
-    if (notes.length === 0) {
-      const empty = document.createElement('div');
-      empty.className = 'notes-empty';
-      empty.textContent = 'Tap + to add a sticky';
-      notesListEl.appendChild(empty);
-      return;
-    }
-    notes.forEach((n, idx) => {
-      const s = document.createElement('div');
-      s.className = 'sticky';
-      s.setAttribute('draggable', 'true');
-      s.dataset.idx = idx;
-
-      const del = document.createElement('button');
-      del.className = 'sticky-del';
-      del.setAttribute('aria-label', 'Delete note');
-      del.textContent = '×';
-      del.setAttribute('draggable', 'false');
-      del.addEventListener('mousedown', (e) => e.stopPropagation());
-      del.addEventListener('click', (e) => {
-        e.stopPropagation();
-        notes.splice(idx, 1);
-        saveNotes();
-        renderNotes();
-      });
-
-      const ta = document.createElement('textarea');
-      ta.className = 'sticky-text';
-      ta.value = n;
-      ta.placeholder = 'Write…';
-      ta.addEventListener('mousedown', (e) => e.stopPropagation());
-      ta.addEventListener('focus', () => { s.setAttribute('draggable', 'false'); });
-      ta.addEventListener('blur',  () => { s.setAttribute('draggable', 'true'); });
-      ta.addEventListener('input', () => {
-        notes[idx] = ta.value;
-        saveNotes();
-      });
-
-      s.addEventListener('dragstart', (e) => {
-        s.classList.add('dragging');
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', String(idx));
-      });
-      s.addEventListener('dragend', () => {
-        s.classList.remove('dragging');
-        document.querySelectorAll('.sticky.drop-target').forEach(el => el.classList.remove('drop-target'));
-      });
-      s.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-        if (!s.classList.contains('dragging')) s.classList.add('drop-target');
-      });
-      s.addEventListener('dragleave', () => {
-        s.classList.remove('drop-target');
-      });
-      s.addEventListener('drop', (e) => {
-        e.preventDefault();
-        s.classList.remove('drop-target');
-        const fromIdx = parseInt(e.dataTransfer.getData('text/plain'), 10);
-        const toIdx = idx;
-        if (isNaN(fromIdx) || fromIdx === toIdx) return;
-        const [moved] = notes.splice(fromIdx, 1);
-        notes.splice(toIdx, 0, moved);
-        saveNotes();
-        renderNotes();
-      });
-
-      s.appendChild(del);
-      s.appendChild(ta);
-      notesListEl.appendChild(s);
-    });
-  }
-
-  // Two-step in-page confirm (window.confirm is blocked in many embed iframes)
-  let clearArmed = false;
-  let clearArmedTimer = null;
-  const clearOriginalText = notesClearEl.textContent;
-
-  function disarmClear() {
-    clearArmed = false;
-    if (clearArmedTimer) { clearTimeout(clearArmedTimer); clearArmedTimer = null; }
-    notesClearEl.textContent = clearOriginalText;
-    notesClearEl.classList.remove('armed');
-  }
-
-  notesClearEl.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (notes.length === 0) return;
-    if (!clearArmed) {
-      clearArmed = true;
-      notesClearEl.textContent = 'Confirm?';
-      notesClearEl.classList.add('armed');
-      clearArmedTimer = setTimeout(disarmClear, 3000);
-      return;
-    }
-    notes = [];
-    saveNotes();
-    renderNotes();
-    disarmClear();
-  });
-
-  document.addEventListener('click', (e) => {
-    if (clearArmed && e.target !== notesClearEl) disarmClear();
-  });
-
-  notesAddEl.addEventListener('click', () => {
-    notes.push('');
-    saveNotes();
-    renderNotes();
-    const stickies = notesListEl.querySelectorAll('.sticky-text');
-    if (stickies.length) stickies[stickies.length - 1].focus();
-  });
-
-  renderNotes();
-  updateClearButton();
-})();
-
-
-(function () {
-  const notesListEl  = document.getElementById('notesList');
-  const notesAddEl   = document.getElementById('notesAdd');
-  const notesClearEl = document.getElementById('notesClear');
-  let notes = JSON.parse(localStorage.getItem('pomodoro-notes') || '[]');
-
-  function saveNotes() {
-    localStorage.setItem('pomodoro-notes', JSON.stringify(notes));
-    updateClearButton();
-  }
-
-  function updateClearButton() {
-    if (notesClearEl) notesClearEl.disabled = notes.length === 0;
-  }
-
-  function renderNotes() {
-    notesListEl.innerHTML = '';
-    if (notes.length === 0) {
-      const empty = document.createElement('div');
-      empty.className = 'notes-empty';
-      empty.textContent = 'Tap + to add a sticky';
-      notesListEl.appendChild(empty);
-      return;
-    }
-    notes.forEach((n, idx) => {
-      const s = document.createElement('div');
-      s.className = 'sticky';
-      s.setAttribute('draggable', 'true');
-      s.dataset.idx = idx;
-
-      const del = document.createElement('button');
-      del.className = 'sticky-del';
-      del.setAttribute('aria-label', 'Delete note');
-      del.textContent = '×';
-      del.setAttribute('draggable', 'false');
-      del.addEventListener('mousedown', (e) => e.stopPropagation());
-      del.addEventListener('click', (e) => {
-        e.stopPropagation();
-        notes.splice(idx, 1);
-        saveNotes();
-        renderNotes();
-      });
-
-      const ta = document.createElement('textarea');
-      ta.className = 'sticky-text';
-      ta.value = n;
-      ta.placeholder = 'Write…';
-      ta.addEventListener('mousedown', (e) => e.stopPropagation());
-      ta.addEventListener('focus', () => { s.setAttribute('draggable', 'false'); });
-      ta.addEventListener('blur',  () => { s.setAttribute('draggable', 'true'); });
-      ta.addEventListener('input', () => {
-        notes[idx] = ta.value;
-        saveNotes();
-      });
-
-      s.addEventListener('dragstart', (e) => {
-        s.classList.add('dragging');
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', String(idx));
-      });
-      s.addEventListener('dragend', () => {
-        s.classList.remove('dragging');
-        document.querySelectorAll('.sticky.drop-target').forEach(el => el.classList.remove('drop-target'));
-      });
-      s.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-        if (!s.classList.contains('dragging')) s.classList.add('drop-target');
-      });
-      s.addEventListener('dragleave', () => {
-        s.classList.remove('drop-target');
-      });
-      s.addEventListener('drop', (e) => {
-        e.preventDefault();
-        s.classList.remove('drop-target');
-        const fromIdx = parseInt(e.dataTransfer.getData('text/plain'), 10);
-        const toIdx = idx;
-        if (isNaN(fromIdx) || fromIdx === toIdx) return;
-        const [moved] = notes.splice(fromIdx, 1);
-        notes.splice(toIdx, 0, moved);
-        saveNotes();
-        renderNotes();
-      });
-
-      s.appendChild(del);
-      s.appendChild(ta);
-      notesListEl.appendChild(s);
-    });
-  }
-
-  // Two-step in-page confirm (window.confirm is blocked in many embed iframes)
-  let clearArmed = false;
-  let clearArmedTimer = null;
-  const clearOriginalText = notesClearEl.textContent;
-
-  function disarmClear() {
-    clearArmed = false;
-    if (clearArmedTimer) { clearTimeout(clearArmedTimer); clearArmedTimer = null; }
-    notesClearEl.textContent = clearOriginalText;
-    notesClearEl.classList.remove('armed');
-  }
-
-  notesClearEl.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (notes.length === 0) return;
-    if (!clearArmed) {
-      clearArmed = true;
-      notesClearEl.textContent = 'Confirm?';
-      notesClearEl.classList.add('armed');
-      clearArmedTimer = setTimeout(disarmClear, 3000);
-      return;
-    }
-    notes = [];
-    saveNotes();
-    renderNotes();
-    disarmClear();
-  });
-
-  document.addEventListener('click', (e) => {
-    if (clearArmed && e.target !== notesClearEl) disarmClear();
-  });
-
-  notesAddEl.addEventListener('click', () => {
-    notes.push('');
-    saveNotes();
-    renderNotes();
-    const stickies = notesListEl.querySelectorAll('.sticky-text');
-    if (stickies.length) stickies[stickies.length - 1].focus();
-  });
-
-  renderNotes();
-  updateClearButton();
-})();
-
-</script>
+        <div class="notes">
+          <div class="notes-header">
+            <span class="notes-title">Sticky Notes</span>
+            <div class="notes-actions">
+              <button class="notes-clear" id="notesClear" aria-label="Clear all notes" title="Clear all notes">Clear</button>
+              <button class="notes-add" id="notesAdd" aria-label="Add sticky note">+</button>
+            </div>
+          </div>
+          <div class="notes-list" id="notesList"></div>
+        </div>
       </div>
     </section>
-
-
-  </div>
-
-    <div class="settings" id="settings-unused" style="display:none" aria-hidden="true">
-        <div class="field">
-          <label>Focus</label>
-          <div class="stepper">
-            <button data-step="-1" data-field="focus-old" aria-label="x">−</button>
-            <input type="number" id="input-focus-old" min="1" max="120" value="25" />
-            <button data-step="1" data-field="focus-old" aria-label="x">+</button>
-          </div>
-        </div>
-        <div class="field">
-          <label>Short</label>
-          <div class="stepper">
-            <button data-step="-1" data-field="short-old" aria-label="x">−</button>
-            <input type="number" id="input-short" min="1" max="60" value="5" />
-            <button data-step="1" data-field="short" aria-label="Increase short break">+</button>
-          </div>
-        </div>
-        <div class="field">
-          <label>Long</label>
-          <div class="stepper">
-            <button data-step="-1" data-field="long" aria-label="Decrease long break">−</button>
-            <input type="number" id="input-long" min="1" max="60" value="15" />
-            <button data-step="1" data-field="long" aria-label="Increase long break">+</button>
-          </div>
-        </div>
-    </div>
   </div>
 
 <script>
@@ -1206,7 +885,6 @@
     new ResizeObserver(updateEmbedWidth).observe(pageRoot);
   }
 
-  // Build tick marks
   const TICKS = 60;
   for (let i = 0; i < TICKS; i++) {
     const t = document.createElement('div');
@@ -1282,16 +960,13 @@
   function commitTimeEdit() {
     const parsed = parseTimeInput(timeEl.textContent);
     if (parsed === null) {
-      // invalid — revert
       timeEl.textContent = fmt(remaining);
       return;
     }
-    // Adopt custom duration; stop any running timer
     running = false;
     clearInterval(intervalId);
     total = parsed;
     remaining = parsed;
-    // Deselect any active mode tab since this is a custom time
     modeBtns.forEach(b => b.classList.remove('active'));
     render();
   }
@@ -1410,11 +1085,8 @@
   skipBtn.addEventListener('click', skip);
   modeBtns.forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
 
-  // Editable time readout — click and type MM:SS or minutes
   timeEl.addEventListener('focus', () => {
-    // stop the timer while editing so the value doesn't change under the cursor
     if (running) { pause(); pauseMusic(); }
-    // select all for easy overwrite
     const range = document.createRange();
     range.selectNodeContents(timeEl);
     const sel = window.getSelection();
@@ -1434,7 +1106,6 @@
   timeEl.addEventListener('blur', commitTimeEdit);
 
   document.addEventListener('keydown', (e) => {
-    // ignore shortcuts while editing the time readout
     if (document.activeElement === timeEl) return;
     const tag = e.target.tagName;
     if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
@@ -1492,7 +1163,6 @@
 
   render();
 
-  // -------- Live wall clock (America/New_York) --------
   const clockTimeEl = document.getElementById('clockTime');
   const clockDateEl = document.getElementById('clockDate');
   function updateClock() {
@@ -1520,11 +1190,9 @@
   updateClock();
   setInterval(updateClock, 15000);
 
-  // Music removed — no-op stubs so timer wiring stays intact
   window.playMusic  = function () {};
   window.pauseMusic = function () {};
 
-  // -------- Collapse toggle --------
   const pageEl      = document.getElementById('page');
   const collapseBtn = document.getElementById('collapseBtn');
   function setCollapsed(collapsed) {
@@ -1541,8 +1209,7 @@
   } catch (e) {}
 })();
 
-
-(function () {
+(() => {
   const notesListEl  = document.getElementById('notesList');
   const notesAddEl   = document.getElementById('notesAdd');
   const notesClearEl = document.getElementById('notesClear');
@@ -1632,7 +1299,6 @@
     });
   }
 
-  // Two-step in-page confirm (window.confirm is blocked in many embed iframes)
   let clearArmed = false;
   let clearArmedTimer = null;
   const clearOriginalText = notesClearEl.textContent;
@@ -1675,7 +1341,6 @@
   renderNotes();
   updateClearButton();
 })();
-
 </script>
 </body>
 </html>
