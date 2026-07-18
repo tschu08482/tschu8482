@@ -496,6 +496,7 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      gap: 8px;
     }
 
     .notes {
@@ -635,6 +636,32 @@
       align-self: center;
     }
 
+    .video-playlists {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+
+    .video-playlist-btn {
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      font-size: 7px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .video-playlist-btn.active {
+      background: var(--fg);
+      color: #fff;
+      border-color: var(--fg);
+    }
+
     .video-frame {
       position: relative;
       width: 100%;
@@ -659,7 +686,7 @@
       font-size: 8px;
       letter-spacing: 0.08em;
       color: var(--muted);
-      margin-top: 8px;
+      margin-top: 6px;
       padding-left: 2px;
     }
 
@@ -814,8 +841,24 @@
       </button>
       <div class="section-content">
         <div class="video-shell">
+          <div class="video-playlists">
+            <button
+              class="video-playlist-btn active"
+              type="button"
+              data-pl="PLLDVfSPfze0sxfxFLm6-ak22O9BO0eLex">
+              Country / Acoustic
+            </button>
+            <button
+              class="video-playlist-btn"
+              type="button"
+              data-pl="RDoPVte6aMprI">
+              Dark Focus Mix
+            </button>
+          </div>
+
           <div class="video-frame">
             <iframe
+              id="ytFrame"
               src="https://www.youtube.com/embed/videoseries?list=PLLDVfSPfze0sxfxFLm6-ak22O9BO0eLex"
               title="YouTube playlist player"
               loading="lazy"
@@ -824,7 +867,8 @@
               allowfullscreen>
             </iframe>
           </div>
-          <div class="video-hint">Compact playlist player.</div>
+
+          <div class="video-hint">Compact player with two playlist options.</div>
         </div>
       </div>
     </section>
@@ -1050,13 +1094,17 @@
           timeEl.blur();
         }
       });
+
       timeEl.addEventListener('blur', commitTimeEdit);
 
       document.addEventListener('keydown', (e) => {
         if (document.activeElement === timeEl) return;
         const tag = e.target.tagName;
         if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
-        if (e.code === 'Space') { e.preventDefault(); running ? pause() : start(); }
+        if (e.code === 'Space') {
+          e.preventDefault();
+          running ? pause() : start();
+        }
         if (e.key.toLowerCase() === 'r') reset();
         if (e.key.toLowerCase() === 's') skip();
       });
@@ -1101,6 +1149,7 @@
 
       const clockTimeEl = document.getElementById('clockTime');
       const clockDateEl = document.getElementById('clockDate');
+
       function updateClock() {
         try {
           const now = new Date();
@@ -1123,6 +1172,7 @@
           clockDateEl.textContent = 'Eastern Time';
         }
       }
+
       updateClock();
       setInterval(updateClock, 15000);
 
@@ -1158,6 +1208,18 @@
           const saved = localStorage.getItem(key);
           if (saved === '0') setOpen(false);
         } catch (e) {}
+      });
+
+      const ytFrame = document.getElementById('ytFrame');
+      const playlistButtons = document.querySelectorAll('.video-playlist-btn');
+
+      playlistButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          playlistButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const playlistId = btn.dataset.pl;
+          ytFrame.src = `https://www.youtube.com/embed/videoseries?list=${encodeURIComponent(playlistId)}`;
+        });
       });
 
       render();
