@@ -356,7 +356,7 @@
     }
 
     .settings.open {
-      max-height: 260px;
+      max-height: 220px;
       opacity: 1;
       padding: 12px 0 4px;
     }
@@ -713,6 +713,18 @@
       text-align: center;
     }
 
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
     @container (max-width: 640px) {
       .page { border-radius: 0; padding-top: 24px; padding-bottom: 24px; }
       .card { padding-inline: 12px; }
@@ -753,6 +765,7 @@
           <div class="panel-body">
             <div class="modes" role="tablist" aria-label="Timer modes">
               <button class="mode active" data-mode="focus" type="button">Focus</button>
+              <button class="mode" data-mode="break" type="button">Break</button>
             </div>
 
             <div class="controls">
@@ -779,20 +792,13 @@
                   <button type="button" data-step="1" data-target="focusMinutes">+</button>
                 </div>
               </div>
+
               <div class="field">
-                <label for="shortMinutes">Short</label>
+                <label for="breakMinutes">Break</label>
                 <div class="stepper">
-                  <button type="button" data-step="-1" data-target="shortMinutes">−</button>
-                  <input id="shortMinutes" type="number" min="1" max="60" value="5">
-                  <button type="button" data-step="1" data-target="shortMinutes">+</button>
-                </div>
-              </div>
-              <div class="field">
-                <label for="longMinutes">Long</label>
-                <div class="stepper">
-                  <button type="button" data-step="-1" data-target="longMinutes">−</button>
-                  <input id="longMinutes" type="number" min="1" max="120" value="15">
-                  <button type="button" data-step="1" data-target="longMinutes">+</button>
+                  <button type="button" data-step="-1" data-target="breakMinutes">−</button>
+                  <input id="breakMinutes" type="number" min="1" max="60" value="5">
+                  <button type="button" data-step="1" data-target="breakMinutes">+</button>
                 </div>
               </div>
             </div>
@@ -800,31 +806,6 @@
         </div>
       </section>
     </main>
-
-    <section class="dial-col">
-      <div class="dial-label">Break</div>
-      <div class="dial-row">
-        <div class="dial-wrap">
-          <svg class="dial" viewBox="0 0 120 120" aria-hidden="true">
-            <circle class="track" cx="60" cy="60" r="54"></circle>
-            <circle class="progress" id="breakProgressRing" cx="60" cy="60" r="54"></circle>
-          </svg>
-          <div class="ticks" id="breakTicks"></div>
-          <div class="readout">
-            <div class="time" id="breakTimeDisplay">05:00</div>
-            <div class="status" id="breakStatusText">Ready</div>
-          </div>
-        </div>
-        <div class="panel-body">
-          <div class="controls">
-            <button class="btn primary" id="breakStartPauseBtn" type="button">Start Break</button>
-            <button class="btn icon" id="breakResetBtn" type="button" aria-label="Reset break">
-              <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 3v6h6"></path></svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
 
     <section class="perplexity-section section-block" id="perplexitySection">
       <button class="section-toggle" type="button" aria-expanded="true" aria-controls="perplexityContent">
@@ -872,8 +853,8 @@
           <div class="video-frame">
             <iframe
               id="videoFrame"
-              src="https://www.youtube-nocookie.com/embed/jfKfPfyJRdk?autoplay=0&rel=0"
-              title="Focus video"
+              src="https://www.youtube-nocookie.com/embed/oPVte6aMprI?autoplay=0&rel=0&list=RDoPVte6aMprI"
+              title="Music player"
               loading="lazy"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerpolicy="strict-origin-when-cross-origin"
@@ -887,11 +868,10 @@
 
   <script>
     const state = {
-      durations: { focus: 25 },
+      durations: { focus: 25, break: 5 },
       mode: 'focus',
       totalSeconds: 25 * 60,
       remainingSeconds: 25 * 60,
-      breakSeconds: 5 * 60,
       running: false,
       intervalId: null,
       clearArmed: false,
@@ -900,12 +880,6 @@
     };
 
     const modes = document.querySelectorAll('.mode');
-    const breakProgressRing = document.getElementById('breakProgressRing');
-    const breakTicks = document.getElementById('breakTicks');
-    const breakTimeDisplay = document.getElementById('breakTimeDisplay');
-    const breakStatusText = document.getElementById('breakStatusText');
-    const breakStartPauseBtn = document.getElementById('breakStartPauseBtn');
-    const breakResetBtn = document.getElementById('breakResetBtn');
     const timeDisplay = document.getElementById('timeDisplay');
     const statusText = document.getElementById('statusText');
     const startPauseBtn = document.getElementById('startPauseBtn');
@@ -918,8 +892,7 @@
     const wallclockTime = document.getElementById('wallclockTime');
     const wallclockDate = document.getElementById('wallclockDate');
     const focusMinutes = document.getElementById('focusMinutes');
-    const shortMinutes = document.getElementById('shortMinutes');
-    const longMinutes = document.getElementById('longMinutes');
+    const breakMinutes = document.getElementById('breakMinutes');
     const notesList = document.getElementById('notesList');
     const notesEmpty = document.getElementById('notesEmpty');
     const addNoteBtn = document.getElementById('addNoteBtn');
@@ -933,51 +906,6 @@
       { label: 'Relax', url: 'https://www.youtube-nocookie.com/embed/oPVte6aMprI?autoplay=0&rel=0&list=RDoPVte6aMprI' },
       { label: 'Country', url: 'https://www.youtube-nocookie.com/embed/TsfDpW7PYN8?autoplay=0&rel=0&list=RDTsfDpW7PYN8' }
     ];
-
-    function createBreakTicks() {
-      breakTicks.innerHTML = '';
-      for (let i = 0; i < 60; i++) {
-        const tick = document.createElement('div');
-        tick.className = 'tick' + (i % 5 === 0 ? ' major' : '');
-        tick.style.transform = `translateX(-50%) rotate(${i * 6}deg)`;
-        breakTicks.appendChild(tick);
-      }
-    }
-
-    function updateBreakDisplay() {
-      breakTimeDisplay.textContent = formatTime(state.breakSeconds);
-      const radius = 54;
-      const circumference = 2 * Math.PI * radius;
-      breakProgressRing.style.strokeDasharray = `${circumference}`;
-      const ratio = 300 > 0 ? state.breakSeconds / 300 : 0;
-      breakProgressRing.style.strokeDashoffset = `${circumference * (1 - ratio)}`;
-      breakStatusText.textContent = state.breakSeconds === 0 ? 'Complete' : 'Ready';
-    }
-
-    function toggleBreak() {
-      if (state.breakSeconds === 0) {
-        state.breakSeconds = 300;
-      }
-      breakStatusText.textContent = 'Running';
-      const interval = setInterval(() => {
-        if (state.breakSeconds > 0) {
-          state.breakSeconds -= 1;
-          updateBreakDisplay();
-        } else {
-          clearInterval(interval);
-          breakStatusText.textContent = 'Complete';
-          breakStartPauseBtn.textContent = 'Start Break';
-        }
-      }, 1000);
-      breakStartPauseBtn.textContent = 'Pause';
-    }
-
-    function resetBreak() {
-      state.breakSeconds = 300;
-      updateBreakDisplay();
-      breakStatusText.textContent = 'Ready';
-      breakStartPauseBtn.textContent = 'Start Break';
-    }
 
     function createTicks() {
       ticks.innerHTML = '';
@@ -1076,8 +1004,7 @@
 
     function applyDurations() {
       state.durations.focus = clampInputValue(focusMinutes);
-      state.durations.short = clampInputValue(shortMinutes);
-      state.durations.long = clampInputValue(longMinutes);
+      state.durations.break = clampInputValue(breakMinutes);
       state.totalSeconds = state.durations[state.mode] * 60;
       state.remainingSeconds = state.totalSeconds;
       state.running = false;
@@ -1241,7 +1168,8 @@
     resetBtn.addEventListener('click', resetTimer);
     settingsToggle.addEventListener('click', toggleSettings);
     settingsLabelToggle.addEventListener('click', toggleSettings);
-    [focusMinutes, shortMinutes, longMinutes].forEach(input => {
+
+    [focusMinutes, breakMinutes].forEach(input => {
       input.addEventListener('change', applyDurations);
       input.addEventListener('blur', applyDurations);
     });
@@ -1276,16 +1204,12 @@
       }
     });
 
-    breakStartPauseBtn.addEventListener('click', toggleBreak);
-    breakResetBtn.addEventListener('click', resetBreak);
     addNoteBtn.addEventListener('click', addNote);
     clearNotesBtn.addEventListener('click', clearNotes);
     perplexityForm.addEventListener('submit', handlePerplexitySearch);
 
     createTicks();
-    createBreakTicks();
     updateDisplay();
-    updateBreakDisplay();
     updateWallclock();
     setInterval(updateWallclock, 1000);
     renderNotes();
