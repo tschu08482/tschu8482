@@ -32,11 +32,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    body {
-      padding: 10px;
-      display: flex;
-      justify-content: center;
-    }
+    body { padding: 10px; display: flex; justify-content: center; }
 
     .widget {
       width: 100%;
@@ -47,8 +43,7 @@
       padding: 14px;
     }
 
-    .clock-label,
-    .section-title {
+    .clock-label, .section-title {
       font-size: var(--label-size);
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -59,510 +54,323 @@
     .clock-box {
       border-radius: var(--radius);
       padding: 6px 2px 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      align-items: flex-start;
+      display: flex; flex-direction: column;
+      gap: 4px; align-items: flex-start;
     }
 
     .clock-time {
       font-family: 'JetBrains Mono', monospace;
       font-size: var(--timer-size);
-      font-weight: 300;
-      line-height: 1;
+      font-weight: 300; line-height: 1;
       letter-spacing: -0.02em;
-      width: 100%;
-      text-align: center;
+      width: 100%; text-align: center;
     }
 
     .clock-date {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      font-weight: 300;
+      font-size: 11px; font-weight: 300;
       color: var(--muted);
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      width: 100%;
-      text-align: center;
+      width: 100%; text-align: center;
     }
 
-    .stack {
-      display: grid;
-      gap: 10px;
-    }
+    .stack { display: grid; gap: 10px; }
 
-    .panel,
-    details.section {
+    .panel, details.section {
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 10px 12px;
       background: var(--bg);
     }
 
-    .timer-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .mode-row {
-      display: inline-flex;
-      gap: 4px;
-      align-items: center;
-    }
+    .timer-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .mode-row { display: inline-flex; gap: 4px; align-items: center; }
 
     .mode {
       border: 1px solid var(--line);
-      background: transparent;
-      color: var(--muted);
-      border-radius: 999px;
-      padding: 4px 9px;
-      font-size: 8px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      cursor: pointer;
+      background: transparent; color: var(--muted);
+      border-radius: 999px; padding: 4px 9px;
+      font-size: 8px; letter-spacing: 0.16em;
+      text-transform: uppercase; cursor: pointer;
       font-family: inherit;
     }
 
-    .mode.active {
-      background: var(--fg);
-      border-color: var(--fg);
-      color: #fff;
-    }
+    .mode.active { background: var(--fg); border-color: var(--fg); color: #fff; }
 
     .alarm-header-btn {
       border: 1px solid var(--line);
-      background: transparent;
-      color: var(--fg);
-      border-radius: 999px;
-      padding: 4px 10px;
-      font-size: 8px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      cursor: pointer;
+      background: transparent; color: var(--fg);
+      border-radius: 999px; padding: 4px 10px;
+      font-size: 8px; letter-spacing: 0.16em;
+      text-transform: uppercase; cursor: pointer;
       font-family: inherit;
     }
 
-    .alarm-header-btn.armed {
-      background: #b00020;
-      color: #fff;
-      border-color: #b00020;
-    }
+    .alarm-header-btn.armed { background: #b00020; color: #fff; border-color: #b00020; }
 
-    .timer-main {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 8px;
-    }
+    .timer-main { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
 
     .timer-time {
       font-family: 'JetBrains Mono', monospace;
       font-size: var(--timer-size);
-      font-weight: 300;
-      line-height: 1;
-      padding: 2px 6px;
-      border-radius: 6px;
-      outline: none;
-      letter-spacing: -0.02em;
+      font-weight: 300; line-height: 1;
+      padding: 2px 6px; border-radius: 6px;
+      outline: none; letter-spacing: -0.02em;
     }
-
-    .timer-time:hover,
-    .timer-time:focus { background: #f5f5f5; }
+    .timer-time:hover, .timer-time:focus { background: #f5f5f5; }
 
     .status {
-      font-size: 8px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      font-weight: 700;
-      color: var(--fg);
+      font-size: 8px; letter-spacing: 0.18em;
+      text-transform: uppercase; font-weight: 700; color: var(--fg);
     }
 
     .progress-bar {
-      flex: 1;
-      height: 5px;
+      flex: 1; height: 5px;
       background: #f0f0f0;
-      border-radius: 999px;
-      overflow: hidden;
+      border-radius: 999px; overflow: hidden;
     }
 
     .progress-fill {
-      width: 100%;
-      height: 100%;
-      background: var(--fg);
-      border-radius: inherit;
+      width: 100%; height: 100%;
+      background: var(--fg); border-radius: inherit;
       transform-origin: left center;
       transition: transform 0.9s linear;
     }
 
-    .controls-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 8px;
-    }
+    .controls-row { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
 
-    .btn,
-    .icon-btn,
-    .mini-btn,
-    .music-btn,
-    .notes-add,
-    .notes-clear {
+    .btn, .icon-btn, .mini-btn, .music-btn, .notes-add, .notes-clear {
       border: 1px solid var(--line);
-      background: transparent;
-      color: var(--fg);
-      border-radius: 999px;
-      cursor: pointer;
+      background: transparent; color: var(--fg);
+      border-radius: 999px; cursor: pointer;
       font-family: inherit;
     }
 
-    .btn {
-      padding: 6px 12px;
-      font-size: 9px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-    }
+    .btn { padding: 6px 12px; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; }
+    .btn.primary { background: var(--fg); color: #fff; border-color: var(--fg); }
 
-    .btn.primary {
-      background: var(--fg);
-      color: #fff;
-      border-color: var(--fg);
-    }
-
-    .icon-btn {
-      width: 28px;
-      height: 28px;
-      display: grid;
-      place-items: center;
-    }
-
-    .icon-btn svg {
-      width: 13px;
-      height: 13px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 1.5;
-    }
+    .icon-btn { width: 28px; height: 28px; display: grid; place-items: center; }
+    .icon-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.5; }
 
     .settings {
-      display: grid;
-      gap: 8px;
-      margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px solid var(--line);
+      display: grid; gap: 8px; margin-top: 8px;
+      padding-top: 8px; border-top: 1px solid var(--line);
     }
 
-    .field-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
+    .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
     .field label {
-      display: block;
-      margin-bottom: 3px;
-      font-size: 7px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
+      display: block; margin-bottom: 3px;
+      font-size: 7px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--muted);
     }
 
     .stepper {
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center;
       border: 1px solid var(--line);
-      border-radius: 10px;
-      overflow: hidden;
+      border-radius: 10px; overflow: hidden;
       background: var(--surface);
     }
-
-    .stepper button {
-      width: 22px;
-      height: 24px;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      font-size: 12px;
-    }
-
+    .stepper button { width: 22px; height: 24px; border: none; background: transparent; cursor: pointer; font-size: 12px; }
     .stepper input {
-      flex: 1;
-      width: 100%;
-      border: none;
-      background: transparent;
-      text-align: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      -moz-appearance: textfield;
+      flex: 1; width: 100%; border: none; background: transparent;
+      text-align: center; font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; -moz-appearance: textfield;
     }
+    .stepper input::-webkit-outer-spin-button, .stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
-    .stepper input::-webkit-outer-spin-button,
-    .stepper input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
-    /* Alarm modal */
+    /* Alarm setup modal */
     .alarm-modal {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background: rgba(0,0,0,0.35);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 999;
+      display: none; align-items: center; justify-content: center;
+      padding: 16px; z-index: 999;
     }
-
     .alarm-modal.open { display: flex; }
-
     .alarm-card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 16px;
-      width: 100%;
-      max-width: 300px;
+      background: #fff; border-radius: 16px;
+      padding: 16px; width: 100%; max-width: 300px;
       border: 1px solid var(--line);
       box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     }
-
     .alarm-card-title {
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      font-weight: 700;
-      margin-bottom: 12px;
+      font-size: 11px; letter-spacing: 0.2em;
+      text-transform: uppercase; font-weight: 700; margin-bottom: 12px;
     }
-
     .alarm-input {
-      width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 10px;
+      width: 100%; border: 1px solid var(--line);
+      border-radius: 10px; padding: 10px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 16px;
-      text-align: center;
-      outline: none;
+      font-size: 16px; text-align: center; outline: none;
     }
-
     .alarm-input:focus { border-color: var(--fg); }
-
-    .alarm-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-top: 12px;
-    }
+    .alarm-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
 
     .alarm-countdown {
-      display: none;
-      margin-top: 8px;
-      padding: 8px 10px;
-      border: 1px dashed var(--line);
-      border-radius: 10px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: var(--fg);
+      display: none; margin-top: 8px;
+      padding: 8px 10px; border: 1px dashed var(--line);
+      border-radius: 10px; font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: var(--fg); text-align: center; letter-spacing: 0.05em;
+    }
+    .alarm-countdown.visible { display: block; }
+    .alarm-countdown .cd-time { font-size: 18px; display: block; margin-top: 2px; letter-spacing: -0.02em; }
+
+    /* ALERT OVERLAY (when alarm fires) */
+    .alert-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: none; align-items: center; justify-content: center;
+      padding: 16px; z-index: 9999;
+      backdrop-filter: blur(2px);
+    }
+    .alert-overlay.open { display: flex; }
+    .alert-overlay.open .alert-card { animation: alertPulse 1s ease-in-out infinite; }
+
+    .alert-card {
+      background: #fff;
+      border: 3px solid #b00020;
+      border-radius: 20px;
+      padding: 22px 20px;
+      width: 100%; max-width: 320px;
       text-align: center;
-      letter-spacing: 0.05em;
+      box-shadow: 0 20px 60px rgba(176, 0, 32, 0.5);
     }
 
-    .alarm-countdown.visible { display: block; }
+    @keyframes alertPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 20px 60px rgba(176, 0, 32, 0.5); }
+      50%      { transform: scale(1.04); box-shadow: 0 24px 80px rgba(176, 0, 32, 0.85); }
+    }
 
-    .alarm-countdown .cd-time {
-      font-size: 18px;
-      display: block;
-      margin-top: 2px;
-      letter-spacing: -0.02em;
+    .alert-icon {
+      width: 56px; height: 56px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      background: #b00020;
+      display: grid; place-items: center;
+      color: #fff; font-size: 30px;
+      animation: bellShake 0.6s ease-in-out infinite;
+    }
+
+    @keyframes bellShake {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-15deg); }
+      75% { transform: rotate(15deg); }
+    }
+
+    .alert-title {
+      font-size: 14px; letter-spacing: 0.2em;
+      text-transform: uppercase; font-weight: 800;
+      color: #b00020; margin-bottom: 6px;
+    }
+    .alert-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 28px; font-weight: 400;
+      color: var(--fg); margin-bottom: 4px;
+    }
+    .alert-sub {
+      font-size: 11px; color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .alert-dismiss {
+      background: #b00020; color: #fff;
+      border: 1px solid #b00020;
+      border-radius: 999px; padding: 10px 22px;
+      font-size: 10px; letter-spacing: 0.2em;
+      text-transform: uppercase; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+    }
+    .alert-dismiss:hover { background: #900018; }
+
+    /* Body flash when firing */
+    body.alarm-firing { animation: bodyFlash 1s ease-in-out infinite; }
+    @keyframes bodyFlash {
+      0%, 100% { background: var(--bg); }
+      50% { background: #ffe5ea; }
     }
 
     details.section summary {
-      list-style: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
+      list-style: none; cursor: pointer;
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 10px;
     }
-
     details.section summary::-webkit-details-marker { display: none; }
-
     .chev {
-      width: 9px;
-      height: 9px;
+      width: 9px; height: 9px;
       border-right: 1.5px solid var(--muted);
       border-bottom: 1.5px solid var(--muted);
       transform: rotate(45deg);
       transition: transform 0.2s ease;
       margin-right: 4px;
     }
-
     details[open] .chev { transform: rotate(225deg); margin-top: 3px; }
-
     .section-body { margin-top: 8px; }
 
     .perplexity-panel { display: grid; gap: 6px; }
-
-    .perplexity-form {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 6px;
-      margin-top: 4px;
-    }
-
+    .perplexity-form { display: grid; grid-template-columns: 1fr auto; gap: 6px; margin-top: 4px; }
     .perplexity-input {
-      width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 8px 11px;
-      font-size: 10px;
-      outline: none;
-      font-family: inherit;
+      width: 100%; border: 1px solid var(--line);
+      border-radius: 999px; padding: 8px 11px;
+      font-size: 10px; outline: none; font-family: inherit;
     }
+    .perplexity-input:focus { border-color: #4a72ff; box-shadow: 0 0 0 1px #4a72ff33; }
 
-    .perplexity-input:focus {
-      border-color: #4a72ff;
-      box-shadow: 0 0 0 1px #4a72ff33;
-    }
+    .mini-btn { padding: 8px 10px; font-size: 8px; letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap; }
 
-    .mini-btn {
-      padding: 8px 10px;
-      font-size: 8px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-
-    .notes-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-
+    .notes-actions { display: flex; justify-content: flex-end; gap: 6px; margin-bottom: 8px; }
     .notes-add { width: 22px; height: 22px; font-size: 14px; }
-
     .notes-clear {
-      padding: 0 8px;
-      font-size: 8px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
-      height: 22px;
+      padding: 0 8px; font-size: 8px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--muted); height: 22px;
     }
-
     .notes-clear:disabled { opacity: 0.35; cursor: not-allowed; }
     .notes-clear.armed { background: #b00020; color: #fff; border-color: #b00020; }
 
     .notes-list { display: block; }
-
     .sticky {
-      position: relative;
-      border-radius: 10px;
-      padding: 10px;
+      position: relative; border-radius: 10px; padding: 10px;
       box-shadow: 0 1px 2px rgba(0,0,0,0.05), 0 6px 14px rgba(0,0,0,0.06);
-      margin-bottom: 8px;
-      min-height: 72px;
+      margin-bottom: 8px; min-height: 72px;
     }
-
     .sticky:nth-child(4n+1) { background: #fff9c4; }
     .sticky:nth-child(4n+2) { background: #ffe0b2; }
     .sticky:nth-child(4n+3) { background: #ffccbc; }
     .sticky:nth-child(4n)   { background: #dcedc8; }
 
     .sticky-text {
-      width: 100%;
-      min-height: 56px;
-      border: none;
-      background: transparent;
-      resize: none;
-      outline: none;
-      font-size: 11px;
-      line-height: 1.35;
-      padding-right: 18px;
-      font-family: inherit;
+      width: 100%; min-height: 56px;
+      border: none; background: transparent;
+      resize: none; outline: none;
+      font-size: 11px; line-height: 1.35;
+      padding-right: 18px; font-family: inherit;
     }
-
     .sticky-del {
-      position: absolute;
-      top: 4px;
-      right: 4px;
-      width: 16px;
-      height: 16px;
-      border: none;
-      background: transparent;
-      font-size: 14px;
-      color: rgba(0,0,0,0.45);
-      cursor: pointer;
+      position: absolute; top: 4px; right: 4px;
+      width: 16px; height: 16px; border: none;
+      background: transparent; font-size: 14px;
+      color: rgba(0,0,0,0.45); cursor: pointer;
     }
-
     .notes-empty {
-      color: var(--muted);
-      font-size: 9px;
-      letter-spacing: 0.08em;
-      font-style: italic;
-      padding-top: 2px;
+      color: var(--muted); font-size: 9px;
+      letter-spacing: 0.08em; font-style: italic; padding-top: 2px;
     }
 
-    .music-row {
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
-    }
-
-    .music-btn {
-      padding: 5px 9px;
-      font-size: 8px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .music-btn.active {
-      background: var(--fg);
-      color: #fff;
-      border-color: var(--fg);
-    }
+    .music-row { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+    .music-btn { padding: 5px 9px; font-size: 8px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+    .music-btn.active { background: var(--fg); color: #fff; border-color: var(--fg); }
 
     .video-frame {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      background: #000;
+      position: relative; width: 100%;
+      aspect-ratio: 16 / 9; border-radius: 12px;
+      overflow: hidden; border: 1px solid var(--line); background: #000;
     }
-
-    .video-frame iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-
-    .video-hint {
-      margin-top: 6px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 8px;
-      letter-spacing: 0.08em;
-    }
+    .video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .video-hint { margin-top: 6px; text-align: center; color: var(--muted); font-size: 8px; letter-spacing: 0.08em; }
 
     .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
     }
   </style>
 </head>
@@ -681,6 +489,7 @@
     </div>
   </div>
 
+  <!-- Alarm setup modal -->
   <div class="alarm-modal" id="alarmModal" role="dialog" aria-modal="true" aria-labelledby="alarmModalTitle">
     <div class="alarm-card">
       <div class="alarm-card-title" id="alarmModalTitle">Set Alarm Time</div>
@@ -690,6 +499,17 @@
         <button class="mini-btn" id="alarmClear" type="button">Clear</button>
         <button class="btn primary" id="alarmSet" type="button">Set</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Full-screen ALERT when alarm fires -->
+  <div class="alert-overlay" id="alertOverlay" role="alertdialog" aria-modal="true" aria-labelledby="alertTitle">
+    <div class="alert-card">
+      <div class="alert-icon" aria-hidden="true">🔔</div>
+      <div class="alert-title" id="alertTitle">Alarm</div>
+      <div class="alert-time" id="alertTime">--:--</div>
+      <div class="alert-sub">Time's up</div>
+      <button class="alert-dismiss" id="alertDismiss" type="button">Dismiss</button>
     </div>
   </div>
 
@@ -704,7 +524,11 @@
       clearArmed: false,
       notes: [],
       alarmTarget: null,
-      alarmIntervalId: null
+      alarmIntervalId: null,
+      alertSoundIntervalId: null,
+      titleFlashIntervalId: null,
+      originalTitle: document.title,
+      audioCtx: null
     };
 
     const modes = document.querySelectorAll('.mode');
@@ -738,6 +562,10 @@
     const alarmCountdownLabel = document.getElementById('alarmCountdownLabel');
     const alarmCountdownTime = document.getElementById('alarmCountdownTime');
 
+    const alertOverlay = document.getElementById('alertOverlay');
+    const alertTime = document.getElementById('alertTime');
+    const alertDismiss = document.getElementById('alertDismiss');
+
     const playlists = [
       { label: 'Relax', url: 'https://www.youtube-nocookie.com/embed/oPVte6aMprI?autoplay=0&rel=0&list=RDoPVte6aMprI' },
       { label: 'Country', url: 'https://www.youtube-nocookie.com/embed/TsfDpW7PYN8?autoplay=0&rel=0&list=RDTsfDpW7PYN8' }
@@ -769,26 +597,121 @@
       startPauseBtn.textContent = state.running ? 'Pause' : 'Start';
     }
 
-    function playAlarmSound() {
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        for (let i = 0; i < 6; i++) {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.value = 880;
-          const start = ctx.currentTime + i * 0.5;
-          gain.gain.setValueAtTime(0, start);
-          gain.gain.linearRampToValueAtTime(0.25, start + 0.05);
-          gain.gain.linearRampToValueAtTime(0, start + 0.35);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(start);
-          osc.stop(start + 0.4);
-        }
-      } catch (e) {
-        console.warn('Alarm sound unavailable');
+    function getAudioCtx() {
+      if (!state.audioCtx) {
+        try { state.audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        catch (e) { return null; }
       }
+      if (state.audioCtx.state === 'suspended') state.audioCtx.resume();
+      return state.audioCtx;
+    }
+
+    function playBeepBurst() {
+      const ctx = getAudioCtx();
+      if (!ctx) return;
+      // Two-tone alarm pattern
+      const pattern = [880, 660, 880, 660];
+      pattern.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.value = freq;
+        const start = ctx.currentTime + i * 0.22;
+        gain.gain.setValueAtTime(0, start);
+        gain.gain.linearRampToValueAtTime(0.3, start + 0.03);
+        gain.gain.linearRampToValueAtTime(0, start + 0.2);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(start);
+        osc.stop(start + 0.22);
+      });
+    }
+
+    function startAlertSound() {
+      // Play immediately, then repeat every 1.2s until dismissed
+      playBeepBurst();
+      state.alertSoundIntervalId = setInterval(playBeepBurst, 1200);
+    }
+
+    function stopAlertSound() {
+      if (state.alertSoundIntervalId) {
+        clearInterval(state.alertSoundIntervalId);
+        state.alertSoundIntervalId = null;
+      }
+    }
+
+    function startTitleFlash(timeStr) {
+      let toggle = false;
+      state.titleFlashIntervalId = setInterval(() => {
+        toggle = !toggle;
+        document.title = toggle ? `🔔 ALARM — ${timeStr}` : `⏰ ${state.originalTitle}`;
+      }, 800);
+    }
+
+    function stopTitleFlash() {
+      if (state.titleFlashIntervalId) {
+        clearInterval(state.titleFlashIntervalId);
+        state.titleFlashIntervalId = null;
+      }
+      document.title = state.originalTitle;
+    }
+
+    function requestNotificationPermission() {
+      if (!('Notification' in window)) return;
+      if (Notification.permission === 'default') {
+        Notification.requestPermission().catch(() => {});
+      }
+    }
+
+    function sendBrowserNotification(timeStr) {
+      if (!('Notification' in window)) return;
+      if (Notification.permission !== 'granted') return;
+      try {
+        const n = new Notification('⏰ Alarm', {
+          body: `It's ${timeStr} — your alarm is going off.`,
+          tag: 'widget-alarm',
+          requireInteraction: true
+        });
+        n.onclick = () => { window.focus(); n.close(); };
+      } catch (e) { /* ignore */ }
+    }
+
+    function fireAlert() {
+      const target = state.alarmTarget || new Date();
+      const timeStr = formatClock12(target);
+
+      // Visual: overlay + body flash
+      alertTime.textContent = timeStr;
+      alertOverlay.classList.add('open');
+      document.body.classList.add('alarm-firing');
+
+      // Audio: repeating beep
+      startAlertSound();
+
+      // Tab title flash
+      startTitleFlash(timeStr);
+
+      // Browser notification (works if tab is in background)
+      sendBrowserNotification(timeStr);
+
+      // Vibrate on mobile (Android/Chrome)
+      if (navigator.vibrate) {
+        try { navigator.vibrate([500, 250, 500, 250, 500, 250, 500]); } catch (e) {}
+      }
+    }
+
+    function dismissAlert() {
+      alertOverlay.classList.remove('open');
+      document.body.classList.remove('alarm-firing');
+      stopAlertSound();
+      stopTitleFlash();
+      if (navigator.vibrate) { try { navigator.vibrate(0); } catch (e) {} }
+
+      // Reset alarm state
+      state.alarmTarget = null;
+      alarmCountdown.classList.remove('visible');
+      alarmBtn.classList.remove('armed');
+      alarmBtn.textContent = 'Alarm';
     }
 
     function setMode(mode) {
@@ -895,6 +818,10 @@
       alarmTimeInput.value = `${hh}:${mm}`;
       alarmModal.classList.add('open');
       setTimeout(() => alarmTimeInput.focus(), 50);
+      // Ask for notification permission on user gesture
+      requestNotificationPermission();
+      // Prime audio context so it can play later without user gesture
+      getAudioCtx();
     }
 
     function closeAlarmModal() { alarmModal.classList.remove('open'); }
@@ -943,17 +870,11 @@
       alarmCountdownLabel.textContent = `Alarm set for ${formatClock12(state.alarmTarget)}`;
       alarmCountdownTime.textContent = formatHMS(diffSec);
       if (diffSec <= 0) {
-        playAlarmSound();
         clearInterval(state.alarmIntervalId);
         state.alarmIntervalId = null;
         alarmCountdownLabel.textContent = `Alarm — ${formatClock12(state.alarmTarget)}`;
         alarmCountdownTime.textContent = '00:00';
-        state.alarmTarget = null;
-        setTimeout(() => {
-          alarmBtn.classList.remove('armed');
-          alarmBtn.textContent = 'Alarm';
-          alarmCountdown.classList.remove('visible');
-        }, 30000);
+        fireAlert();
       }
     }
 
@@ -1087,6 +1008,8 @@
     alarmTimeInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') { e.preventDefault(); setAlarmFromInput(); }
     });
+
+    alertDismiss.addEventListener('click', dismissAlert);
 
     updateDisplay();
     updateWallclock();
