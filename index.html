@@ -629,51 +629,23 @@
       align-self: center;
     }
 
-    .yt-search {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .yt-search-input {
+    .video-frame {
+      position: relative;
       width: 100%;
+      aspect-ratio: 16 / 9;
       border: 1px solid var(--line);
-      background: var(--surface);
-      color: var(--fg);
-      border-radius: 999px;
-      padding: 10px 14px;
-      font: inherit;
-      font-size: 12px;
-      outline: none;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 1px 1px rgba(0,0,0,0.04), 0 2px 6px rgba(0,0,0,0.06), 0 8px 14px -6px rgba(0,0,0,0.08);
     }
 
-    .yt-search-input:focus {
-      border-color: var(--fg);
-      box-shadow: 0 0 0 2px rgba(0,0,0,0.06);
-    }
-
-    .yt-search-btn {
-      border: 1px solid var(--fg);
-      background: var(--fg);
-      color: #fff;
-      border-radius: 999px;
-      padding: 10px 14px;
-      font-family: inherit;
-      font-size: 9px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: transform 0.15s ease, background 0.15s ease;
-    }
-
-    .yt-search-btn:hover {
-      background: #222;
-    }
-
-    .yt-search-btn:active {
-      transform: scale(0.98);
+    .video-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
     }
 
     .video-hint {
@@ -707,14 +679,6 @@
       .panel-body {
         max-width: min(100%, 320px);
         margin: 0 auto;
-      }
-
-      .yt-search {
-        grid-template-columns: 1fr;
-      }
-
-      .yt-search-btn {
-        width: 100%;
       }
     }
   </style>
@@ -832,25 +796,24 @@
       </div>
     </section>
 
-    <section class="video-section section-block" aria-label="YouTube search" data-section="video">
+    <section class="video-section section-block" aria-label="YouTube playlist" data-section="video">
       <button class="section-toggle" type="button" aria-expanded="true" style="padding-left:14px;padding-right:14px;">
-        <span class="toggle-label">YouTube Search</span>
+        <span class="toggle-label">Playlist</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
       </button>
       <div class="section-content">
         <div class="video-shell">
-          <form id="ytSearchForm" class="yt-search" action="https://www.youtube.com/results" method="get" target="_blank">
-            <input
-              type="text"
-              name="search_query"
-              id="ytSearchInput"
-              class="yt-search-input"
-              placeholder="Search YouTube for focus music, rain, jazz, lo-fi..."
-              autocomplete="off"
-            />
-            <button type="submit" class="yt-search-btn">Search</button>
-          </form>
-          <div class="video-hint">Search opens YouTube in a new tab.</div>
+          <div class="video-frame">
+            <iframe
+              src="https://www.youtube.com/embed/videoseries?list=PLLDVfSPfze0sxfxFLm6-ak22O9BO0eLex"
+              title="YouTube playlist player"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen>
+            </iframe>
+          </div>
+          <div class="video-hint">This playlist plays directly inside the widget.</div>
         </div>
       </div>
     </section>
