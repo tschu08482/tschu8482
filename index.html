@@ -56,7 +56,7 @@
       max-width: 100%;
       container-type: inline-size;
       border-radius: 18px;
-      padding: 36px 0 32px; /* increased overall height */
+      padding: 36px 0 32px;
     }
 
     .card {
@@ -528,7 +528,7 @@
     .notes-clear.armed { background: #b00020; color: #fff; border-color: #b00020; }
 
     .notes-shell {
-      max-height: 320px;  /* scrollable sticky area, slightly taller */
+      max-height: 320px;
       overflow-y: auto;
       padding-right: 4px;
     }
@@ -716,8 +716,7 @@
           <div class="panel-body">
             <div class="modes" role="tablist">
               <button class="mode active" data-mode="focus">Focus</button>
-              <button class="mode" data-mode="short">Short</button>
-              <button class="mode" data-mode="long">Long</button>
+              <button class="mode" data-mode="break">Break</button>
             </div>
 
             <div class="controls">
@@ -746,20 +745,11 @@
               </div>
 
               <div class="field">
-                <label>Short</label>
+                <label>Break</label>
                 <div class="stepper">
-                  <button data-step="-1" data-field="short" aria-label="Decrease short break">−</button>
-                  <input type="number" id="input-short" min="1" max="60" value="5" />
-                  <button data-step="1" data-field="short" aria-label="Increase short break">+</button>
-                </div>
-              </div>
-
-              <div class="field">
-                <label>Long</label>
-                <div class="stepper">
-                  <button data-step="-1" data-field="long" aria-label="Decrease long break">−</button>
-                  <input type="number" id="input-long" min="1" max="60" value="15" />
-                  <button data-step="1" data-field="long" aria-label="Increase long break">+</button>
+                  <button data-step="-1" data-field="break" aria-label="Decrease break">−</button>
+                  <input type="number" id="input-break" min="1" max="60" value="5" />
+                  <button data-step="1" data-field="break" aria-label="Increase break">+</button>
                 </div>
               </div>
             </div>
@@ -864,18 +854,17 @@
       const CIRC = 2 * Math.PI * 84;
       progressEl.style.strokeDasharray = CIRC;
 
-      const LIMITS = { focus: [1, 120], short: [1, 60], long: [1, 60] };
-      const DEFAULTS = { focus: 25, short: 5, long: 15 };
+      const LIMITS = { focus: [1, 120], break: [1, 60] };
+      const DEFAULTS = { focus: 25, break: 5 };
       const stored = JSON.parse(localStorage.getItem('pomodoro-durations') || '{}');
       const MINUTES = { ...DEFAULTS, ...stored };
       const DURATIONS = {
         get focus() { return MINUTES.focus * 60; },
-        get short() { return MINUTES.short * 60; },
-        get long() { return MINUTES.long * 60; }
+        get break() { return MINUTES.break * 60; }
       };
-      const LABELS = { focus: 'Focus', short: 'Short break', long: 'Long break' };
+      const LABELS = { focus: 'Focus', break: 'Break' };
 
-      ['focus', 'short', 'long'].forEach(k => {
+      ['focus', 'break'].forEach(k => {
         const el = document.getElementById('input-' + k);
         if (el) el.value = MINUTES[k];
       });
@@ -1023,7 +1012,8 @@
 
       function onComplete() {
         beep();
-        if (mode === 'focus') setMode('short');
+        // simple cycle: focus <-> break
+        if (mode === 'focus') setMode('break');
         else setMode('focus');
       }
 
@@ -1105,7 +1095,7 @@
         });
       });
 
-      ['focus', 'short', 'long'].forEach(field => {
+      ['focus', 'break'].forEach(field => {
         const el = document.getElementById('input-' + field);
         el.addEventListener('change', () => applyDuration(field, parseInt(el.value, 10)));
         el.addEventListener('blur', () => applyDuration(field, parseInt(el.value, 10)));
@@ -1307,9 +1297,8 @@
         if (clearArmed && e.target !== notesClearEl) disarmClear();
       });
 
-      // New notes at top
       notesAddEl.addEventListener('click', () => {
-        notes.unshift('');       // insert at index 0 (top)
+        notes.unshift('');       // new note at top
         saveNotes();
         renderNotes();
         const stickies = notesListEl.querySelectorAll('.sticky-text');
