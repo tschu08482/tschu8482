@@ -951,4 +951,433 @@
         const pct = total > 0 ? remaining / total : 0;
         progressEl.style.strokeDashoffset = CIRC * (1 - pct);
         document.title = `${fmt(remaining)} — ${LABELS[mode]}`;
-        statusEl.textContent = running ? LABELS[mode] : (remaining === total ? 
+        statusEl.textContent = running ? LABELS[mode] : (remaining === total ? 'Ready' : 'Paused');
+        startPauseBtn.textContent = running ? 'Pause' : (remaining === total ? 'Start' : 'Resume');
+        modeBtns.forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+      }
+
+      function parseTimeInput(str) {
+        if (!str) return null;
+        const cleaned = str.trim().replace(/[^0-9:]/g, '');
+        if (!cleaned) return null;
+        let mins = 0, secs = 0;
+        if (cleaned.includes(':')) {
+          const parts = cleaned.split(':');
+          mins = parseInt(parts[0], 10) || 0;
+          secs = parseInt(parts[1], 10) || 0;
+        } else {
+          mins = parseInt(cleaned, 10) || 0;
+        }
+        const totalSec = mins * 60 + secs;
+        if (totalSec <= 0) return null;
+        if (totalSec > 24 * 60 * 60) return 24 * 60 * 60;
+        return totalSec;
+      }
+
+      function commitTimeEdit() {
+        const parsed = parseTimeInput(timeEl.textContent);
+        if (parsed === null) {
+          timeEl.textContent = fmt(remaining);
+          return;
+        }
+        running = false;
+        clearInterval(intervalId);
+        total = parsed;
+        remaining = parsed;
+        render();
+      }
+
+      function setMode(next) {
+        mode = next;
+        total = DURATIONS[mode];
+        remaining = total;
+        running = false;
+        clearInterval(intervalId);
+        render();
+      }
+
+      function tick() {
+        if (remaining <= 0) {
+          clearInterval(intervalId);
+          running = false;
+          onComplete();
+          return;
+        }
+        remaining -= 1;
+        render();
+      }
+
+      function start() {
+        if (running) return;
+        running = true;
+        intervalId = setInterval(tick, 1000);
+        render();
+      }
+
+      function pause() {
+        running = false;
+        clearInterval(intervalId);
+        render();
+      }
+
+      function reset() {
+        running = false;
+        clearInterval(intervalId);
+        remaining = total;
+        render();
+      }
+
+      function beep() {
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const now = ctx.currentTime;
+          const master = ctx.createGain();
+          master.gain.value = 0.9;
+          const filter = ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.value = 2200;
+          master.connect(filter).connect(ctx.destination);
+          [
+            { freq: 1046.5, start: 0.0, dur: 2.4, gain: 0.14 },
+            { freq: 1567.98, start: 0.35, dur: 2.0, gain: 0.09 }
+          ].forEach(n => {
+            const o1 = ctx.createOscillator();
+            const o2 = ctx.createOscillator();
+            const g1 = ctx.createGain();
+            const g2 = ctx.createGain();
+            o1.type = 'sine';
+            o2.type = 'sine';
+            o1.frequency.value = n.freq;
+            o2.frequency.value = n.freq * 2;
+            g1.gain.setValueAtTime(0.0001, now + n.start);
+            g1.gain.exponentialRampToValueAtTime(n.gain, now + n.start + 0.06);
+            g1.gain.exponentialRampToValueAtTime(0.0001, now + n.start + n.dur);
+            g2.gain.setValueAtTime(0.0001, now + n.start);
+            g2.gain.exponentialRampToValueAtTime(n.gain * 0.25, now + n.start + 0.06);
+            g2.gain.exponentialRampToValueAtTime(0.0001, now + n.start + n.dur * 0.7);
+            o1.connect(g1).connect(master);
+            o2.connect(g2).connect(master);
+            o1.start(now + n.start);
+            o2.start(now + n.start);
+            o1.stop(now + n.start + n.dur + 0.1);
+            o2.stop(now + n.start + n.dur + 0.1);
+          });
+          setTimeout(() => ctx.close(), 3200);
+        } catch (e) {}
+      }
+
+      function onComplete() {
+        beep();
+        if (mode === 'focus') setMode('short');
+        else setMode('focus');
+      }
+
+      function skip() {
+        remaining = 0;
+        running = false;
+        clearInterval(intervalId);
+        onComplete();
+      }
+
+      startPauseBtn.addEventListener('click', () => running ? pause() : start());
+      resetBtn.addEventListener('click', reset);
+      skipBtn.addEventListener('click', skip);
+      modeBtns.forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+
+      timeEl.addEventListener('focus', () => {
+        if (running) pause();
+        const range = document.createRange();
+        range.selectNodeContents(timeEl);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      });
+
+      timeEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          timeEl.blur();
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          timeEl.textContent = fmt(remaining);
+          timeEl.blur();
+        }
+      });
+
+      timeEl.addEventListener('blur', commitTimeEdit);
+
+      document.addEventListener('keydown', (e) => {
+        if (document.activeElement === timeEl) return;
+        const tag = e.target.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
+        if (e.code === 'Space') {
+          e.preventDefault();
+          running ? pause() : start();
+        }
+        if (e.key.toLowerCase() === 'r') reset();
+        if (e.key.toLowerCase() === 's') skip();
+      });
+
+      settingsToggle.addEventListener('click', () => {
+        const open = settingsPanel.classList.toggle('open');
+        settingsToggle.classList.toggle('open', open);
+        settingsToggle.setAttribute('aria-expanded', open);
+        settingsPanel.setAttribute('aria-hidden', !open);
+      });
+
+      function saveDurations() {
+        localStorage.setItem('pomodoro-durations', JSON.stringify(MINUTES));
+      }
+
+      function applyDuration(field, minutes) {
+        const [min, max] = LIMITS[field];
+        minutes = Math.max(min, Math.min(max, Math.round(minutes || min)));
+        MINUTES[field] = minutes;
+        document.getElementById('input-' + field).value = minutes;
+        saveDurations();
+        if (mode === field && !running) {
+          total = DURATIONS[mode];
+          if (remaining > total || remaining === total) remaining = total;
+          render();
+        }
+      }
+
+      document.querySelectorAll('.stepper button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const field = btn.dataset.field;
+          const step = parseInt(btn.dataset.step, 10);
+          applyDuration(field, MINUTES[field] + step);
+        });
+      });
+
+      ['focus', 'short', 'long'].forEach(field => {
+        const el = document.getElementById('input-' + field);
+        el.addEventListener('change', () => applyDuration(field, parseInt(el.value, 10)));
+        el.addEventListener('blur', () => applyDuration(field, parseInt(el.value, 10)));
+      });
+
+      const clockTimeEl = document.getElementById('clockTime');
+      const clockDateEl = document.getElementById('clockDate');
+
+      function updateClock() {
+        try {
+          const now = new Date();
+          const time = now.toLocaleTimeString('en-US', {
+            timeZone: 'America/New_York',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          });
+          const date = now.toLocaleDateString('en-US', {
+            timeZone: 'America/New_York',
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric'
+          });
+          clockTimeEl.textContent = time;
+          clockDateEl.textContent = `${date} · ET`;
+        } catch (e) {
+          clockTimeEl.textContent = '';
+          clockDateEl.textContent = 'Eastern Time';
+        }
+      }
+
+      updateClock();
+      setInterval(updateClock, 15000);
+
+      function setCollapsed(collapsed) {
+        pageEl.classList.toggle('collapsed', collapsed);
+        collapseBtn.setAttribute('aria-label', collapsed ? 'Expand widget' : 'Collapse widget');
+        collapseBtn.setAttribute('title', collapsed ? 'Expand' : 'Collapse');
+        try { localStorage.setItem('pomodoro-collapsed', collapsed ? '1' : '0'); } catch (e) {}
+      }
+
+      collapseBtn.addEventListener('click', () => {
+        setCollapsed(!pageEl.classList.contains('collapsed'));
+      });
+
+      try {
+        if (localStorage.getItem('pomodoro-collapsed') === '1') setCollapsed(true);
+      } catch (e) {}
+
+      document.querySelectorAll('.section-block').forEach((section, idx) => {
+        const toggle = section.querySelector('.section-toggle');
+        const key = `pomodoro-section-${idx}`;
+        if (!toggle) return;
+
+        const setOpen = (open) => {
+          section.classList.toggle('collapsed', !open);
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+          try { localStorage.setItem(key, open ? '1' : '0'); } catch (e) {}
+        };
+
+        toggle.addEventListener('click', () => {
+          const open = toggle.getAttribute('aria-expanded') === 'true';
+          setOpen(!open);
+        });
+
+        try {
+          const saved = localStorage.getItem(key);
+          if (saved === '0') setOpen(false);
+        } catch (e) {}
+      });
+
+      const ytFrame = document.getElementById('ytFrame');
+      const playlistButtons = document.querySelectorAll('.video-playlist-btn');
+
+      playlistButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          playlistButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const playlistId = btn.dataset.pl;
+          ytFrame.src = `https://www.youtube.com/embed/videoseries?list=${encodeURIComponent(playlistId)}`;
+        });
+      });
+
+      render();
+    })();
+
+    (() => {
+      const notesListEl = document.getElementById('notesList');
+      const notesAddEl = document.getElementById('notesAdd');
+      const notesClearEl = document.getElementById('notesClear');
+      let notes = JSON.parse(localStorage.getItem('pomodoro-notes') || '[]');
+
+      function saveNotes() {
+        localStorage.setItem('pomodoro-notes', JSON.stringify(notes));
+        updateClearButton();
+      }
+
+      function updateClearButton() {
+        if (notesClearEl) notesClearEl.disabled = notes.length === 0;
+      }
+
+      function renderNotes() {
+        notesListEl.innerHTML = '';
+
+        if (notes.length === 0) {
+          const empty = document.createElement('div');
+          empty.className = 'notes-empty';
+          empty.textContent = 'Tap + to add a sticky';
+          notesListEl.appendChild(empty);
+          return;
+        }
+
+        notes.forEach((n, idx) => {
+          const s = document.createElement('div');
+          s.className = 'sticky';
+          s.setAttribute('draggable', 'true');
+          s.dataset.idx = idx;
+
+          const del = document.createElement('button');
+          del.className = 'sticky-del';
+          del.setAttribute('aria-label', 'Delete note');
+          del.textContent = '×';
+          del.setAttribute('draggable', 'false');
+          del.addEventListener('mousedown', (e) => e.stopPropagation());
+          del.addEventListener('click', (e) => {
+            e.stopPropagation();
+            notes.splice(idx, 1);
+            saveNotes();
+            renderNotes();
+          });
+
+          const ta = document.createElement('textarea');
+          ta.className = 'sticky-text';
+          ta.value = n;
+          ta.placeholder = 'Write…';
+          ta.addEventListener('mousedown', (e) => e.stopPropagation());
+          ta.addEventListener('focus', () => { s.setAttribute('draggable', 'false'); });
+          ta.addEventListener('blur', () => { s.setAttribute('draggable', 'true'); });
+          ta.addEventListener('input', () => {
+            notes[idx] = ta.value;
+            saveNotes();
+          });
+
+          s.addEventListener('dragstart', (e) => {
+            s.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', String(idx));
+          });
+
+          s.addEventListener('dragend', () => {
+            s.classList.remove('dragging');
+            document.querySelectorAll('.sticky.drop-target').forEach(el => el.classList.remove('drop-target'));
+          });
+
+          s.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            if (!s.classList.contains('dragging')) s.classList.add('drop-target');
+          });
+
+          s.addEventListener('dragleave', () => {
+            s.classList.remove('drop-target');
+          });
+
+          s.addEventListener('drop', (e) => {
+            e.preventDefault();
+            s.classList.remove('drop-target');
+            const fromIdx = parseInt(e.dataTransfer.getData('text/plain'), 10);
+            const toIdx = idx;
+            if (isNaN(fromIdx) || fromIdx === toIdx) return;
+            const [moved] = notes.splice(fromIdx, 1);
+            notes.splice(toIdx, 0, moved);
+            saveNotes();
+            renderNotes();
+          });
+
+          s.appendChild(del);
+          s.appendChild(ta);
+          notesListEl.appendChild(s);
+        });
+      }
+
+      let clearArmed = false;
+      let clearArmedTimer = null;
+      const clearOriginalText = notesClearEl.textContent;
+
+      function disarmClear() {
+        clearArmed = false;
+        if (clearArmedTimer) {
+          clearTimeout(clearArmedTimer);
+          clearArmedTimer = null;
+        }
+        notesClearEl.textContent = clearOriginalText;
+        notesClearEl.classList.remove('armed');
+      }
+
+      notesClearEl.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (notes.length === 0) return;
+        if (!clearArmed) {
+          clearArmed = true;
+          notesClearEl.textContent = 'Confirm?';
+          notesClearEl.classList.add('armed');
+          clearArmedTimer = setTimeout(disarmClear, 3000);
+          return;
+        }
+        notes = [];
+        saveNotes();
+        renderNotes();
+        disarmClear();
+      });
+
+      document.addEventListener('click', (e) => {
+        if (clearArmed && e.target !== notesClearEl) disarmClear();
+      });
+
+      notesAddEl.addEventListener('click', () => {
+        notes.push('');
+        saveNotes();
+        renderNotes();
+        const stickies = notesListEl.querySelectorAll('.sticky-text');
+        if (stickies.length) stickies[stickies.length - 1].focus();
+      });
+
+      renderNotes();
+      updateClearButton();
+    })();
+  </script>
+</body>
+</html>
