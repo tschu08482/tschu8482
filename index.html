@@ -56,7 +56,6 @@
       position: relative;
       container-type: inline-size;
       border-radius: 18px;
-      /* border removed */
       padding-top: 40px;
     }
 
@@ -95,20 +94,6 @@
     .page.collapsed .notes-section,
     .page.collapsed .video-section {
       display: none;
-    }
-
-    .header-title {
-      font-size: clamp(20px, calc(var(--embed-w) * 0.032), 26px);
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      padding: 8px 52px 4px;
-    }
-
-    .header-rule {
-      height: 1px;
-      background: var(--line);
-      margin: 0 52px 10px;
     }
 
     .card {
@@ -486,4 +471,484 @@
     .video-shell {
       display: flex;
       flex-direction: column;
-      align
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .notes {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .section-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+      background: transparent;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .section-toggle svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      color: var(--muted);
+      transition: transform 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .section-content {
+      overflow: hidden;
+      max-height: 1400px;
+      opacity: 1;
+      transition: max-height 0.25s ease, opacity 0.2s ease, margin-top 0.2s ease;
+      margin-top: var(--space-2);
+    }
+
+    .section-block.collapsed .section-toggle svg { transform: rotate(-90deg); }
+    .section-block.collapsed .section-content {
+      max-height: 0;
+      opacity: 0;
+      margin-top: 0;
+    }
+
+    .notes-header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .notes-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .notes-add,
+    .notes-clear {
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--fg);
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .notes-add { width: 20px; font-size: 13px; }
+    .notes-clear {
+      padding: 0 8px;
+      font-size: 7px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .notes-add:hover { background: var(--fg); color: #fff; border-color: var(--fg); }
+    .notes-clear:hover { color: #b00020; border-color: #b00020; }
+    .notes-clear:disabled { opacity: 0.35; cursor: not-allowed; }
+    .notes-clear.armed { background: #b00020; color: #fff; border-color: #b00020; }
+
+    .notes-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 14px;
+      padding: 8px 2px 6px;
+      min-height: 60px;
+    }
+
+    .sticky {
+      position: relative;
+      width: 100%;
+      height: 130px;
+      background: #fff9c4;
+      border-radius: 4px;
+      padding: 10px 12px 8px;
+      box-shadow: 0 1px 1px rgba(0,0,0,0.04), 0 2px 6px rgba(0,0,0,0.06), 0 8px 14px -6px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+      cursor: grab;
+    }
+
+    .sticky:nth-child(4n+1) { background: #fff9c4; transform: rotate(-1.4deg); }
+    .sticky:nth-child(4n+2) { background: #ffe0b2; transform: rotate(1.2deg); }
+    .sticky:nth-child(4n+3) { background: #ffccbc; transform: rotate(-0.6deg); }
+    .sticky:nth-child(4n) { background: #dcedc8; transform: rotate(1.6deg); }
+
+    .sticky:hover {
+      transform: rotate(0deg) translateY(-2px);
+      box-shadow: 0 2px 2px rgba(0,0,0,0.05), 0 6px 12px rgba(0,0,0,0.08), 0 14px 20px -8px rgba(0,0,0,0.12);
+      z-index: 2;
+    }
+
+    .sticky.dragging {
+      opacity: 0.4;
+      transform: rotate(0deg) scale(0.98);
+    }
+
+    .sticky.drop-target {
+      box-shadow: 0 0 0 2px var(--fg), 0 2px 6px rgba(0,0,0,0.06), 0 8px 14px -6px rgba(0,0,0,0.08);
+    }
+
+    .sticky-text {
+      flex: 1;
+      border: none;
+      background: transparent;
+      outline: none;
+      resize: none;
+      font-family: inherit;
+      font-size: 11px;
+      line-height: 1.4;
+      color: #1a1a1a;
+      padding: 0 20px 0 0;
+      width: 100%;
+      min-height: 26px;
+    }
+
+    .sticky-del {
+      position: absolute;
+      top: 3px;
+      right: 4px;
+      width: 16px;
+      height: 16px;
+      border: none;
+      background: transparent;
+      color: rgba(0,0,0,0.4);
+      font-size: 14px;
+      cursor: pointer;
+      opacity: 0.35;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .sticky:hover .sticky-del { opacity: 1; }
+    .sticky-del:hover { color: #000; background: rgba(0,0,0,0.06); }
+
+    .notes-empty {
+      font-size: 8px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      padding: 6px 2px;
+      font-style: italic;
+      align-self: center;
+    }
+
+    .video-playlists {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+
+    .video-playlist-btn {
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      font-size: 7px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .video-playlist-btn.active {
+      background: var(--fg);
+      color: #fff;
+      border-color: var(--fg);
+    }
+
+    .video-frame {
+      position: relative;
+      width: 100%;
+      max-width: 240px;
+      aspect-ratio: 16 / 9;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 1px 1px rgba(0,0,0,0.04), 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    .video-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .video-hint {
+      font-size: 8px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-top: 6px;
+      padding-left: 2px;
+    }
+
+    @container (max-width: 640px) {
+      .page { border-radius: 0; padding-top: 34px; }
+      .card { grid-template-columns: 1fr; gap: var(--space-4); }
+      .wallclock {
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+        padding-right: 0;
+        padding-left: 40px;
+        padding-bottom: var(--space-4);
+        min-height: auto;
+      }
+      .dial-col { padding-right: 40px; }
+      .dial-row {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+      .panel-body {
+        max-width: min(100%, 320px);
+        margin: 0 auto;
+      }
+      .notes-section,
+      .video-section {
+        padding-inline: 40px;
+      }
+      .video-frame {
+        max-width: 220px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page" id="page">
+    <button class="collapse-btn" id="collapseBtn" aria-label="Collapse widget" title="Collapse">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
+    </button>
+
+    <div class="card">
+      <div class="wallclock" data-section="time">
+        <div class="wallclock-label">Current Time</div>
+        <div class="wallclock-body">
+          <span class="wallclock-time" id="clockTime">—</span>
+          <span class="wallclock-date" id="clockDate">Eastern Time</span>
+        </div>
+      </div>
+
+      <div class="dial-col" data-section="pomodoro">
+        <div class="dial-label">Pomodoro Clock</div>
+
+        <div class="dial-row">
+          <div class="dial-wrap">
+            <svg class="dial" viewBox="0 0 180 180" aria-hidden="true">
+              <circle class="track" cx="90" cy="90" r="84"></circle>
+              <circle class="progress" cx="90" cy="90" r="84" stroke-dasharray="527.79" stroke-dashoffset="0"></circle>
+            </svg>
+            <div class="ticks" id="ticks"></div>
+            <div class="readout">
+              <div class="time" id="time" contenteditable="true" spellcheck="false" inputmode="numeric" title="Click to set a custom time (MM:SS or minutes)">25:00</div>
+              <div class="status" id="status">Ready</div>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <div class="modes" role="tablist">
+              <button class="mode active" data-mode="focus">Focus</button>
+              <button class="mode" data-mode="short">Short</button>
+              <button class="mode" data-mode="long">Long</button>
+            </div>
+
+            <div class="controls">
+              <button class="btn icon" id="reset" aria-label="Reset">
+                <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+              </button>
+              <button class="btn primary" id="startPause">Start</button>
+              <button class="btn icon" id="skip" aria-label="Skip">
+                <svg viewBox="0 0 24 24"><path d="M5 4l10 8-10 8V4z"/><path d="M19 5v14"/></svg>
+              </button>
+            </div>
+
+            <button class="settings-toggle" id="settingsToggle" aria-expanded="false">
+              <span>Customize</span>
+              <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+
+            <div class="settings" id="settings" aria-hidden="true">
+              <div class="field">
+                <label>Focus</label>
+                <div class="stepper">
+                  <button data-step="-1" data-field="focus" aria-label="Decrease focus">−</button>
+                  <input type="number" id="input-focus" min="1" max="120" value="25" />
+                  <button data-step="1" data-field="focus" aria-label="Increase focus">+</button>
+                </div>
+              </div>
+
+              <div class="field">
+                <label>Short</label>
+                <div class="stepper">
+                  <button data-step="-1" data-field="short" aria-label="Decrease short break">−</button>
+                  <input type="number" id="input-short" min="1" max="60" value="5" />
+                  <button data-step="1" data-field="short" aria-label="Increase short break">+</button>
+                </div>
+              </div>
+
+              <div class="field">
+                <label>Long</label>
+                <div class="stepper">
+                  <button data-step="-1" data-field="long" aria-label="Decrease long break">−</button>
+                  <input type="number" id="input-long" min="1" max="60" value="15" />
+                  <button data-step="1" data-field="long" aria-label="Increase long break">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="notes-section section-block" aria-label="Sticky notes" data-section="notes">
+      <button class="section-toggle" type="button" aria-expanded="true">
+        <span class="toggle-label">Sticky Notes</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+
+      <div class="section-content">
+        <div class="notes-shell">
+          <div class="notes">
+            <div class="notes-header">
+              <div class="notes-actions">
+                <button class="notes-clear" id="notesClear" aria-label="Clear all notes" title="Clear all notes">Clear</button>
+                <button class="notes-add" id="notesAdd" aria-label="Add sticky note">+</button>
+              </div>
+            </div>
+            <div class="notes-list" id="notesList"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="video-section section-block" aria-label="YouTube playlist" data-section="video">
+      <button class="section-toggle" type="button" aria-expanded="true">
+        <span class="toggle-label">Playlist</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+
+      <div class="section-content">
+        <div class="video-shell">
+          <div class="video-playlists">
+            <button
+              class="video-playlist-btn active"
+              type="button"
+              data-pl="PLLDVfSPfze0sxfxFLm6-ak22O9BO0eLex">
+              Country / Acoustic
+            </button>
+            <button
+              class="video-playlist-btn"
+              type="button"
+              data-pl="RDoPVte6aMprI">
+              Deep Focus Mix
+            </button>
+          </div>
+
+          <div class="video-frame">
+            <iframe
+              id="ytFrame"
+              src="https://www.youtube.com/embed/videoseries?list=PLLDVfSPfze0sxfxFLm6-ak22O9BO0eLex"
+              title="YouTube playlist player"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen>
+            </iframe>
+          </div>
+
+          <div class="video-hint">Compact player with two playlist options.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (() => {
+      const timeEl = document.getElementById('time');
+      const statusEl = document.getElementById('status');
+      const startPauseBtn = document.getElementById('startPause');
+      const resetBtn = document.getElementById('reset');
+      const skipBtn = document.getElementById('skip');
+      const progressEl = document.querySelector('.progress');
+      const modeBtns = document.querySelectorAll('.mode');
+      const ticksEl = document.getElementById('ticks');
+      const settingsToggle = document.getElementById('settingsToggle');
+      const settingsPanel = document.getElementById('settings');
+      const pageEl = document.getElementById('page');
+      const collapseBtn = document.getElementById('collapseBtn');
+
+      function updateEmbedWidth() {
+        const width = Math.max(320, Math.round((pageEl.getBoundingClientRect().width || window.innerWidth || 760)));
+        document.documentElement.style.setProperty('--embed-w', width + 'px');
+      }
+
+      updateEmbedWidth();
+      window.addEventListener('resize', updateEmbedWidth);
+      if (window.ResizeObserver && pageEl) new ResizeObserver(updateEmbedWidth).observe(pageEl);
+
+      const TICKS = 60;
+      for (let i = 0; i < TICKS; i++) {
+        const t = document.createElement('div');
+        t.className = 'tick' + (i % 5 === 0 ? ' major' : '');
+        t.style.transform = `translateX(-50%) rotate(${(i / TICKS) * 360}deg)`;
+        ticksEl.appendChild(t);
+      }
+
+      const CIRC = 2 * Math.PI * 84;
+      progressEl.style.strokeDasharray = CIRC;
+
+      const LIMITS = { focus: [1, 120], short: [1, 60], long: [1, 60] };
+      const DEFAULTS = { focus: 25, short: 5, long: 15 };
+      const stored = JSON.parse(localStorage.getItem('pomodoro-durations') || '{}');
+      const MINUTES = { ...DEFAULTS, ...stored };
+      const DURATIONS = {
+        get focus() { return MINUTES.focus * 60; },
+        get short() { return MINUTES.short * 60; },
+        get long() { return MINUTES.long * 60; }
+      };
+      const LABELS = { focus: 'Focus', short: 'Short break', long: 'Long break' };
+
+      ['focus', 'short', 'long'].forEach(k => {
+        const el = document.getElementById('input-' + k);
+        if (el) el.value = MINUTES[k];
+      });
+
+      let mode = 'focus';
+      let total = DURATIONS[mode];
+      let remaining = total;
+      let running = false;
+      let intervalId = null;
+
+      function fmt(s) {
+        const m = Math.floor(s / 60);
+        const sec = s % 60;
+        return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+      }
+
+      function render() {
+        if (document.activeElement !== timeEl) timeEl.textContent = fmt(remaining);
+        const pct = total > 0 ? remaining / total : 0;
+        progressEl.style.strokeDashoffset = CIRC * (1 - pct);
+        document.title = `${fmt(remaining)} — ${LABELS[mode]}`;
+        statusEl.textContent = running ? LABELS[mode] : (remaining === total ? 
