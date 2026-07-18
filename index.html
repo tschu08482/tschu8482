@@ -78,7 +78,7 @@
     .wallclock {
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: flex-start;
       gap: var(--space-2);
       padding-inline: 24px;
       padding-bottom: var(--space-4);
@@ -94,13 +94,14 @@
       color: var(--fg);
       font-weight: 700;
       margin-bottom: 6px;
-      text-align: center;
+      text-align: left;
+      width: 100%;
     }
 
     .dial-col {
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: flex-start;
       gap: var(--space-3);
       padding-inline: 24px;
     }
@@ -205,6 +206,7 @@
       align-items: center;
       gap: 6px;
       text-align: center;
+      width: 100%;
     }
 
     .wallclock-time {
@@ -216,6 +218,8 @@
       font-variant-numeric: tabular-nums;
       letter-spacing: -0.01em;
       white-space: nowrap;
+      width: 100%;
+      text-align: center;
     }
 
     .wallclock-date {
@@ -225,6 +229,8 @@
       color: var(--fg);
       margin-top: 4px;
       white-space: nowrap;
+      width: 100%;
+      text-align: center;
     }
 
     .panel-body {
@@ -809,7 +815,7 @@
 
     <section class="perplexity-section section-block" id="perplexitySection">
       <button class="section-toggle" type="button" aria-expanded="true" aria-controls="perplexityContent">
-        <span class="dial-label" style="margin:0; text-align:left;">Perplexity Search</span>
+        <span class="dial-label" style="margin:0;">Perplexity Search</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
       </button>
       <div class="section-content" id="perplexityContent">
@@ -823,7 +829,7 @@
 
     <section class="notes-section section-block" id="notesSection">
       <button class="section-toggle" type="button" aria-expanded="true" aria-controls="notesContent">
-        <span class="dial-label" style="margin:0; text-align:left;">Sticky Notes</span>
+        <span class="dial-label" style="margin:0;">Sticky Notes</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
       </button>
       <div class="section-content" id="notesContent">
@@ -844,7 +850,7 @@
 
     <section class="video-section section-block collapsed" id="videoSection">
       <button class="section-toggle" type="button" aria-expanded="false" aria-controls="videoContent">
-        <span class="dial-label" style="margin:0; text-align:left;">Music</span>
+        <span class="dial-label" style="margin:0;">Music</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
       </button>
       <div class="section-content" id="videoContent">
