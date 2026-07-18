@@ -448,9 +448,9 @@
 
     .section-toggle {
       width: 100%;
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr auto;
       align-items: center;
-      justify-content: space-between;
       gap: var(--space-2);
       background: transparent;
       border: none;
@@ -468,6 +468,7 @@
       color: var(--muted);
       transition: transform 0.2s ease;
       flex-shrink: 0;
+      justify-self: end;
     }
 
     .section-content {
@@ -724,7 +725,495 @@
   </style>
 </head>
 <body>
-  <!-- BODY CONTENT SAME AS PREVIOUS ANSWER -->
-  <!-- (omitted here for brevity; use the full version from my last message) -->
+  <div class="page">
+    <main class="card">
+      <section class="wallclock">
+        <div class="wallclock-label">Current Time</div>
+        <div class="wallclock-body">
+          <div class="wallclock-time" id="wallclockTime">--:--</div>
+          <div class="wallclock-date" id="wallclockDate">Eastern Time</div>
+        </div>
+      </section>
+
+      <section class="dial-col">
+        <div class="dial-label">Pomodoro Clock</div>
+        <div class="dial-row">
+          <div class="dial-wrap">
+            <svg class="dial" viewBox="0 0 120 120" aria-hidden="true">
+              <circle class="track" cx="60" cy="60" r="54"></circle>
+              <circle class="progress" id="progressRing" cx="60" cy="60" r="54"></circle>
+            </svg>
+            <div class="ticks" id="ticks"></div>
+            <div class="readout">
+              <div class="time" id="timeDisplay" contenteditable="true" spellcheck="false">25:00</div>
+              <div class="status" id="statusText">Ready</div>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <div class="modes" role="tablist" aria-label="Timer modes">
+              <button class="mode active" data-mode="focus" type="button">Focus</button>
+              <button class="mode" data-mode="short" type="button">Short</button>
+              <button class="mode" data-mode="long" type="button">Long</button>
+            </div>
+
+            <div class="controls">
+              <button class="btn icon" id="resetBtn" type="button" aria-label="Reset timer">
+                <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 3v6h6"></path></svg>
+              </button>
+              <button class="btn primary" id="startPauseBtn" type="button">Start</button>
+              <button class="btn icon" id="settingsToggle" type="button" aria-label="Customize durations">
+                <svg viewBox="0 0 24 24"><path d="M12 8v8"></path><path d="M8 12h8"></path></svg>
+              </button>
+            </div>
+
+            <button class="settings-toggle" id="settingsLabelToggle" type="button">
+              <span class="toggle-label">Customize</span>
+              <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg>
+            </button>
+
+            <div class="settings" id="settingsPanel">
+              <div class="field">
+                <label for="focusMinutes">Focus</label>
+                <div class="stepper">
+                  <button type="button" data-step="-1" data-target="focusMinutes">−</button>
+                  <input id="focusMinutes" type="number" min="1" max="180" value="25">
+                  <button type="button" data-step="1" data-target="focusMinutes">+</button>
+                </div>
+              </div>
+              <div class="field">
+                <label for="shortMinutes">Short</label>
+                <div class="stepper">
+                  <button type="button" data-step="-1" data-target="shortMinutes">−</button>
+                  <input id="shortMinutes" type="number" min="1" max="60" value="5">
+                  <button type="button" data-step="1" data-target="shortMinutes">+</button>
+                </div>
+              </div>
+              <div class="field">
+                <label for="longMinutes">Long</label>
+                <div class="stepper">
+                  <button type="button" data-step="-1" data-target="longMinutes">−</button>
+                  <input id="longMinutes" type="number" min="1" max="120" value="15">
+                  <button type="button" data-step="1" data-target="longMinutes">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <section class="notes-section section-block" id="notesSection">
+      <button class="section-toggle" type="button" aria-expanded="true" aria-controls="notesContent">
+        <span class="dial-label" style="margin:0; text-align:left;">Sticky Notes</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </button>
+      <div class="section-content" id="notesContent">
+        <div class="notes-shell">
+          <div class="notes">
+            <div class="notes-header">
+              <div class="notes-actions">
+                <button class="notes-add" id="addNoteBtn" type="button" aria-label="Add note">+</button>
+                <button class="notes-clear" id="clearNotesBtn" type="button" disabled>Clear</button>
+              </div>
+            </div>
+            <div class="notes-list" id="notesList"></div>
+            <div class="notes-empty" id="notesEmpty">No notes yet.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="video-section section-block collapsed" id="videoSection">
+      <button class="section-toggle" type="button" aria-expanded="false" aria-controls="videoContent">
+        <span class="dial-label" style="margin:0; text-align:left;">Focus Videos</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </button>
+      <div class="section-content" id="videoContent">
+        <div class="video-shell">
+          <div class="video-playlists" id="videoPlaylists"></div>
+          <div class="video-frame">
+            <iframe
+              id="videoFrame"
+              src="https://www.youtube-nocookie.com/embed/jfKfPfyJRdk?autoplay=0&rel=0"
+              title="Focus video"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen></iframe>
+          </div>
+          <div class="video-hint">Choose a playlist for background focus.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="perplexity-section section-block" id="perplexitySection">
+      <button class="section-toggle" type="button" aria-expanded="true" aria-controls="perplexityContent">
+        <span class="dial-label" style="margin:0; text-align:left;">Perplexity Search</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+      </button>
+      <div class="section-content" id="perplexityContent">
+        <form class="perplexity-form" id="perplexityForm">
+          <label class="sr-only" for="perplexityInput">Ask Perplexity</label>
+          <input id="perplexityInput" class="perplexity-input" type="text" placeholder="Ask Perplexity anything..." autocomplete="off" required>
+          <button class="btn perplexity-btn" type="submit">Search</button>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const state = {
+      durations: { focus: 25, short: 5, long: 15 },
+      mode: 'focus',
+      totalSeconds: 25 * 60,
+      remainingSeconds: 25 * 60,
+      running: false,
+      intervalId: null,
+      clearArmed: false,
+      notes: [],
+      dragIndex: null
+    };
+
+    const modes = document.querySelectorAll('.mode');
+    const timeDisplay = document.getElementById('timeDisplay');
+    const statusText = document.getElementById('statusText');
+    const startPauseBtn = document.getElementById('startPauseBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const settingsToggle = document.getElementById('settingsToggle');
+    const settingsLabelToggle = document.getElementById('settingsLabelToggle');
+    const settingsPanel = document.getElementById('settingsPanel');
+    const progressRing = document.getElementById('progressRing');
+    const ticks = document.getElementById('ticks');
+    const wallclockTime = document.getElementById('wallclockTime');
+    const wallclockDate = document.getElementById('wallclockDate');
+    const focusMinutes = document.getElementById('focusMinutes');
+    const shortMinutes = document.getElementById('shortMinutes');
+    const longMinutes = document.getElementById('longMinutes');
+    const notesList = document.getElementById('notesList');
+    const notesEmpty = document.getElementById('notesEmpty');
+    const addNoteBtn = document.getElementById('addNoteBtn');
+    const clearNotesBtn = document.getElementById('clearNotesBtn');
+    const perplexityForm = document.getElementById('perplexityForm');
+    const perplexityInput = document.getElementById('perplexityInput');
+    const videoFrame = document.getElementById('videoFrame');
+    const videoPlaylists = document.getElementById('videoPlaylists');
+
+    const playlists = [
+      { label: 'Lofi', url: 'https://www.youtube-nocookie.com/embed/jfKfPfyJRdk?autoplay=0&rel=0' },
+      { label: 'Jazz', url: 'https://www.youtube-nocookie.com/embed/DWcJFNfaw9c?autoplay=0&rel=0' },
+      { label: 'Ambient', url: 'https://www.youtube-nocookie.com/embed/S_MOd40zlYU?autoplay=0&rel=0' },
+      { label: 'Country', url: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI' }
+    ];
+
+    function createTicks() {
+      ticks.innerHTML = '';
+      for (let i = 0; i < 60; i++) {
+        const tick = document.createElement('div');
+        tick.className = 'tick' + (i % 5 === 0 ? ' major' : '');
+        tick.style.transform = `translateX(-50%) rotate(${i * 6}deg)`;
+        ticks.appendChild(tick);
+      }
+    }
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function parseTime(text) {
+      const match = text.trim().match(/^(\d{1,3}):(\d{2})$/);
+      if (!match) return null;
+      const minutes = Number(match[1]);
+      const seconds = Number(match[2]);
+      if (seconds > 59) return null;
+      return minutes * 60 + seconds;
+    }
+
+    function updateDisplay() {
+      timeDisplay.textContent = formatTime(state.remainingSeconds);
+      const radius = 54;
+      const circumference = 2 * Math.PI * radius;
+      progressRing.style.strokeDasharray = `${circumference}`;
+      const ratio = state.totalSeconds > 0 ? state.remainingSeconds / state.totalSeconds : 0;
+      progressRing.style.strokeDashoffset = `${circumference * (1 - ratio)}`;
+      statusText.textContent = state.running ? 'Running' : (state.remainingSeconds === 0 ? 'Complete' : 'Ready');
+      startPauseBtn.textContent = state.running ? 'Pause' : 'Start';
+    }
+
+    function setMode(mode) {
+      state.mode = mode;
+      state.running = false;
+      clearInterval(state.intervalId);
+      state.intervalId = null;
+      state.totalSeconds = state.durations[mode] * 60;
+      state.remainingSeconds = state.totalSeconds;
+      modes.forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
+      updateDisplay();
+    }
+
+    function tick() {
+      if (state.remainingSeconds > 0) {
+        state.remainingSeconds -= 1;
+        updateDisplay();
+      } else {
+        state.running = false;
+        clearInterval(state.intervalId);
+        state.intervalId = null;
+        updateDisplay();
+      }
+    }
+
+    function toggleTimer() {
+      if (state.running) {
+        state.running = false;
+        clearInterval(state.intervalId);
+        state.intervalId = null;
+      } else {
+        state.running = true;
+        state.intervalId = setInterval(tick, 1000);
+      }
+      updateDisplay();
+    }
+
+    function resetTimer() {
+      state.running = false;
+      clearInterval(state.intervalId);
+      state.intervalId = null;
+      state.totalSeconds = state.durations[state.mode] * 60;
+      state.remainingSeconds = state.totalSeconds;
+      updateDisplay();
+    }
+
+    function toggleSettings() {
+      const isOpen = settingsPanel.classList.toggle('open');
+      settingsLabelToggle.classList.toggle('open', isOpen);
+    }
+
+    function clampInputValue(input) {
+      const min = Number(input.min || 1);
+      const max = Number(input.max || 999);
+      let value = Number(input.value || min);
+      if (!Number.isFinite(value)) value = min;
+      value = Math.min(max, Math.max(min, value));
+      input.value = value;
+      return value;
+    }
+
+    function applyDurations() {
+      state.durations.focus = clampInputValue(focusMinutes);
+      state.durations.short = clampInputValue(shortMinutes);
+      state.durations.long = clampInputValue(longMinutes);
+      state.totalSeconds = state.durations[state.mode] * 60;
+      state.remainingSeconds = state.totalSeconds;
+      state.running = false;
+      clearInterval(state.intervalId);
+      state.intervalId = null;
+      updateDisplay();
+    }
+
+    function updateWallclock() {
+      const now = new Date();
+      const time = new Intl.DateTimeFormat('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+        timeZone: 'America/New_York'
+      }).format(now);
+      const date = new Intl.DateTimeFormat('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        timeZone: 'America/New_York'
+      }).format(now);
+      wallclockTime.textContent = time;
+      wallclockDate.textContent = `${date} · Eastern Time`;
+    }
+
+    function renderNotes() {
+      notesList.innerHTML = '';
+      notesEmpty.style.display = state.notes.length ? 'none' : 'block';
+      clearNotesBtn.disabled = state.notes.length === 0;
+      if (state.notes.length === 0) return;
+
+      state.notes.forEach((note, index) => {
+        const card = document.createElement('div');
+        card.className = 'sticky';
+        card.draggable = true;
+        card.dataset.index = index;
+
+        const del = document.createElement('button');
+        del.className = 'sticky-del';
+        del.type = 'button';
+        del.setAttribute('aria-label', 'Delete note');
+        del.textContent = '×';
+        del.addEventListener('click', () => {
+          state.notes.splice(index, 1);
+          state.clearArmed = false;
+          clearNotesBtn.classList.remove('armed');
+          renderNotes();
+        });
+
+        const text = document.createElement('textarea');
+        text.className = 'sticky-text';
+        text.value = note;
+        text.placeholder = 'Write here...';
+        text.addEventListener('input', () => {
+          state.notes[index] = text.value;
+        });
+
+        card.addEventListener('dragstart', () => {
+          state.dragIndex = index;
+          card.classList.add('dragging');
+        });
+
+        card.addEventListener('dragend', () => {
+          state.dragIndex = null;
+          card.classList.remove('dragging');
+          document.querySelectorAll('.sticky').forEach(el => el.classList.remove('drop-target'));
+        });
+
+        card.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          if (state.dragIndex === null || state.dragIndex === index) return;
+          card.classList.add('drop-target');
+        });
+
+        card.addEventListener('dragleave', () => {
+          card.classList.remove('drop-target');
+        });
+
+        card.addEventListener('drop', (e) => {
+          e.preventDefault();
+          card.classList.remove('drop-target');
+          const from = state.dragIndex;
+          const to = index;
+          if (from === null || from === to) return;
+          const moved = state.notes.splice(from, 1)[0];
+          state.notes.splice(to, 0, moved);
+          renderNotes();
+        });
+
+        card.appendChild(del);
+        card.appendChild(text);
+        notesList.appendChild(card);
+      });
+    }
+
+    function addNote() {
+      state.notes.unshift('');
+      state.clearArmed = false;
+      clearNotesBtn.classList.remove('armed');
+      renderNotes();
+      const first = notesList.querySelector('.sticky-text');
+      if (first) first.focus();
+    }
+
+    function clearNotes() {
+      if (!state.clearArmed) {
+        state.clearArmed = true;
+        clearNotesBtn.classList.add('armed');
+        clearNotesBtn.textContent = 'Sure?';
+        setTimeout(() => {
+          state.clearArmed = false;
+          clearNotesBtn.classList.remove('armed');
+          clearNotesBtn.textContent = 'Clear';
+        }, 2500);
+        return;
+      }
+      state.notes = [];
+      state.clearArmed = false;
+      clearNotesBtn.classList.remove('armed');
+      clearNotesBtn.textContent = 'Clear';
+      renderNotes();
+    }
+
+    function setupVideoPlaylists() {
+      playlists.forEach((playlist, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'video-playlist-btn' + (index === 0 ? ' active' : '');
+        btn.type = 'button';
+        btn.textContent = playlist.label;
+        btn.addEventListener('click', () => {
+          videoFrame.src = playlist.url;
+          document.querySelectorAll('.video-playlist-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+        });
+        videoPlaylists.appendChild(btn);
+      });
+    }
+
+    function handlePerplexitySearch(e) {
+      e.preventDefault();
+      const query = perplexityInput.value.trim();
+      if (!query) return;
+      const url = 'https://www.perplexity.ai/search?q=' + encodeURIComponent(query);
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
+    function setupSectionToggles() {
+      document.querySelectorAll('.section-toggle').forEach((toggle) => {
+        toggle.addEventListener('click', () => {
+          const block = toggle.closest('.section-block');
+          if (!block) return;
+          const collapsed = block.classList.toggle('collapsed');
+          toggle.setAttribute('aria-expanded', String(!collapsed));
+        });
+      });
+    }
+
+    modes.forEach(btn => btn.addEventListener('click', () => setMode(btn.dataset.mode)));
+    startPauseBtn.addEventListener('click', toggleTimer);
+    resetBtn.addEventListener('click', resetTimer);
+    settingsToggle.addEventListener('click', toggleSettings);
+    settingsLabelToggle.addEventListener('click', toggleSettings);
+    [focusMinutes, shortMinutes, longMinutes].forEach(input => {
+      input.addEventListener('change', applyDurations);
+      input.addEventListener('blur', applyDurations);
+    });
+
+    document.querySelectorAll('.stepper button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = document.getElementById(btn.dataset.target);
+        const step = Number(btn.dataset.step || 0);
+        target.value = Number(target.value || 0) + step;
+        applyDurations();
+      });
+    });
+
+    timeDisplay.addEventListener('blur', () => {
+      const parsed = parseTime(timeDisplay.textContent);
+      if (parsed === null || parsed <= 0) {
+        updateDisplay();
+        return;
+      }
+      state.running = false;
+      clearInterval(state.intervalId);
+      state.intervalId = null;
+      state.totalSeconds = parsed;
+      state.remainingSeconds = parsed;
+      updateDisplay();
+    });
+
+    timeDisplay.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        timeDisplay.blur();
+      }
+    });
+
+    addNoteBtn.addEventListener('click', addNote);
+    clearNotesBtn.addEventListener('click', clearNotes);
+    perplexityForm.addEventListener('submit', handlePerplexitySearch);
+
+    createTicks();
+    updateDisplay();
+    updateWallclock();
+    setInterval(updateWallclock, 1000);
+    renderNotes();
+    setupVideoPlaylists();
+    setupSectionToggles();
+  </script>
 </body>
 </html>
