@@ -56,7 +56,7 @@
       max-width: 100%;
       container-type: inline-size;
       border-radius: 18px;
-      padding: 24px 0 20px;
+      padding: 36px 0 32px; /* increased overall height */
     }
 
     .card {
@@ -527,9 +527,8 @@
     .notes-clear:disabled { opacity: 0.35; cursor: not-allowed; }
     .notes-clear.armed { background: #b00020; color: #fff; border-color: #b00020; }
 
-    /* FIXED HEIGHT + SCROLLABLE NOTES */
     .notes-shell {
-      max-height: 260px;
+      max-height: 320px;  /* scrollable sticky area, slightly taller */
       overflow-y: auto;
       padding-right: 4px;
     }
@@ -678,7 +677,7 @@
     }
 
     @container (max-width: 640px) {
-      .page { border-radius: 0; padding-top: 18px; }
+      .page { border-radius: 0; padding-top: 24px; padding-bottom: 24px; }
       .card { padding-inline: 12px; }
       .notes-section,
       .video-section {
@@ -1308,7 +1307,7 @@
         if (clearArmed && e.target !== notesClearEl) disarmClear();
       });
 
-      // NEW: add at top
+      // New notes at top
       notesAddEl.addEventListener('click', () => {
         notes.unshift('');       // insert at index 0 (top)
         saveNotes();
