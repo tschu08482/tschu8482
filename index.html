@@ -321,14 +321,37 @@
 
     .notes-list { display: block; }
     .sticky {
+      --sticky-bg: #fff9c4;
       position: relative; border-radius: 10px; padding: 10px;
       box-shadow: 0 1px 2px rgba(0,0,0,0.05), 0 6px 14px rgba(0,0,0,0.06);
-      margin-bottom: 8px; min-height: 72px;
+      margin-bottom: 8px; min-height: 104px;
+      background: var(--sticky-bg);
     }
-    .sticky:nth-child(4n+1) { background: #fff9c4; }
-    .sticky:nth-child(4n+2) { background: #ffe0b2; }
-    .sticky:nth-child(4n+3) { background: #ffccbc; }
-    .sticky:nth-child(4n)   { background: #dcedc8; }
+    .sticky-toolbar {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 8px; margin-bottom: 8px; padding-right: 18px;
+    }
+    .sticky-meta {
+      font-size: 8px; letter-spacing: 0.04em;
+      text-transform: none; color: rgba(0,0,0,0.62);
+      line-height: 1.35;
+      max-width: 160px;
+    }
+    .sticky-colors {
+      display: inline-flex; align-items: center; gap: 4px; flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .color-dot {
+      width: 14px; height: 14px; border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.18); cursor: pointer;
+      padding: 0; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.35);
+      flex: 0 0 auto;
+    }
+    .color-dot.active {
+      border-color: rgba(0,0,0,0.55);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.55), 0 0 0 1px rgba(0,0,0,0.2);
+      transform: scale(1.08);
+    }
 
     .sticky-text {
       width: 100%; min-height: 56px;
@@ -505,8 +528,8 @@
   </div>
 
   <script>
-    // ---------- PERSISTENCE ----------
     const STORAGE_KEY = 'tsWidget_v1';
+    const NOTE_COLORS = ['#fff9c4', '#ffe0b2', '#ffccbc', '#dcedc8', '#bbdefb', '#e1bee7'];
 
     function loadStore() {
       try {
@@ -521,7 +544,21 @@
         const current = loadStore();
         const next = Object.assign({}, current, patch);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      } catch (e) { /* localStorage may be blocked */ }
+      } catch (e) { }
+    }
+
+    function normalizeNotes(notes) {
+      if (!Array.isArray(notes)) return [];
+      return notes.map(note => {
+        if (typeof note === 'string') {
+          return { text: note, color: '#fff9c4', updatedAt: Date.now() };
+        }
+        return {
+          text: typeof note?.text === 'string' ? note.text : '',
+          color: typeof note?.color === 'string' ? note.color : '#fff9c4',
+          updatedAt: Number.isFinite(note?.updatedAt) ? note.updatedAt : Date.now()
+        };
+      });
     }
 
     const stored = loadStore();
@@ -537,7 +574,7 @@
       running: false,
       intervalId: null,
       clearArmed: false,
-      notes: Array.isArray(stored.notes) ? stored.notes : [],
+      notes: normalizeNotes(stored.notes),
       alarmTarget: stored.alarmTarget ? new Date(stored.alarmTarget) : null,
       alarmIntervalId: null,
       alertSoundIntervalId: null,
@@ -546,11 +583,9 @@
       audioCtx: null
     };
 
-    // Initialize timer values from stored durations
     state.totalSeconds = state.durations.focus * 60;
     state.remainingSeconds = state.totalSeconds;
 
-    // ---------- ELEMENT REFS ----------
     const modes = document.querySelectorAll('.mode');
     const timeDisplay = document.getElementById('timeDisplay');
     const statusText = document.getElementById('statusText');
@@ -586,7 +621,6 @@
     const alertTime = document.getElementById('alertTime');
     const alertDismiss = document.getElementById('alertDismiss');
 
-    // Prefill duration inputs from storage
     focusMinutes.value = state.durations.focus;
     breakMinutes.value = state.durations.break;
 
@@ -823,6 +857,37 @@
       return h > 0 ? `${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
     }
 
+    function formatLastEdited(timestamp) {
+      if (!timestamp) return 'Last edited —';
+
+      const d = new Date(timestamp);
+      const now = new Date();
+
+      const sameDay =
+        d.getFullYear() === now.getFullYear() &&
+        d.getMonth() === now.getMonth() &&
+        d.getDate() === now.getDate();
+
+      const optionsDate = { month: 'short', day: 'numeric' };
+      const optionsTime = { hour: 'numeric', minute: '2-digit' };
+      const optionsFull = { month: 'short', day: 'numeric', year: 'numeric' };
+
+      if (sameDay) {
+        return 'Last edited Today at ' + new Intl.DateTimeFormat('en-US', optionsTime).format(d);
+      }
+
+      if (d.getFullYear() === now.getFullYear()) {
+        return 'Last edited ' + new Intl.DateTimeFormat('en-US', optionsDate).format(d);
+      }
+
+      return 'Last edited ' + new Intl.DateTimeFormat('en-US', optionsFull).format(d);
+    }
+
+    function touchNote(index) {
+      if (!state.notes[index]) return;
+      state.notes[index].updatedAt = Date.now();
+    }
+
     function openAlarmModal() {
       let seed = state.alarmTarget ? new Date(state.alarmTarget) : new Date(Date.now() + 5 * 60 * 1000);
       const hh = String(seed.getHours()).padStart(2, '0');
@@ -890,7 +955,6 @@
       }
     }
 
-    // ---------- NOTES (with persistence) ----------
     function persistNotes() {
       saveStore({ notes: state.notes });
     }
@@ -904,6 +968,8 @@
       state.notes.forEach((note, index) => {
         const card = document.createElement('div');
         card.className = 'sticky';
+        card.style.setProperty('--sticky-bg', note.color || '#fff9c4');
+
         const del = document.createElement('button');
         del.className = 'sticky-del';
         del.type = 'button';
@@ -917,22 +983,55 @@
           clearNotesBtn.textContent = 'Clear';
           renderNotes();
         });
+
+        const toolbar = document.createElement('div');
+        toolbar.className = 'sticky-toolbar';
+
+        const meta = document.createElement('div');
+        meta.className = 'sticky-meta';
+        meta.textContent = formatLastEdited(note.updatedAt);
+
+        const colors = document.createElement('div');
+        colors.className = 'sticky-colors';
+        colors.setAttribute('aria-label', 'Sticky note color choices');
+
+        NOTE_COLORS.forEach(color => {
+          const swatch = document.createElement('button');
+          swatch.className = 'color-dot' + ((note.color || '#fff9c4') === color ? ' active' : '');
+          swatch.type = 'button';
+          swatch.style.background = color;
+          swatch.setAttribute('aria-label', `Set note color ${color}`);
+          swatch.addEventListener('click', () => {
+            state.notes[index].color = color;
+            touchNote(index);
+            persistNotes();
+            renderNotes();
+          });
+          colors.appendChild(swatch);
+        });
+
         const text = document.createElement('textarea');
         text.className = 'sticky-text';
-        text.value = note;
+        text.value = note.text || '';
         text.placeholder = 'Write here...';
         text.addEventListener('input', () => {
-          state.notes[index] = text.value;
+          state.notes[index].text = text.value;
+          touchNote(index);
+          meta.textContent = formatLastEdited(state.notes[index].updatedAt);
           persistNotes();
         });
+
+        toolbar.appendChild(meta);
+        toolbar.appendChild(colors);
         card.appendChild(del);
+        card.appendChild(toolbar);
         card.appendChild(text);
         notesList.appendChild(card);
       });
     }
 
     function addNote() {
-      state.notes.unshift('');
+      state.notes.unshift({ text: '', color: '#fff9c4', updatedAt: Date.now() });
       persistNotes();
       state.clearArmed = false;
       clearNotesBtn.classList.remove('armed');
@@ -985,12 +1084,10 @@
       window.open(url, '_blank', 'noopener,noreferrer');
     }
 
-    // Restore alarm if one was saved and it's still in the future
     function restoreAlarm() {
       if (!state.alarmTarget) return;
       const now = new Date();
       if (state.alarmTarget.getTime() <= now.getTime()) {
-        // Alarm expired while the widget was closed — clear silently
         state.alarmTarget = null;
         saveStore({ alarmTarget: null });
         return;
