@@ -568,7 +568,7 @@
     }
 
     .sticky {
-      --sticky-bg: #FDFD96; /* pastel yellow */
+      --sticky-bg: #ECE4C8; /* butter yellow default from palette */
       position: relative;
       border-radius: 12px;
       padding: 11px;
@@ -862,11 +862,17 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'tsWidget_v1';
+    const STORAGE_KEY = 'tsWidget_v2';
     const NOTE_COLORS = [
-      '#FDFD96', // pastel yellow
-      '#B0E0E6', // pastel blue (PowderBlue) [web:243]
-      '#FF6961'  // pastel red [web:231][web:235]
+      '#E3E3E3', // light gray
+      '#EAE2DE', // blush
+      '#EBDDD2', // peach
+      '#ECE4C8', // butter yellow (default)
+      '#D5DDD8', // sage
+      '#C9DAEA', // soft blue
+      '#DDD3E8', // lavender
+      '#E8D6E1', // soft pink
+      '#EBD9D5'  // dusty rose
     ];
 
     function loadStore() {
@@ -889,11 +895,11 @@
       if (!Array.isArray(notes)) return [];
       return notes.map(note => {
         if (typeof note === 'string') {
-          return { text: note, color: '#FDFD96', updatedAt: Date.now() };
+          return { text: note, color: '#ECE4C8', updatedAt: Date.now() };
         }
         return {
           text: typeof note?.text === 'string' ? note.text : '',
-          color: typeof note?.color === 'string' ? note.color : '#FDFD96',
+          color: typeof note?.color === 'string' ? note.color : '#ECE4C8',
           updatedAt: Number.isFinite(note?.updatedAt) ? note.updatedAt : Date.now()
         };
       });
@@ -901,7 +907,7 @@
 
     function todayKey() {
       const d = new Date();
-      return d.toISOString().slice(0, 10); // YYYY-MM-DD
+      return d.toISOString().slice(0, 10);
     }
 
     const stored = loadStore();
@@ -1334,7 +1340,7 @@
         card.className = 'sticky';
         card.style.setProperty(
           '--sticky-bg',
-          note.color || '#FDFD96'
+          note.color || '#ECE4C8'
         );
 
         const del = document.createElement('button');
@@ -1365,7 +1371,7 @@
         NOTE_COLORS.forEach(color => {
           const swatch = document.createElement('button');
           swatch.className = 'color-dot' +
-            ((note.color || '#FDFD96') === color ? ' active' : '');
+            ((note.color || '#ECE4C8') === color ? ' active' : '');
           swatch.type = 'button';
           swatch.style.background = color;
           swatch.setAttribute('aria-label', `Set note color ${color}`);
@@ -1401,7 +1407,7 @@
     function addNote() {
       state.notes.unshift({
         text: '',
-        color: '#FDFD96',
+        color: '#ECE4C8',
         updatedAt: Date.now()
       });
       persistNotes();
@@ -1433,8 +1439,9 @@
       renderNotes();
     }
 
+    const playlistsData = playlists;
     function setupVideoPlaylists() {
-      playlists.forEach((playlist, index) => {
+      playlistsData.forEach((playlist, index) => {
         const btn = document.createElement('button');
         btn.className = 'music-btn' + (index === 0 ? ' active' : '');
         btn.type = 'button';
