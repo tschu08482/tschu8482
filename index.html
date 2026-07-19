@@ -6,19 +6,26 @@
   <title>Timer Notes-First</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: transparent;
-      --surface: #fafafa;
-      --fg: #0a0a0a;
-      --muted: #8a8a8a;
-      --line: #e5e5e5;
-      --radius: 16px;
-      --radius-sm: 10px;
+      --surface: #f7f6f3;
+      --surface-2: #ffffff;
+      --surface-3: #ffffff;
+      --fg: #2f3437;
+      --muted: #787774;
+      --line: rgba(55, 53, 47, 0.12);
+      --line-strong: rgba(55, 53, 47, 0.18);
+      --accent: #2f3437;
+      --accent-soft: rgba(47, 52, 55, 0.08);
+      --danger: #2f3437;
+      --radius: 12px;
+      --radius-sm: 8px;
       --label-size: 10px;
       --small: 9px;
       --timer-size: 24px;
+      --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.04);
+      --shadow-note: 0 1px 2px rgba(15, 23, 42, 0.05);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,11 +35,16 @@
       min-height: 100%;
       background: transparent;
       color: var(--fg);
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
 
-    body { padding: 0; display: flex; justify-content: center; }
+    body {
+      padding: 0;
+      display: flex;
+      justify-content: center;
+    }
 
     .widget {
       width: 100%;
@@ -44,349 +56,596 @@
 
     .clock-label, .section-title {
       font-size: var(--label-size);
-      letter-spacing: 0.18em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       font-weight: 700;
-      color: var(--fg);
+      color: var(--muted);
     }
 
     .clock-box {
       border-radius: var(--radius);
       padding: 6px 2px 8px;
-      display: flex; flex-direction: column;
-      gap: 4px; align-items: flex-start;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-start;
     }
 
     .clock-time {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: var(--timer-size);
-      font-weight: 300; line-height: 1;
-      letter-spacing: -0.02em;
-      width: 100%; text-align: center;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: -0.045em;
+      color: var(--fg);
+      line-height: 1;
     }
 
     .clock-date {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px; font-weight: 300;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      width: 100%; text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      color: #2f3437;
+      letter-spacing: 0.01em;
+      width: 100%;
+      text-align: center;
     }
 
-    .stack { display: grid; gap: 10px; }
+    .stack { display: grid; gap: 12px; }
 
     .panel, details.section {
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: 10px 12px;
-      background: #ffffff;
+      padding: 12px 13px;
+      background: var(--surface-2);
+      box-shadow: var(--shadow-soft);
     }
 
-    .timer-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-    .mode-row { display: inline-flex; gap: 4px; align-items: center; }
+    .timer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mode-row { display: inline-flex; gap: 6px; align-items: center; }
 
     .mode {
-      border: 1px solid var(--line);
-      background: transparent; color: var(--muted);
-      border-radius: 999px; padding: 4px 9px;
-      font-size: 8px; letter-spacing: 0.16em;
-      text-transform: uppercase; cursor: pointer;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 6px 11px;
+      font-size: 8px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
       font-family: inherit;
+      transition: 160ms ease;
     }
 
-    .mode.active { background: var(--fg); border-color: var(--fg); color: #fff; }
+    .mode:hover {
+      background: rgba(55, 53, 47, 0.04);
+      color: var(--fg);
+    }
+
+    .mode.active {
+      background: var(--accent-soft);
+      border-color: var(--line-strong);
+      color: var(--fg);
+      box-shadow: none;
+    }
 
     .alarm-header-btn {
       border: 1px solid var(--line);
-      background: transparent; color: var(--fg);
-      border-radius: 999px; padding: 4px 10px;
-      font-size: 8px; letter-spacing: 0.16em;
-      text-transform: uppercase; cursor: pointer;
+      background: #ffffff;
+      color: var(--fg);
+      border-radius: 999px;
+      padding: 6px 11px;
+      font-size: 8px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
       font-family: inherit;
+      transition: 160ms ease;
     }
 
-    .alarm-header-btn.armed { background: #b00020; color: #fff; border-color: #b00020; }
+    .alarm-header-btn:hover { background: rgba(55, 53, 47, 0.04); }
 
-    .timer-main { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+    .alarm-header-btn.armed {
+      background: rgba(55, 53, 47, 0.08);
+      color: var(--fg);
+      border-color: var(--line-strong);
+    }
+
+    .timer-main { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
 
     .timer-time {
       font-family: 'JetBrains Mono', monospace;
       font-size: var(--timer-size);
-      font-weight: 300; line-height: 1;
-      padding: 2px 6px; border-radius: 6px;
-      outline: none; letter-spacing: -0.02em;
+      font-weight: 500;
+      line-height: 1;
+      padding: 4px 8px;
+      border-radius: 8px;
+      outline: none;
+      letter-spacing: -0.04em;
+      color: var(--fg);
     }
-    .timer-time:hover, .timer-time:focus { background: #f5f5f5; }
+
+    .timer-time:hover, .timer-time:focus { background: rgba(55, 53, 47, 0.04); }
 
     .status {
-      font-size: 8px; letter-spacing: 0.18em;
-      text-transform: uppercase; font-weight: 700; color: var(--fg);
+      font-size: 8px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--muted);
+      margin-top: 5px;
     }
 
     .progress-bar {
-      flex: 1; height: 5px;
-      background: #f0f0f0;
-      border-radius: 999px; overflow: hidden;
+      flex: 1;
+      height: 6px;
+      background: rgba(55, 53, 47, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
     }
 
     .progress-fill {
-      width: 100%; height: 100%;
-      background: var(--fg); border-radius: inherit;
+      width: 100%;
+      height: 100%;
+      background: #2f3437;
+      border-radius: inherit;
       transform-origin: left center;
       transition: transform 0.9s linear;
     }
 
-    .controls-row { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+    .controls-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
 
     .btn, .icon-btn, .mini-btn, .music-btn, .notes-add, .notes-clear {
       border: 1px solid var(--line);
-      background: transparent; color: var(--fg);
-      border-radius: 999px; cursor: pointer;
+      background: #ffffff;
+      color: var(--fg);
+      border-radius: 999px;
+      cursor: pointer;
       font-family: inherit;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
     }
 
-    .btn { padding: 6px 12px; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; }
-    .btn.primary { background: var(--fg); color: #fff; border-color: var(--fg); }
+    .btn:hover, .icon-btn:hover, .mini-btn:hover, .music-btn:hover, .notes-add:hover, .notes-clear:hover {
+      background: rgba(55, 53, 47, 0.04);
+      transform: translateY(-1px);
+    }
 
-    .icon-btn { width: 28px; height: 28px; display: grid; place-items: center; }
-    .icon-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+    .btn {
+      padding: 7px 13px;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .btn.primary {
+      background: #2f3437;
+      color: #ffffff;
+      border-color: #2f3437;
+      box-shadow: none;
+    }
+
+    .icon-btn {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+    }
+
+    .icon-btn svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.75;
+    }
 
     .settings {
-      display: grid; gap: 8px; margin-top: 8px;
-      padding-top: 8px; border-top: 1px solid var(--line);
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
     }
 
     .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
     .field label {
-      display: block; margin-bottom: 3px;
-      font-size: 7px; letter-spacing: 0.2em;
-      text-transform: uppercase; color: var(--muted);
+      display: block;
+      margin-bottom: 4px;
+      font-size: 7px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
     }
 
     .stepper {
-      display: flex; align-items: center;
+      display: flex;
+      align-items: center;
       border: 1px solid var(--line);
-      border-radius: 10px; overflow: hidden;
-      background: var(--surface);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #ffffff;
     }
-    .stepper button { width: 22px; height: 24px; border: none; background: transparent; cursor: pointer; font-size: 12px; }
+
+    .stepper button {
+      width: 24px;
+      height: 26px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .stepper button:hover { color: var(--fg); }
+
     .stepper input {
-      flex: 1; width: 100%; border: none; background: transparent;
-      text-align: center; font-family: 'JetBrains Mono', monospace;
-      font-size: 10px; -moz-appearance: textfield;
+      flex: 1;
+      width: 100%;
+      border: none;
+      background: transparent;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--fg);
+      -moz-appearance: textfield;
     }
-    .stepper input::-webkit-outer-spin-button, .stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    .stepper input::-webkit-outer-spin-button,
+    .stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
     .alarm-modal {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.35);
-      display: none; align-items: center; justify-content: center;
-      padding: 16px; z-index: 999;
+      position: fixed;
+      inset: 0;
+      background: rgba(47, 52, 55, 0.12);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 999;
+      backdrop-filter: blur(10px);
     }
+
     .alarm-modal.open { display: flex; }
+
     .alarm-card {
-      background: #fff; border-radius: 16px;
-      padding: 16px; width: 100%; max-width: 300px;
+      background: rgba(255,255,255,0.96);
+      border-radius: 18px;
+      padding: 18px;
+      width: 100%;
+      max-width: 300px;
       border: 1px solid var(--line);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      box-shadow: 0 12px 30px rgba(15,23,42,0.08);
     }
+
     .alarm-card-title {
-      font-size: 11px; letter-spacing: 0.2em;
-      text-transform: uppercase; font-weight: 700; margin-bottom: 12px;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 12px;
     }
+
     .alarm-input {
-      width: 100%; border: 1px solid var(--line);
-      border-radius: 10px; padding: 10px;
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 11px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 16px; text-align: center; outline: none;
+      font-size: 16px;
+      text-align: center;
+      outline: none;
+      color: var(--fg);
+      background: rgba(243,244,246,0.8);
     }
-    .alarm-input:focus { border-color: var(--fg); }
+
+    .alarm-input:focus {
+      border-color: var(--line-strong);
+      box-shadow: 0 0 0 3px rgba(55, 53, 47, 0.08);
+    }
+
     .alarm-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
 
     .alarm-countdown {
-      display: none; margin-top: 8px;
-      padding: 8px 10px; border: 1px dashed var(--line);
-      border-radius: 10px; font-family: 'JetBrains Mono', monospace;
-      font-size: 11px; color: var(--fg); text-align: center; letter-spacing: 0.05em;
+      display: none;
+      margin-top: 10px;
+      padding: 9px 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--fg);
+      text-align: center;
+      letter-spacing: 0.02em;
+      background: rgba(55, 53, 47, 0.04);
     }
+
     .alarm-countdown.visible { display: block; }
     .alarm-countdown .cd-time { font-size: 18px; display: block; margin-top: 2px; letter-spacing: -0.02em; }
 
     .alert-overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.55);
-      display: none; align-items: center; justify-content: center;
-      padding: 16px; z-index: 9999;
-      backdrop-filter: blur(2px);
+      position: fixed;
+      inset: 0;
+      background: rgba(47, 52, 55, 0.14);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 9999;
+      backdrop-filter: blur(12px);
     }
+
     .alert-overlay.open { display: flex; }
-    .alert-overlay.open .alert-card { animation: alertPulse 1s ease-in-out infinite; }
 
     .alert-card {
-      background: #fff;
-      border: 3px solid #b00020;
-      border-radius: 20px;
+      background: rgba(255,255,255,0.96);
+      border: 1px solid var(--line);
+      border-radius: 22px;
       padding: 22px 20px;
-      width: 100%; max-width: 320px;
+      width: 100%;
+      max-width: 320px;
       text-align: center;
-      box-shadow: 0 20px 60px rgba(176, 0, 32, 0.5);
-    }
-
-    @keyframes alertPulse {
-      0%, 100% { transform: scale(1); box-shadow: 0 20px 60px rgba(176, 0, 32, 0.5); }
-      50%      { transform: scale(1.04); box-shadow: 0 24px 80px rgba(176, 0, 32, 0.85); }
+      box-shadow: 0 14px 36px rgba(15,23,42,0.10);
     }
 
     .alert-icon {
-      width: 56px; height: 56px;
+      width: 56px;
+      height: 56px;
       margin: 0 auto 12px;
       border-radius: 50%;
-      background: #b00020;
-      display: grid; place-items: center;
-      color: #fff; font-size: 30px;
-      animation: bellShake 0.6s ease-in-out infinite;
-    }
-
-    @keyframes bellShake {
-      0%, 100% { transform: rotate(0deg); }
-      25% { transform: rotate(-15deg); }
-      75% { transform: rotate(15deg); }
+      background: rgba(55, 53, 47, 0.08);
+      display: grid;
+      place-items: center;
+      color: var(--fg);
+      font-size: 28px;
     }
 
     .alert-title {
-      font-size: 14px; letter-spacing: 0.2em;
-      text-transform: uppercase; font-weight: 800;
-      color: #b00020; margin-bottom: 6px;
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--fg);
+      margin-bottom: 6px;
     }
+
     .alert-time {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 28px; font-weight: 400;
-      color: var(--fg); margin-bottom: 4px;
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--fg);
+      margin-bottom: 4px;
     }
-    .alert-sub { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
-    .alert-dismiss {
-      background: #b00020; color: #fff;
-      border: 1px solid #b00020;
-      border-radius: 999px; padding: 10px 22px;
-      font-size: 10px; letter-spacing: 0.2em;
-      text-transform: uppercase; font-weight: 700;
-      cursor: pointer; font-family: inherit;
-    }
-    .alert-dismiss:hover { background: #900018; }
 
-    body.alarm-firing { animation: bodyFlash 1s ease-in-out infinite; }
-    @keyframes bodyFlash {
-      0%, 100% { background: transparent; }
-      50% { background: #ffe5ea; }
+    .alert-sub { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
+
+    .alert-dismiss {
+      background: var(--fg);
+      color: #fff;
+      border: 1px solid var(--fg);
+      border-radius: 999px;
+      padding: 10px 22px;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
     }
 
     details.section summary {
-      list-style: none; cursor: pointer;
-      display: flex; align-items: center;
-      justify-content: space-between; gap: 10px;
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
     }
+
     details.section summary::-webkit-details-marker { display: none; }
+
     .chev {
-      width: 9px; height: 9px;
+      width: 9px;
+      height: 9px;
       border-right: 1.5px solid var(--muted);
       border-bottom: 1.5px solid var(--muted);
       transform: rotate(45deg);
       transition: transform 0.2s ease;
       margin-right: 4px;
     }
+
     details[open] .chev { transform: rotate(225deg); margin-top: 3px; }
-    .section-body { margin-top: 8px; }
+    .section-body { margin-top: 10px; }
 
     .perplexity-panel { display: grid; gap: 6px; }
     .perplexity-form { display: grid; grid-template-columns: 1fr auto; gap: 6px; margin-top: 4px; }
-    .perplexity-input {
-      width: 100%; border: 1px solid var(--line);
-      border-radius: 999px; padding: 8px 11px;
-      font-size: 10px; outline: none; font-family: inherit;
-    }
-    .perplexity-input:focus { border-color: #4a72ff; box-shadow: 0 0 0 1px #4a72ff33; }
 
-    .mini-btn { padding: 8px 10px; font-size: 8px; letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap; }
+    .perplexity-input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 9px 12px;
+      font-size: 10px;
+      outline: none;
+      font-family: inherit;
+      background: #ffffff;
+      color: var(--fg);
+    }
+
+    .perplexity-input:focus {
+      border-color: var(--line-strong);
+      box-shadow: 0 0 0 3px rgba(55, 53, 47, 0.08);
+      background: #ffffff;
+    }
+
+    .mini-btn {
+      padding: 8px 10px;
+      font-size: 8px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
 
     .notes-actions { display: flex; justify-content: flex-end; gap: 6px; margin-bottom: 8px; }
-    .notes-add { width: 22px; height: 22px; font-size: 14px; }
+    .notes-add { width: 24px; height: 24px; font-size: 15px; }
+
     .notes-clear {
-      padding: 0 8px; font-size: 8px; letter-spacing: 0.18em;
-      text-transform: uppercase; color: var(--muted); height: 22px;
+      padding: 0 9px;
+      font-size: 8px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      height: 24px;
     }
+
     .notes-clear:disabled { opacity: 0.35; cursor: not-allowed; }
-    .notes-clear.armed { background: #b00020; color: #fff; border-color: #b00020; }
+    .notes-clear.armed {
+      background: rgba(55, 53, 47, 0.08);
+      color: var(--fg);
+      border-color: var(--line-strong);
+    }
 
     .notes-list { display: block; }
+
     .sticky {
-      --sticky-bg: #fff9c4;
-      position: relative; border-radius: 10px; padding: 10px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05), 0 6px 14px rgba(0,0,0,0.06);
-      margin-bottom: 8px; min-height: 104px;
+      --sticky-bg: rgba(255,255,255,0.80);
+      position: relative;
+      border-radius: 12px;
+      padding: 11px;
+      box-shadow: var(--shadow-note);
+      margin-bottom: 8px;
+      min-height: 108px;
       background: var(--sticky-bg);
+      border: 1px solid rgba(55, 53, 47, 0.10);
     }
+
     .sticky-toolbar {
-      display: flex; align-items: flex-start; justify-content: space-between;
-      gap: 8px; margin-bottom: 8px; padding-right: 18px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-right: 18px;
     }
+
     .sticky-meta {
-      font-size: 8px; letter-spacing: 0.04em;
-      text-transform: none; color: rgba(0,0,0,0.62);
+      font-size: 8px;
+      letter-spacing: 0.01em;
+      color: rgba(17,24,39,0.58);
       line-height: 1.35;
       max-width: 160px;
     }
+
     .sticky-colors {
-      display: inline-flex; align-items: center; gap: 4px; flex-wrap: wrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
       justify-content: flex-end;
     }
+
     .color-dot {
-      width: 14px; height: 14px; border-radius: 50%;
-      border: 1px solid rgba(0,0,0,0.18); cursor: pointer;
-      padding: 0; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.35);
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid rgba(17,24,39,0.12);
+      cursor: pointer;
+      padding: 0;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45);
       flex: 0 0 auto;
     }
+
     .color-dot.active {
-      border-color: rgba(0,0,0,0.55);
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.55), 0 0 0 1px rgba(0,0,0,0.2);
+      border-color: rgba(17,24,39,0.28);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.65), 0 0 0 1px rgba(17,24,39,0.08);
       transform: scale(1.08);
     }
 
     .sticky-text {
-      width: 100%; min-height: 56px;
-      border: none; background: transparent;
-      resize: none; outline: none;
-      font-size: 11px; line-height: 1.35;
-      padding-right: 18px; font-family: inherit;
+      width: 100%;
+      min-height: 58px;
+      border: none;
+      background: transparent;
+      resize: none;
+      outline: none;
+      font-size: 11px;
+      line-height: 1.45;
+      padding-right: 18px;
+      font-family: inherit;
+      color: var(--fg);
     }
+
     .sticky-del {
-      position: absolute; top: 4px; right: 4px;
-      width: 16px; height: 16px; border: none;
-      background: transparent; font-size: 14px;
-      color: rgba(0,0,0,0.45); cursor: pointer;
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 16px;
+      height: 16px;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      color: rgba(17,24,39,0.38);
+      cursor: pointer;
     }
+
     .notes-empty {
-      color: var(--muted); font-size: 9px;
-      letter-spacing: 0.08em; font-style: italic; padding-top: 2px;
+      color: var(--muted);
+      font-size: 9px;
+      letter-spacing: 0.02em;
+      font-style: italic;
+      padding-top: 2px;
     }
 
     .music-row { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
-    .music-btn { padding: 5px 9px; font-size: 8px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
-    .music-btn.active { background: var(--fg); color: #fff; border-color: var(--fg); }
+    .music-btn { padding: 6px 10px; font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+    .music-btn.active {
+      background: rgba(55, 53, 47, 0.05);
+      color: var(--fg);
+      border-color: var(--line-strong);
+    }
 
     .video-frame {
-      position: relative; width: 100%;
-      aspect-ratio: 16 / 9; border-radius: 12px;
-      overflow: hidden; border: 1px solid var(--line); background: #000;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #000;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
     }
+
     .video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-    .video-hint { margin-top: 6px; text-align: center; color: var(--muted); font-size: 8px; letter-spacing: 0.08em; }
+
+    .video-hint {
+      margin-top: 7px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 8px;
+      letter-spacing: 0.02em;
+    }
 
     .sr-only {
-      position: absolute; width: 1px; height: 1px;
-      padding: 0; margin: -1px; overflow: hidden;
-      clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
   </style>
 </head>
@@ -394,7 +653,7 @@
   <div class="widget">
     <div class="clock-box">
       <div class="clock-label">Current Time</div>
-      <div class="clock-time" id="wallclockTime">--:--</div>
+      <div class="clock-time" id="wallclockTime"></div>
       <div class="clock-date" id="wallclockDate">Eastern Time</div>
     </div>
 
@@ -529,7 +788,14 @@
 
   <script>
     const STORAGE_KEY = 'tsWidget_v1';
-    const NOTE_COLORS = ['#fff9c4', '#ffe0b2', '#ffccbc', '#dcedc8', '#bbdefb', '#e1bee7'];
+    const NOTE_COLORS = [
+      'rgba(255,255,255,0.80)',
+      'rgba(239,246,255,0.92)',
+      'rgba(236,253,245,0.92)',
+      'rgba(254,249,195,0.92)',
+      'rgba(255,237,213,0.92)',
+      'rgba(243,232,255,0.92)'
+    ];
 
     function loadStore() {
       try {
@@ -551,11 +817,11 @@
       if (!Array.isArray(notes)) return [];
       return notes.map(note => {
         if (typeof note === 'string') {
-          return { text: note, color: '#fff9c4', updatedAt: Date.now() };
+          return { text: note, color: 'rgba(255,255,255,0.80)', updatedAt: Date.now() };
         }
         return {
           text: typeof note?.text === 'string' ? note.text : '',
-          color: typeof note?.color === 'string' ? note.color : '#fff9c4',
+          color: typeof note?.color === 'string' ? note.color : 'rgba(255,255,255,0.80)',
           updatedAt: Number.isFinite(note?.updatedAt) ? note.updatedAt : Date.now()
         };
       });
@@ -671,11 +937,11 @@
       pattern.forEach((freq, i) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.type = 'square';
+        osc.type = 'sine';
         osc.frequency.value = freq;
         const start = ctx.currentTime + i * 0.22;
         gain.gain.setValueAtTime(0, start);
-        gain.gain.linearRampToValueAtTime(0.3, start + 0.03);
+        gain.gain.linearRampToValueAtTime(0.16, start + 0.03);
         gain.gain.linearRampToValueAtTime(0, start + 0.2);
         osc.connect(gain);
         gain.connect(ctx.destination);
@@ -737,18 +1003,16 @@
       const timeStr = formatClock12(target);
       alertTime.textContent = timeStr;
       alertOverlay.classList.add('open');
-      document.body.classList.add('alarm-firing');
       startAlertSound();
       startTitleFlash(timeStr);
       sendBrowserNotification(timeStr);
       if (navigator.vibrate) {
-        try { navigator.vibrate([500, 250, 500, 250, 500, 250, 500]); } catch (e) {}
+        try { navigator.vibrate([300, 180, 300, 180, 300]); } catch (e) {}
       }
     }
 
     function dismissAlert() {
       alertOverlay.classList.remove('open');
-      document.body.classList.remove('alarm-firing');
       stopAlertSound();
       stopTitleFlash();
       if (navigator.vibrate) { try { navigator.vibrate(0); } catch (e) {} }
@@ -831,18 +1095,6 @@
       updateDisplay();
     }
 
-    function updateWallclock() {
-      const now = new Date();
-      const time = new Intl.DateTimeFormat('en-US', {
-        hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'America/New_York'
-      }).format(now);
-      const date = new Intl.DateTimeFormat('en-US', {
-        weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/New_York'
-      }).format(now);
-      wallclockTime.textContent = time;
-      wallclockDate.textContent = `${date} · Eastern Time`;
-    }
-
     function formatClock12(date) {
       return new Intl.DateTimeFormat('en-US', {
         hour: 'numeric', minute: '2-digit', hour12: true
@@ -859,27 +1111,18 @@
 
     function formatLastEdited(timestamp) {
       if (!timestamp) return 'Last edited —';
-
       const d = new Date(timestamp);
       const now = new Date();
-
       const sameDay =
         d.getFullYear() === now.getFullYear() &&
         d.getMonth() === now.getMonth() &&
         d.getDate() === now.getDate();
-
       const optionsDate = { month: 'short', day: 'numeric' };
       const optionsTime = { hour: 'numeric', minute: '2-digit' };
       const optionsFull = { month: 'short', day: 'numeric', year: 'numeric' };
-
-      if (sameDay) {
-        return 'Last edited Today at ' + new Intl.DateTimeFormat('en-US', optionsTime).format(d);
-      }
-
-      if (d.getFullYear() === now.getFullYear()) {
+      if (sameDay) return 'Last edited Today at ' + new Intl.DateTimeFormat('en-US', optionsTime).format(d);
+      if (d.getFullYear() === now.getFullYear())
         return 'Last edited ' + new Intl.DateTimeFormat('en-US', optionsDate).format(d);
-      }
-
       return 'Last edited ' + new Intl.DateTimeFormat('en-US', optionsFull).format(d);
     }
 
@@ -906,7 +1149,9 @@
       if (!val) return;
       const [h, m] = val.split(':').map(Number);
       const now = new Date();
-      const target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0, 0);
+      const target = new Date(
+        now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0, 0
+      );
       if (target.getTime() <= now.getTime()) target.setDate(target.getDate() + 1);
       state.alarmTarget = target;
       saveStore({ alarmTarget: target.toISOString() });
@@ -955,9 +1200,7 @@
       }
     }
 
-    function persistNotes() {
-      saveStore({ notes: state.notes });
-    }
+    function persistNotes() { saveStore({ notes: state.notes }); }
 
     function renderNotes() {
       notesList.innerHTML = '';
@@ -968,7 +1211,7 @@
       state.notes.forEach((note, index) => {
         const card = document.createElement('div');
         card.className = 'sticky';
-        card.style.setProperty('--sticky-bg', note.color || '#fff9c4');
+        card.style.setProperty('--sticky-bg', note.color || 'rgba(255,255,255,0.80)');
 
         const del = document.createElement('button');
         del.className = 'sticky-del';
@@ -997,7 +1240,8 @@
 
         NOTE_COLORS.forEach(color => {
           const swatch = document.createElement('button');
-          swatch.className = 'color-dot' + ((note.color || '#fff9c4') === color ? ' active' : '');
+          swatch.className = 'color-dot' +
+            ((note.color || 'rgba(255,255,255,0.80)') === color ? ' active' : '');
           swatch.type = 'button';
           swatch.style.background = color;
           swatch.setAttribute('aria-label', `Set note color ${color}`);
@@ -1031,7 +1275,11 @@
     }
 
     function addNote() {
-      state.notes.unshift({ text: '', color: '#fff9c4', updatedAt: Date.now() });
+      state.notes.unshift({
+        text: '',
+        color: 'rgba(255,255,255,0.80)',
+        updatedAt: Date.now()
+      });
       persistNotes();
       state.clearArmed = false;
       clearNotesBtn.classList.remove('armed');
@@ -1069,7 +1317,8 @@
         btn.textContent = playlist.label;
         btn.addEventListener('click', () => {
           videoFrame.src = playlist.url;
-          document.querySelectorAll('.music-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.music-btn')
+            .forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
         });
         videoPlaylists.appendChild(btn);
@@ -1095,7 +1344,9 @@
       startAlarmCountdown();
     }
 
-    modes.forEach(btn => btn.addEventListener('click', () => setMode(btn.dataset.mode)));
+    modes.forEach(btn =>
+      btn.addEventListener('click', () => setMode(btn.dataset.mode))
+    );
     startPauseBtn.addEventListener('click', toggleTimer);
     resetBtn.addEventListener('click', resetTimer);
     settingsToggle.addEventListener('click', toggleSettings);
@@ -1116,7 +1367,10 @@
 
     timeDisplay.addEventListener('blur', () => {
       const parsed = parseTime(timeDisplay.textContent);
-      if (parsed === null || parsed <= 0) { updateDisplay(); return; }
+      if (parsed === null || parsed <= 0) {
+        updateDisplay();
+        return;
+      }
       state.running = false;
       clearInterval(state.intervalId);
       state.intervalId = null;
@@ -1126,7 +1380,10 @@
     });
 
     timeDisplay.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); timeDisplay.blur(); }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        timeDisplay.blur();
+      }
     });
 
     addNoteBtn.addEventListener('click', addNote);
@@ -1137,12 +1394,35 @@
     alarmCancel.addEventListener('click', closeAlarmModal);
     alarmSet.addEventListener('click', setAlarmFromInput);
     alarmClear.addEventListener('click', clearAlarm);
-    alarmModal.addEventListener('click', (e) => { if (e.target === alarmModal) closeAlarmModal(); });
+    alarmModal.addEventListener('click', (e) => {
+      if (e.target === alarmModal) closeAlarmModal();
+    });
     alarmTimeInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); setAlarmFromInput(); }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        setAlarmFromInput();
+      }
     });
 
     alertDismiss.addEventListener('click', dismissAlert);
+
+    function updateWallclock() {
+      const now = new Date();
+      const time = new Intl.DateTimeFormat('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+        timeZone: 'America/New_York'
+      }).format(now);
+      const date = new Intl.DateTimeFormat('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        timeZone: 'America/New_York'
+      }).format(now);
+      wallclockTime.textContent = time;
+      wallclockDate.textContent = `${date} · Eastern Time`;
+    }
 
     updateDisplay();
     updateWallclock();
