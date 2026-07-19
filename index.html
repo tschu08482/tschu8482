@@ -161,7 +161,12 @@
       border-color: var(--line-strong);
     }
 
-    .timer-main { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+    .timer-main {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
 
     .timer-time {
       font-family: 'JetBrains Mono', monospace;
@@ -186,6 +191,17 @@
       margin-top: 5px;
     }
 
+    .daily-total {
+      margin-top: 3px;
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    .daily-total strong {
+      font-weight: 600;
+      color: var(--fg);
+    }
+
     .progress-bar {
       flex: 1;
       height: 6px;
@@ -203,7 +219,12 @@
       transition: transform 0.9s linear;
     }
 
-    .controls-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+    .controls-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
 
     .btn, .icon-btn, .mini-btn, .music-btn, .notes-add, .notes-clear {
       border: 1px solid var(--line);
@@ -467,12 +488,15 @@
 
     details[open] .chev { transform: rotate(225deg); margin-top: 3px; }
 
-    .section-body {
-      margin-top: 10px;
-    }
+    .section-body { margin-top: 10px; }
 
     .perplexity-panel { display: grid; gap: 6px; }
-    .perplexity-form { display: grid; grid-template-columns: 1fr auto; gap: 6px; margin-top: 4px; }
+    .perplexity-form {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px;
+      margin-top: 4px;
+    }
 
     .perplexity-input {
       width: 100%;
@@ -533,19 +557,12 @@
       padding-right: 4px;
     }
 
-    .notes-list::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    .notes-list::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
+    .notes-list::-webkit-scrollbar { width: 8px; }
+    .notes-list::-webkit-scrollbar-track { background: transparent; }
     .notes-list::-webkit-scrollbar-thumb {
       background: rgba(55, 53, 47, 0.16);
       border-radius: 999px;
     }
-
     .notes-list::-webkit-scrollbar-thumb:hover {
       background: rgba(55, 53, 47, 0.28);
     }
@@ -642,7 +659,13 @@
       padding-top: 2px;
     }
 
-    .music-row { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+    .music-row {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
 
     .music-btn {
       padding: 6px 10px;
@@ -669,7 +692,13 @@
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
     }
 
-    .video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .video-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
 
     .video-hint {
       margin-top: 7px;
@@ -715,6 +744,9 @@
           <div>
             <div class="timer-time" id="timeDisplay" contenteditable="true" spellcheck="false">25:00</div>
             <div class="status" id="statusText">Focus ready</div>
+            <div class="daily-total" id="dailyTotalText">
+              Today: <strong>0m</strong> focus
+            </div>
           </div>
           <div class="progress-bar" aria-hidden="true">
             <div class="progress-fill" id="progressFill"></div>
@@ -853,7 +885,7 @@
         const current = loadStore();
         const next = Object.assign({}, current, patch);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      } catch (e) { }
+      } catch (e) {}
     }
 
     function normalizeNotes(notes) {
@@ -868,6 +900,11 @@
           updatedAt: Number.isFinite(note?.updatedAt) ? note.updatedAt : Date.now()
         };
       });
+    }
+
+    function todayKey() {
+      const d = new Date();
+      return d.toISOString().slice(0, 10); // YYYY-MM-DD
     }
 
     const stored = loadStore();
@@ -889,7 +926,9 @@
       alertSoundIntervalId: null,
       titleFlashIntervalId: null,
       originalTitle: document.title,
-      audioCtx: null
+      audioCtx: null,
+      focusTotals: stored.focusTotals || {}, // {dateKey: seconds}
+      currentDateKey: todayKey()
     };
 
     state.totalSeconds = state.durations.focus * 60;
@@ -898,6 +937,7 @@
     const modes = document.querySelectorAll('.mode');
     const timeDisplay = document.getElementById('timeDisplay');
     const statusText = document.getElementById('statusText');
+    const dailyTotalText = document.getElementById('dailyTotalText');
     const progressFill = document.getElementById('progressFill');
     const startPauseBtn = document.getElementById('startPauseBtn');
     const resetBtn = document.getElementById('resetBtn');
@@ -953,6 +993,34 @@
       return minutes * 60 + seconds;
     }
 
+    function ensureCurrentDateKey() {
+      const key = todayKey();
+      if (key !== state.currentDateKey) {
+        state.currentDateKey = key;
+      }
+    }
+
+    function getTodayFocusSeconds() {
+      ensureCurrentDateKey();
+      return state.focusTotals[state.currentDateKey] || 0;
+    }
+
+    function addFocusSeconds(seconds) {
+      if (seconds <= 0) return;
+      ensureCurrentDateKey();
+      const current = state.focusTotals[state.currentDateKey] || 0;
+      state.focusTotals[state.currentDateKey] = current + seconds;
+      saveStore({ focusTotals: state.focusTotals });
+      updateDailyTotalText();
+    }
+
+    function updateDailyTotalText() {
+      const seconds = getTodayFocusSeconds();
+      const minutes = Math.floor(seconds / 60);
+      const label = dailyTotalText.querySelector('strong');
+      if (label) label.textContent = `${minutes}m`;
+    }
+
     function updateDisplay() {
       timeDisplay.textContent = formatTime(state.remainingSeconds);
       const ratio = state.totalSeconds > 0 ? state.remainingSeconds / state.totalSeconds : 0;
@@ -962,6 +1030,7 @@
         ? label + ' running'
         : (state.remainingSeconds === 0 ? label + ' done' : label + ' ready');
       startPauseBtn.textContent = state.running ? 'Pause' : 'Start';
+      updateDailyTotalText();
     }
 
     function getAudioCtx() {
@@ -1080,6 +1149,9 @@
     function tick() {
       if (state.remainingSeconds > 0) {
         state.remainingSeconds -= 1;
+        if (state.mode === 'focus') {
+          addFocusSeconds(1);
+        }
         updateDisplay();
       } else {
         state.running = false;
@@ -1140,7 +1212,9 @@
 
     function formatClock12(date) {
       return new Intl.DateTimeFormat('en-US', {
-        hour: 'numeric', minute: '2-digit', hour12: true
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
       }).format(date);
     }
 
@@ -1163,10 +1237,13 @@
       const optionsDate = { month: 'short', day: 'numeric' };
       const optionsTime = { hour: 'numeric', minute: '2-digit' };
       const optionsFull = { month: 'short', day: 'numeric', year: 'numeric' };
-      if (sameDay) return 'Last edited Today at ' + new Intl.DateTimeFormat('en-US', optionsTime).format(d);
+      if (sameDay) return 'Last edited Today at ' +
+        new Intl.DateTimeFormat('en-US', optionsTime).format(d);
       if (d.getFullYear() === now.getFullYear())
-        return 'Last edited ' + new Intl.DateTimeFormat('en-US', optionsDate).format(d);
-      return 'Last edited ' + new Intl.DateTimeFormat('en-US', optionsFull).format(d);
+        return 'Last edited ' +
+          new Intl.DateTimeFormat('en-US', optionsDate).format(d);
+      return 'Last edited ' +
+        new Intl.DateTimeFormat('en-US', optionsFull).format(d);
     }
 
     function touchNote(index) {
@@ -1175,7 +1252,9 @@
     }
 
     function openAlarmModal() {
-      let seed = state.alarmTarget ? new Date(state.alarmTarget) : new Date(Date.now() + 5 * 60 * 1000);
+      let seed = state.alarmTarget
+        ? new Date(state.alarmTarget)
+        : new Date(Date.now() + 5 * 60 * 1000);
       const hh = String(seed.getHours()).padStart(2, '0');
       const mm = String(seed.getMinutes()).padStart(2, '0');
       alarmTimeInput.value = `${hh}:${mm}`;
@@ -1232,12 +1311,14 @@
       const now = new Date();
       const diffMs = state.alarmTarget.getTime() - now.getTime();
       const diffSec = Math.max(0, Math.floor(diffMs / 1000));
-      alarmCountdownLabel.textContent = `Alarm set for ${formatClock12(state.alarmTarget)}`;
+      alarmCountdownLabel.textContent =
+        `Alarm set for ${formatClock12(state.alarmTarget)}`;
       alarmCountdownTime.textContent = formatHMS(diffSec);
       if (diffSec <= 0) {
         clearInterval(state.alarmIntervalId);
         state.alarmIntervalId = null;
-        alarmCountdownLabel.textContent = `Alarm — ${formatClock12(state.alarmTarget)}`;
+        alarmCountdownLabel.textContent =
+          `Alarm — ${formatClock12(state.alarmTarget)}`;
         alarmCountdownTime.textContent = '00:00';
         fireAlert();
       }
@@ -1254,7 +1335,10 @@
       state.notes.forEach((note, index) => {
         const card = document.createElement('div');
         card.className = 'sticky';
-        card.style.setProperty('--sticky-bg', note.color || 'rgba(255,255,255,0.80)');
+        card.style.setProperty(
+          '--sticky-bg',
+          note.color || 'rgba(255,255,255,0.80)'
+        );
 
         const del = document.createElement('button');
         del.className = 'sticky-del';
@@ -1372,7 +1456,8 @@
       e.preventDefault();
       const query = perplexityInput.value.trim();
       if (!query) return;
-      const url = 'https://www.perplexity.ai/search?q=' + encodeURIComponent(query);
+      const url =
+        'https://www.perplexity.ai/search?q=' + encodeURIComponent(query);
       window.open(url, '_blank', 'noopener,noreferrer');
     }
 
@@ -1465,8 +1550,10 @@
       }).format(now);
       wallclockTime.textContent = time;
       wallclockDate.textContent = `${date} · Eastern Time`;
+      ensureCurrentDateKey();
     }
 
+    updateDailyTotalText();
     updateDisplay();
     updateWallclock();
     setInterval(updateWallclock, 1000);
