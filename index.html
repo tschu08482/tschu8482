@@ -466,7 +466,10 @@
     }
 
     details[open] .chev { transform: rotate(225deg); margin-top: 3px; }
-    .section-body { margin-top: 10px; }
+
+    .section-body {
+      margin-top: 10px;
+    }
 
     .perplexity-panel { display: grid; gap: 6px; }
     .perplexity-form { display: grid; grid-template-columns: 1fr auto; gap: 6px; margin-top: 4px; }
@@ -497,7 +500,13 @@
       white-space: nowrap;
     }
 
-    .notes-actions { display: flex; justify-content: flex-end; gap: 6px; margin-bottom: 8px; }
+    .notes-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
     .notes-add { width: 24px; height: 24px; font-size: 15px; }
 
     .notes-clear {
@@ -510,13 +519,36 @@
     }
 
     .notes-clear:disabled { opacity: 0.35; cursor: not-allowed; }
+
     .notes-clear.armed {
       background: rgba(55, 53, 47, 0.08);
       color: var(--fg);
       border-color: var(--line-strong);
     }
 
-    .notes-list { display: block; }
+    .notes-list {
+      display: block;
+      max-height: 220px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .notes-list::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .notes-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .notes-list::-webkit-scrollbar-thumb {
+      background: rgba(55, 53, 47, 0.16);
+      border-radius: 999px;
+    }
+
+    .notes-list::-webkit-scrollbar-thumb:hover {
+      background: rgba(55, 53, 47, 0.28);
+    }
 
     .sticky {
       --sticky-bg: rgba(255,255,255,0.80);
@@ -525,9 +557,10 @@
       padding: 11px;
       box-shadow: var(--shadow-note);
       margin-bottom: 8px;
-      min-height: 108px;
+      height: 108px;
       background: var(--sticky-bg);
       border: 1px solid rgba(55, 53, 47, 0.10);
+      overflow: hidden;
     }
 
     .sticky-toolbar {
@@ -575,6 +608,7 @@
     .sticky-text {
       width: 100%;
       min-height: 58px;
+      height: 58px;
       border: none;
       background: transparent;
       resize: none;
@@ -584,6 +618,7 @@
       padding-right: 18px;
       font-family: inherit;
       color: var(--fg);
+      overflow-y: auto;
     }
 
     .sticky-del {
@@ -608,7 +643,15 @@
     }
 
     .music-row { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
-    .music-btn { padding: 6px 10px; font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+
+    .music-btn {
+      padding: 6px 10px;
+      font-size: 8px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
     .music-btn.active {
       background: rgba(55, 53, 47, 0.05);
       color: var(--fg);
