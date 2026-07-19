@@ -568,7 +568,7 @@
     }
 
     .sticky {
-      --sticky-bg: rgba(254,249,195,0.92);
+      --sticky-bg: #FDFD96; /* pastel yellow */
       position: relative;
       border-radius: 12px;
       padding: 11px;
@@ -864,11 +864,9 @@
   <script>
     const STORAGE_KEY = 'tsWidget_v1';
     const NOTE_COLORS = [
-      'rgba(239,246,255,0.92)',  // soft blue
-      'rgba(236,253,245,0.92)',  // soft green
-      'rgba(254,249,195,0.92)',  // soft yellow
-      'rgba(255,237,213,0.92)',  // soft orange
-      'rgba(243,232,255,0.92)'   // soft purple
+      '#FDFD96', // pastel yellow
+      '#B0E0E6', // pastel blue (PowderBlue) [web:243]
+      '#FF6961'  // pastel red [web:231][web:235]
     ];
 
     function loadStore() {
@@ -891,11 +889,11 @@
       if (!Array.isArray(notes)) return [];
       return notes.map(note => {
         if (typeof note === 'string') {
-          return { text: note, color: 'rgba(254,249,195,0.92)', updatedAt: Date.now() };
+          return { text: note, color: '#FDFD96', updatedAt: Date.now() };
         }
         return {
           text: typeof note?.text === 'string' ? note.text : '',
-          color: typeof note?.color === 'string' ? note.color : 'rgba(254,249,195,0.92)',
+          color: typeof note?.color === 'string' ? note.color : '#FDFD96',
           updatedAt: Number.isFinite(note?.updatedAt) ? note.updatedAt : Date.now()
         };
       });
@@ -1336,7 +1334,7 @@
         card.className = 'sticky';
         card.style.setProperty(
           '--sticky-bg',
-          note.color || 'rgba(254,249,195,0.92)'
+          note.color || '#FDFD96'
         );
 
         const del = document.createElement('button');
@@ -1367,7 +1365,7 @@
         NOTE_COLORS.forEach(color => {
           const swatch = document.createElement('button');
           swatch.className = 'color-dot' +
-            ((note.color || 'rgba(254,249,195,0.92)') === color ? ' active' : '');
+            ((note.color || '#FDFD96') === color ? ' active' : '');
           swatch.type = 'button';
           swatch.style.background = color;
           swatch.setAttribute('aria-label', `Set note color ${color}`);
@@ -1403,7 +1401,7 @@
     function addNote() {
       state.notes.unshift({
         text: '',
-        color: 'rgba(254,249,195,0.92)',
+        color: '#FDFD96',
         updatedAt: Date.now()
       });
       persistNotes();
