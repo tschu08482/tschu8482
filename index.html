@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Notion Clock Compact</title>
+  <title>Notion Clock Single Line</title>
   <style>
     :root {
       --fg: #2f3437;
-      --muted: #787774;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,35 +30,20 @@
       padding: 2px 0;
     }
 
-    /* Single line: time + short date */
-    .clock-row {
-      display: inline-flex;
-      align-items: baseline;
-      gap: 8px;
-      font-size: 32px;       /* heading-like */
+    /* One heading-style line */
+    .clock-line {
+      display: inline-block;
+      font-size: 32px;       /* Heading 1-ish */
       font-weight: 700;
       letter-spacing: -0.03em;
       line-height: 1.1;
-      white-space: nowrap;   /* prevent wrap inside row */
-    }
-
-    .clock-time {
-      /* inherits heading style */
-    }
-
-    .clock-sub {
-      font-size: 16px;       /* smaller, fits better */
-      font-weight: 600;
-      color: var(--muted);
+      white-space: nowrap;   /* keep whole string on one line */
     }
   </style>
 </head>
 <body>
   <div class="clock-block">
-    <div class="clock-row">
-      <span class="clock-time" id="clockTime"></span>
-      <span class="clock-sub" id="clockSub"></span>
-    </div>
+    <span class="clock-line" id="clockLine"></span>
   </div>
 
   <script>
@@ -72,15 +56,16 @@
         hour12: true
       });
 
-      // Shorter date to avoid wrapping in Notion
+      // Short date to avoid wrapping
       const weekday = now.toLocaleDateString('en-US', { weekday: 'short' });
       const month = now.getMonth() + 1;
       const day = now.getDate();
+      const year = now.getFullYear();
 
-      const dateStr = `${weekday} ${month}/${day}`;
+      const dateStr = `${weekday} ${month}/${day}/${year}`;
 
-      document.getElementById('clockTime').textContent = timeStr;
-      document.getElementById('clockSub').textContent = dateStr;
+      // Single text node: time + date
+      document.getElementById('clockLine').textContent = `${timeStr} · ${dateStr}`;
     }
 
     updateClock();
