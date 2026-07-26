@@ -17,8 +17,8 @@
       --accent-soft: rgba(43, 140, 149, 0.10);
       --radius: 16px;
       --radius-sm: 10px;
-      --label-size: 9px;
-      --timer-size: 18px;
+      --label-size: 10px;
+      --timer-size: 20px;
       --shadow-note: 0 1px 2px rgba(15, 23, 42, 0.05);
     }
 
@@ -36,44 +36,43 @@
 
     body {
       padding: 4px;
-      display: flex;
-      justify-content: center;
     }
 
+    /* Let widget fill the Notion block width */
     .widget {
       width: 100%;
-      max-width: 800px; /* fits Notion embed */
+      max-width: 100%;
       background: transparent;
       padding: 0;
       border: none;
     }
 
-    /* === TOP ROW === */
+    /* === TOP ROW (4 columns, equal width) === */
 
     .top-widgets {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       align-items: stretch;
-      justify-content: center;
-      flex-wrap: nowrap; /* keep 4×1 in typical Notion width */
+      justify-content: stretch;
+      flex-wrap: nowrap;  /* stay 4×1 at typical block width */
     }
 
     .top-card {
-      flex: 0 0 185px;          /* four narrow cards */
+      flex: 1 1 0;
       display: flex;
       flex-direction: column;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: 8px 8px 6px;
+      padding: 10px 12px 8px;
       background: transparent;
-      min-height: 150px;        /* compact height */
+      min-height: 170px;
     }
 
     .panel,
     details.section {
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: 8px 8px 6px;
+      padding: 10px 12px 8px;
       background: transparent;
       box-shadow: none;
       display: flex;
@@ -86,9 +85,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 4px;
-      min-height: 18px;
-      margin-bottom: 6px;
+      gap: 6px;
+      min-height: 20px;
+      margin-bottom: 8px;
     }
 
     .panel-body {
@@ -103,7 +102,7 @@
       display: inline-flex;
       align-items: center;
       font-size: var(--label-size);
-      letter-spacing: 0.12em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       font-weight: 600;
       color: var(--muted);
@@ -111,8 +110,8 @@
 
     .clock-accent {
       color: #d7a077;
-      margin-left: 3px;
-      font-size: 10px;
+      margin-left: 4px;
+      font-size: 11px;
     }
 
     .clock-box {
@@ -127,7 +126,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 2px 0;
+      padding: 4px 0;
     }
 
     .clock-time {
@@ -136,7 +135,7 @@
       align-items: center;
       width: 100%;
       font-family: 'Inter', sans-serif;
-      font-size: 24px;
+      font-size: 28px;
       font-weight: 700;
       letter-spacing: -0.03em;
       color: var(--fg);
@@ -146,9 +145,9 @@
 
     .clock-date {
       width: 100%;
-      margin-top: 4px;
+      margin-top: 6px;
       text-align: center;
-      font-size: 9px;
+      font-size: 10px;
       font-weight: 500;
       color: #6f6e6b;
       letter-spacing: 0.01em;
@@ -158,7 +157,7 @@
 
     .mode-row {
       display: inline-flex;
-      gap: 4px;
+      gap: 5px;
       align-items: center;
       flex-wrap: wrap;
       justify-content: flex-end;
@@ -169,9 +168,9 @@
       background: transparent;
       color: var(--muted);
       border-radius: 999px;
-      padding: 5px 9px;
-      font-size: 7px;
-      letter-spacing: 0.12em;
+      padding: 6px 10px;
+      font-size: 8px;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       cursor: pointer;
       font-family: inherit;
@@ -194,9 +193,9 @@
       background: transparent;
       color: var(--muted);
       border-radius: 999px;
-      padding: 5px 9px;
-      font-size: 7px;
-      letter-spacing: 0.12em;
+      padding: 6px 10px;
+      font-size: 8px;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       cursor: pointer;
       font-family: inherit;
@@ -215,14 +214,18 @@
     }
 
     .timer-main {
-      display: flex;
+      display: grid;
+      grid-template-columns: auto 1fr; /* timer block + bar */
       align-items: center;
-      gap: 4px;       /* tighter, removes strange big bar feel */
-      margin-top: 4px;
+      column-gap: 8px;
+      row-gap: 2px;
+      margin-top: 6px;
     }
 
     .timer-left {
-      min-width: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
     }
 
     .timer-time {
@@ -240,13 +243,13 @@
     .timer-time:hover,
     .timer-time:focus {
       background: rgba(55, 53, 47, 0.04);
-      padding: 2px 4px;
-      margin: -2px -4px;
+      padding: 2px 6px;
+      margin: -2px -6px;
     }
 
     .status {
-      font-size: 7px;
-      letter-spacing: 0.12em;
+      font-size: 8px;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       font-weight: 600;
       color: var(--muted);
@@ -265,12 +268,12 @@
     }
 
     .progress-bar {
-      flex: 1;
-      height: 3px;           /* thin bar */
+      width: 100%;
+      height: 3px;
       background: rgba(55, 53, 47, 0.08);
       border-radius: 999px;
       overflow: hidden;
-      margin-top: 2px;       /* just under the text, not mid‑row */
+      margin-top: 0; /* aligned horizontally with timer block */
     }
 
     .progress-fill {
@@ -285,8 +288,8 @@
     .controls-row {
       display: flex;
       align-items: center;
-      gap: 5px;
-      margin-top: 6px;       /* aligned with other cards’ content */
+      gap: 6px;
+      margin-top: 10px;
       flex-wrap: wrap;
     }
 
@@ -307,9 +310,9 @@
     }
 
     .btn {
-      padding: 6px 10px;
-      font-size: 8px;
-      letter-spacing: 0.12em;
+      padding: 7px 13px;
+      font-size: 9px;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
     }
 
@@ -320,15 +323,15 @@
     }
 
     .icon-btn {
-      width: 26px;
-      height: 26px;
+      width: 28px;
+      height: 28px;
       display: grid;
       place-items: center;
     }
 
     .icon-btn svg {
-      width: 12px;
-      height: 12px;
+      width: 13px;
+      height: 13px;
       stroke: currentColor;
       fill: none;
       stroke-width: 1.75;
@@ -345,7 +348,7 @@
     .perplexity-form {
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 5px;
+      gap: 6px;
       align-items: center;
       width: 100%;
     }
@@ -354,13 +357,13 @@
       width: 100%;
       border: 1px solid var(--line);
       border-radius: 999px;
-      padding: 7px 10px;
-      font-size: 9px;
+      padding: 8px 12px;
+      font-size: 10px;
       outline: none;
       font-family: inherit;
       background: transparent;
       color: var(--fg);
-      min-height: 32px;
+      min-height: 34px;
     }
 
     .perplexity-input:focus {
@@ -369,11 +372,11 @@
     }
 
     .mini-btn {
-      padding: 0 10px;
-      font-size: 7px;
-      letter-spacing: 0.12em;
+      padding: 0 12px;
+      font-size: 8px;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      min-height: 32px;
+      min-height: 34px;
     }
 
     /* === MUSIC CARD === */
@@ -381,16 +384,16 @@
     .music-row {
       display: flex;
       justify-content: center;
-      gap: 4px;
+      gap: 5px;
       flex-wrap: wrap;
       margin-bottom: 6px;
       margin-top: 2px;
     }
 
     .music-btn {
-      padding: 5px 9px;
-      font-size: 7px;
-      letter-spacing: 0.12em;
+      padding: 6px 10px;
+      font-size: 8px;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--muted);
     }
@@ -405,7 +408,7 @@
       position: relative;
       width: 100%;
       aspect-ratio: 16 / 9;
-      border-radius: 10px;
+      border-radius: 12px;
       overflow: hidden;
       border: 1px solid var(--line);
       background: transparent;
@@ -420,10 +423,10 @@
     }
 
     .video-hint {
-      margin-top: 4px;
+      margin-top: 5px;
       text-align: center;
       color: var(--muted);
-      font-size: 7px;
+      font-size: 8px;
       letter-spacing: 0.02em;
     }
 
@@ -431,35 +434,35 @@
 
     .stack {
       display: grid;
-      gap: 6px;
-      margin-top: 6px;
+      gap: 8px;
+      margin-top: 10px;
     }
 
     details.section {
       border-radius: var(--radius);
-      padding: 8px 8px 6px; /* match top-card */
+      padding: 10px 12px 8px; /* match top-card */
     }
 
     .notes-actions {
       display: flex;
       justify-content: flex-end;
-      gap: 5px;
-      margin-bottom: 6px;
+      gap: 6px;
+      margin-bottom: 8px;
     }
 
     .notes-add {
-      width: 22px;
-      height: 22px;
-      font-size: 14px;
+      width: 24px;
+      height: 24px;
+      font-size: 15px;
     }
 
     .notes-clear {
-      padding: 0 8px;
-      font-size: 7px;
-      letter-spacing: 0.12em;
+      padding: 0 9px;
+      font-size: 8px;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--muted);
-      height: 22px;
+      height: 24px;
     }
 
     .notes-clear:disabled {
@@ -469,15 +472,15 @@
 
     .notes-list {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 6px;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 8px;
     }
 
     .sticky {
       --sticky-bg: #ECE4C8;
       position: relative;
-      border-radius: 10px;
-      padding: 9px;
+      border-radius: 12px;
+      padding: 10px;
       box-shadow: var(--shadow-note);
       min-height: 120px;
       background: var(--sticky-bg);
@@ -491,17 +494,17 @@
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 5px;
+      gap: 6px;
       margin-bottom: 6px;
-      padding-right: 14px;
+      padding-right: 16px;
     }
 
     .sticky-meta {
-      font-size: 7px;
+      font-size: 8px;
       letter-spacing: 0.01em;
       color: rgba(17,24,39,0.58);
       line-height: 1.35;
-      max-width: 140px;
+      max-width: 150px;
     }
 
     .sticky-colors {
@@ -513,8 +516,8 @@
     }
 
     .color-dot {
-      width: 12px;
-      height: 12px;
+      width: 13px;
+      height: 13px;
       border-radius: 50%;
       border: 1px solid rgba(17,24,39,0.12);
       cursor: pointer;
@@ -537,7 +540,7 @@
       outline: none;
       font-size: 10px;
       line-height: 1.45;
-      padding-right: 14px;
+      padding-right: 16px;
       font-family: inherit;
       color: var(--fg);
       overflow-y: auto;
@@ -577,12 +580,18 @@
       border: 0;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
       .top-widgets {
-        flex-wrap: wrap;    /* only wrap on very small screens */
+        flex-wrap: wrap;
       }
       .top-card {
-        flex: 0 0 calc(50% - 6px);
+        flex: 1 1 calc(50% - 8px);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .top-card {
+        flex: 1 1 100%;
       }
     }
   </style>
@@ -656,7 +665,6 @@
       <details class="top-card music-panel" open>
         <summary>
           <span class="section-title">Music</span>
-          <span class="chev" aria-hidden="true"></span>
         </summary>
         <div class="panel-body">
           <div class="music-row" id="videoPlaylists"></div>
