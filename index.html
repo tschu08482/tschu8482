@@ -16,8 +16,8 @@
       --muted: #787774;
       --line: rgba(55, 53, 47, 0.12);
       --line-strong: rgba(55, 53, 47, 0.18);
-      --accent: #2f3437;
-      --accent-soft: rgba(47, 52, 55, 0.08);
+      --accent: #2b8c95;
+      --accent-soft: rgba(43, 140, 149, 0.10);
       --danger: #2f3437;
       --radius: 12px;
       --radius-sm: 8px;
@@ -41,14 +41,14 @@
     }
 
     body {
-      padding: 12px;
+      padding: 10px;
       display: flex;
       justify-content: center;
     }
 
     .widget {
-      width: min(1280px, 100%);
-      max-width: 1280px;
+      width: min(1600px, 100%);
+      max-width: 1600px;
       background: transparent;
       padding: 0;
       border: none;
@@ -70,15 +70,15 @@
     .panel,
     details.section {
       border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 12px 13px;
-      background: var(--surface-2);
-      box-shadow: var(--shadow-soft);
+      border-radius: 28px;
+      padding: 18px 18px 16px;
+      background: transparent;
+      box-shadow: none;
     }
 
     .top-widgets > .panel,
     .top-widgets > .section {
-      min-height: 210px;
+      min-height: 350px;
       display: flex;
       flex-direction: column;
     }
@@ -91,14 +91,14 @@
       justify-content: space-between;
       gap: 8px;
       min-height: 24px;
-      margin-bottom: 10px;
+      margin-bottom: 18px;
     }
 
     .panel-body {
       flex: 1;
+      min-height: 0;
       display: flex;
       flex-direction: column;
-      min-height: 0;
     }
 
     .clock-label,
@@ -115,8 +115,15 @@
       line-height: 1;
     }
 
-    .clock-panel .clock-box,
-    .search-panel .perplexity-panel,
+    .clock-accent {
+      color: #d7a077;
+      margin-left: 6px;
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    .clock-box,
+    .perplexity-panel,
     .music-panel .section-body {
       flex: 1;
       display: flex;
@@ -124,13 +131,10 @@
       min-height: 0;
     }
 
-    .clock-box {
-      border-radius: var(--radius);
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      height: 100%;
+    .clock-panel .panel-body {
+      justify-content: flex-end;
+      align-items: center;
+      padding-bottom: 2px;
     }
 
     .clock-time {
@@ -144,34 +148,37 @@
       letter-spacing: -0.045em;
       color: var(--fg);
       line-height: 1;
-      margin-top: auto;
     }
 
     .clock-date {
       font-family: 'Inter', sans-serif;
       font-size: 11px;
       font-weight: 600;
-      color: #2f3437;
+      color: #6f6e6b;
       letter-spacing: 0.01em;
       width: 100%;
       text-align: center;
-      margin-top: 8px;
+      margin-top: 14px;
+    }
+
+    .timer-panel .panel-body {
+      justify-content: flex-start;
     }
 
     .mode-row {
       display: inline-flex;
-      gap: 6px;
+      gap: 8px;
       align-items: center;
       flex-wrap: wrap;
       justify-content: flex-end;
     }
 
     .mode {
-      border: 1px solid transparent;
+      border: 1px solid var(--line);
       background: transparent;
       color: var(--muted);
       border-radius: 999px;
-      padding: 6px 11px;
+      padding: 8px 14px;
       font-size: 8px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -186,18 +193,18 @@
     }
 
     .mode.active {
-      background: var(--accent-soft);
-      border-color: var(--line-strong);
-      color: var(--fg);
+      background: rgba(43, 140, 149, 0.08);
+      border-color: rgba(43, 140, 149, 0.22);
+      color: #2a7d85;
       box-shadow: none;
     }
 
     .alarm-header-btn {
       border: 1px solid var(--line);
-      background: #ffffff;
-      color: var(--fg);
+      background: transparent;
+      color: var(--muted);
       border-radius: 999px;
-      padding: 6px 11px;
+      padding: 8px 14px;
       font-size: 8px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -206,7 +213,7 @@
       transition: 160ms ease;
     }
 
-    .alarm-header-btn:hover { background: rgba(55, 53, 47, 0.04); }
+    .alarm-header-btn:hover { background: rgba(55, 53, 47, 0.04); color: var(--fg); }
 
     .alarm-header-btn.armed {
       background: rgba(55, 53, 47, 0.08);
@@ -217,9 +224,12 @@
     .timer-main {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-top: 0;
-      flex: 1;
+      gap: 18px;
+      margin-top: 30px;
+    }
+
+    .timer-left {
+      min-width: 135px;
     }
 
     .timer-time {
@@ -227,16 +237,17 @@
       font-size: var(--timer-size);
       font-weight: 500;
       line-height: 1;
-      padding: 4px 8px;
+      padding: 0;
       border-radius: 8px;
       outline: none;
       letter-spacing: -0.04em;
       color: var(--fg);
     }
 
-    .timer-time:hover,
-    .timer-time:focus {
+    .timer-time:hover, .timer-time:focus {
       background: rgba(55, 53, 47, 0.04);
+      padding: 2px 6px;
+      margin: -2px -6px;
     }
 
     .status {
@@ -245,11 +256,11 @@
       text-transform: uppercase;
       font-weight: 700;
       color: var(--muted);
-      margin-top: 5px;
+      margin-top: 10px;
     }
 
     .daily-total {
-      margin-top: 3px;
+      margin-top: 4px;
       font-size: 9px;
       color: var(--muted);
     }
@@ -261,16 +272,17 @@
 
     .progress-bar {
       flex: 1;
-      height: 6px;
+      height: 8px;
       background: rgba(55, 53, 47, 0.08);
       border-radius: 999px;
       overflow: hidden;
+      margin-top: 8px;
     }
 
     .progress-fill {
       width: 100%;
       height: 100%;
-      background: #2f3437;
+      background: var(--accent);
       border-radius: inherit;
       transform-origin: left center;
       transition: transform 0.9s linear;
@@ -279,14 +291,14 @@
     .controls-row {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-top: 10px;
+      gap: 10px;
+      margin-top: 28px;
       flex-wrap: wrap;
     }
 
     .btn, .icon-btn, .mini-btn, .music-btn, .notes-add, .notes-clear {
       border: 1px solid var(--line);
-      background: #ffffff;
+      background: transparent;
       color: var(--fg);
       border-radius: 999px;
       cursor: pointer;
@@ -300,29 +312,29 @@
     }
 
     .btn {
-      padding: 7px 13px;
+      padding: 10px 18px;
       font-size: 9px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
     }
 
     .btn.primary {
-      background: #2f3437;
-      color: #ffffff;
-      border-color: #2f3437;
+      background: transparent;
+      color: var(--accent);
+      border-color: var(--accent);
       box-shadow: none;
     }
 
     .icon-btn {
-      width: 30px;
-      height: 30px;
+      width: 40px;
+      height: 40px;
       display: grid;
       place-items: center;
     }
 
     .icon-btn svg {
-      width: 13px;
-      height: 13px;
+      width: 16px;
+      height: 16px;
       stroke: currentColor;
       fill: none;
       stroke-width: 1.75;
@@ -330,21 +342,21 @@
 
     .settings {
       display: grid;
-      gap: 8px;
-      margin-top: 10px;
-      padding-top: 10px;
+      gap: 10px;
+      margin-top: 16px;
+      padding-top: 14px;
       border-top: 1px solid var(--line);
     }
 
     .field-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 12px;
     }
 
     .field label {
       display: block;
-      margin-bottom: 4px;
+      margin-bottom: 8px;
       font-size: 7px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
@@ -355,18 +367,19 @@
       display: flex;
       align-items: center;
       border: 1px solid var(--line);
-      border-radius: 10px;
+      border-radius: 18px;
       overflow: hidden;
-      background: #ffffff;
+      background: transparent;
+      height: 42px;
     }
 
     .stepper button {
-      width: 24px;
-      height: 26px;
+      width: 42px;
+      height: 42px;
       border: none;
       background: transparent;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 18px;
       color: var(--muted);
     }
 
@@ -379,16 +392,13 @@
       background: transparent;
       text-align: center;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
+      font-size: 12px;
       color: var(--fg);
       -moz-appearance: textfield;
     }
 
     .stepper input::-webkit-outer-spin-button,
-    .stepper input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
+    .stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
     .alarm-modal {
       position: fixed;
@@ -405,13 +415,13 @@
     .alarm-modal.open { display: flex; }
 
     .alarm-card {
-      background: rgba(255,255,255,0.96);
+      background: transparent;
       border-radius: 18px;
       padding: 18px;
       width: 100%;
       max-width: 300px;
       border: 1px solid var(--line);
-      box-shadow: 0 12px 30px rgba(15,23,42,0.08);
+      box-shadow: none;
     }
 
     .alarm-card-title {
@@ -433,7 +443,7 @@
       text-align: center;
       outline: none;
       color: var(--fg);
-      background: rgba(243,244,246,0.8);
+      background: transparent;
     }
 
     .alarm-input:focus {
@@ -441,17 +451,12 @@
       box-shadow: 0 0 0 3px rgba(55, 53, 47, 0.08);
     }
 
-    .alarm-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-top: 12px;
-    }
+    .alarm-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
 
     .alarm-countdown {
       display: none;
-      margin-top: 10px;
-      padding: 9px 10px;
+      margin-top: 14px;
+      padding: 10px 10px;
       border: 1px solid var(--line);
       border-radius: 12px;
       font-family: 'JetBrains Mono', monospace;
@@ -459,17 +464,11 @@
       color: var(--fg);
       text-align: center;
       letter-spacing: 0.02em;
-      background: rgba(55, 53, 47, 0.04);
+      background: transparent;
     }
 
     .alarm-countdown.visible { display: block; }
-
-    .alarm-countdown .cd-time {
-      font-size: 18px;
-      display: block;
-      margin-top: 2px;
-      letter-spacing: -0.02em;
-    }
+    .alarm-countdown .cd-time { font-size: 18px; display: block; margin-top: 2px; letter-spacing: -0.02em; }
 
     .alert-overlay {
       position: fixed;
@@ -486,14 +485,14 @@
     .alert-overlay.open { display: flex; }
 
     .alert-card {
-      background: rgba(255,255,255,0.96);
+      background: transparent;
       border: 1px solid var(--line);
       border-radius: 22px;
       padding: 22px 20px;
       width: 100%;
       max-width: 320px;
       text-align: center;
-      box-shadow: 0 14px 36px rgba(15,23,42,0.10);
+      box-shadow: none;
     }
 
     .alert-icon {
@@ -501,7 +500,7 @@
       height: 56px;
       margin: 0 auto 12px;
       border-radius: 50%;
-      background: rgba(55, 53, 47, 0.08);
+      background: transparent;
       display: grid;
       place-items: center;
       color: var(--fg);
@@ -525,15 +524,11 @@
       margin-bottom: 4px;
     }
 
-    .alert-sub {
-      font-size: 11px;
-      color: var(--muted);
-      margin-bottom: 16px;
-    }
+    .alert-sub { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
 
     .alert-dismiss {
-      background: var(--fg);
-      color: #fff;
+      background: transparent;
+      color: var(--fg);
       border: 1px solid var(--fg);
       border-radius: 999px;
       padding: 10px 22px;
@@ -560,57 +555,61 @@
       border-bottom: 1.5px solid var(--muted);
       transform: rotate(45deg);
       transition: transform 0.2s ease;
-      flex: 0 0 auto;
       margin-right: 4px;
+      flex: 0 0 auto;
     }
 
-    details[open] .chev {
-      transform: rotate(225deg);
-      margin-top: 3px;
-    }
+    details[open] .chev { transform: rotate(225deg); margin-top: 3px; }
 
-    .section-body {
-      margin-top: 0;
+    .section-body { margin-top: 0; }
+
+    .search-panel .panel-body {
+      justify-content: center;
+      padding-bottom: 40px;
     }
 
     .perplexity-panel {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 10px;
       height: 100%;
+      justify-content: center;
     }
 
     .perplexity-form {
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 6px;
-      margin-top: auto;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
     }
 
     .perplexity-input {
       width: 100%;
       border: 1px solid var(--line);
       border-radius: 999px;
-      padding: 9px 12px;
+      padding: 12px 16px;
       font-size: 10px;
       outline: none;
       font-family: inherit;
-      background: #ffffff;
+      background: transparent;
       color: var(--fg);
+      min-height: 46px;
     }
 
     .perplexity-input:focus {
       border-color: var(--line-strong);
       box-shadow: 0 0 0 3px rgba(55, 53, 47, 0.08);
-      background: #ffffff;
+      background: transparent;
     }
 
     .mini-btn {
-      padding: 8px 10px;
+      padding: 0 16px;
       font-size: 8px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       white-space: nowrap;
+      min-height: 46px;
     }
 
     .notes-actions {
@@ -620,11 +619,7 @@
       margin-bottom: 8px;
     }
 
-    .notes-add {
-      width: 24px;
-      height: 24px;
-      font-size: 15px;
-    }
+    .notes-add { width: 24px; height: 24px; font-size: 15px; }
 
     .notes-clear {
       padding: 0 9px;
@@ -748,16 +743,22 @@
       padding-top: 2px;
     }
 
+    .music-panel .panel-body,
+    .music-panel .section-body {
+      justify-content: flex-start;
+    }
+
     .music-row {
       display: flex;
       justify-content: center;
-      gap: 6px;
+      gap: 8px;
       flex-wrap: wrap;
-      margin-bottom: 8px;
+      margin-bottom: 22px;
+      margin-top: 2px;
     }
 
     .music-btn {
-      padding: 6px 10px;
+      padding: 8px 14px;
       font-size: 8px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -765,21 +766,21 @@
     }
 
     .music-btn.active {
-      background: rgba(55, 53, 47, 0.05);
-      color: var(--fg);
-      border-color: var(--line-strong);
+      background: rgba(43, 140, 149, 0.10);
+      color: #2a7d85;
+      border-color: rgba(43, 140, 149, 0.22);
     }
 
     .video-frame {
       position: relative;
       width: 100%;
       aspect-ratio: 16 / 9;
-      border-radius: 14px;
+      border-radius: 24px;
       overflow: hidden;
       border: 1px solid var(--line);
-      background: #000;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
-      margin-top: auto;
+      background: transparent;
+      box-shadow: none;
+      margin-top: 0;
     }
 
     .video-frame iframe {
@@ -791,7 +792,7 @@
     }
 
     .video-hint {
-      margin-top: 7px;
+      margin-top: 10px;
       text-align: center;
       color: var(--muted);
       font-size: 8px;
@@ -810,13 +811,13 @@
       border: 0;
     }
 
-    @media (max-width: 1100px) {
+    @media (max-width: 1200px) {
       .top-widgets {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
-    @media (max-width: 700px) {
+    @media (max-width: 760px) {
       .top-widgets {
         grid-template-columns: 1fr;
       }
@@ -833,6 +834,11 @@
         flex-direction: column;
         align-items: stretch;
       }
+
+      .top-widgets > .panel,
+      .top-widgets > .section {
+        min-height: auto;
+      }
     }
   </style>
 </head>
@@ -842,7 +848,7 @@
       <section class="panel clock-panel">
         <div class="clock-box">
           <div class="panel-header">
-            <div class="clock-label">Current Time</div>
+            <div class="clock-label">Current Time <span class="clock-accent">+</span></div>
           </div>
           <div class="panel-body">
             <div class="clock-time" id="wallclockTime"></div>
@@ -863,7 +869,7 @@
 
         <div class="panel-body">
           <div class="timer-main">
-            <div>
+            <div class="timer-left">
               <div class="timer-time" id="timeDisplay" contenteditable="true" spellcheck="false">25:00</div>
               <div class="status" id="statusText">Focus ready</div>
               <div class="daily-total" id="dailyTotalText">
@@ -920,8 +926,8 @@
         <div class="perplexity-panel panel-body">
           <form class="perplexity-form" id="perplexityForm">
             <label class="sr-only" for="perplexityInput">Ask Perplexity</label>
-            <input id="perplexityInput" class="perplexity-input" type="text" placeholder="Ask Perplexity anything..." autocomplete="off" required>
-            <button class="mini-btn" type="submit">Search</button>
+            <input id="perplexityInput" class="perplexity-input" type="text" placeholder="Ask anything..." autocomplete="off" required>
+            <button class="mini-btn" type="submit">Go</button>
           </form>
         </div>
       </section>
@@ -943,7 +949,7 @@
               referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen></iframe>
           </div>
-          <div class="video-hint">Choose a playlist for background focus.</div>
+          <div class="video-hint">Mini focus vibes.</div>
         </div>
       </details>
     </div>
