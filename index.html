@@ -15,8 +15,8 @@
       --line-strong: rgba(55, 53, 47, 0.18);
       --accent: #2b8c95;
       --accent-soft: rgba(43, 140, 149, 0.10);
-      --radius: 12px;
-      --radius-sm: 8px;
+      --radius: 16px;
+      --radius-sm: 10px;
       --label-size: 9px;
       --timer-size: 18px;
       --shadow-note: 0 1px 2px rgba(15, 23, 42, 0.05);
@@ -40,39 +40,33 @@
       justify-content: center;
     }
 
-    /* Narrow overall widget, so 4 cards fit in Notion */
     .widget {
       width: 100%;
-      max-width: 800px;
+      max-width: 800px; /* fits Notion embed */
       background: transparent;
       padding: 0;
       border: none;
     }
 
-    /* Top row: flex row, fixed narrow cards */
+    /* === TOP ROW === */
+
     .top-widgets {
       display: flex;
       gap: 6px;
       align-items: stretch;
       justify-content: center;
-      flex-wrap: nowrap;               /* don't wrap unless very tiny */
+      flex-wrap: nowrap; /* keep 4×1 in typical Notion width */
     }
 
     .top-card {
-      flex: 0 0 185px;                 /* fixed width per card */
+      flex: 0 0 185px;          /* four narrow cards */
       display: flex;
       flex-direction: column;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 8px 8px 6px;
       background: transparent;
-      min-height: 150px;               /* compact height */
-    }
-
-    .stack {
-      display: grid;
-      gap: 6px;
-      margin-top: 6px;
+      min-height: 150px;        /* compact height */
     }
 
     .panel,
@@ -160,6 +154,8 @@
       letter-spacing: 0.01em;
     }
 
+    /* === TIMER CARD === */
+
     .mode-row {
       display: inline-flex;
       gap: 4px;
@@ -221,8 +217,8 @@
     .timer-main {
       display: flex;
       align-items: center;
-      gap: 6px;
-      margin-top: 6px;
+      gap: 4px;       /* tighter, removes strange big bar feel */
+      margin-top: 4px;
     }
 
     .timer-left {
@@ -270,11 +266,11 @@
 
     .progress-bar {
       flex: 1;
-      height: 4px;
+      height: 3px;           /* thin bar */
       background: rgba(55, 53, 47, 0.08);
       border-radius: 999px;
       overflow: hidden;
-      margin-top: 3px;
+      margin-top: 2px;       /* just under the text, not mid‑row */
     }
 
     .progress-fill {
@@ -290,7 +286,7 @@
       display: flex;
       align-items: center;
       gap: 5px;
-      margin-top: 8px;
+      margin-top: 6px;       /* aligned with other cards’ content */
       flex-wrap: wrap;
     }
 
@@ -338,7 +334,8 @@
       stroke-width: 1.75;
     }
 
-    /* Perplexity card, compact */
+    /* === PERPLEXITY CARD === */
+
     .perplexity-panel {
       display: flex;
       flex-direction: column;
@@ -379,7 +376,70 @@
       min-height: 32px;
     }
 
-    /* Sticky notes row, can be taller */
+    /* === MUSIC CARD === */
+
+    .music-row {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+      margin-top: 2px;
+    }
+
+    .music-btn {
+      padding: 5px 9px;
+      font-size: 7px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .music-btn.active {
+      background: var(--accent-soft);
+      color: #2a7d85;
+      border-color: rgba(43, 140, 149, 0.22);
+    }
+
+    .video-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: transparent;
+    }
+
+    .video-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .video-hint {
+      margin-top: 4px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 7px;
+      letter-spacing: 0.02em;
+    }
+
+    /* === STICKY NOTES SECTION === */
+
+    .stack {
+      display: grid;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    details.section {
+      border-radius: var(--radius);
+      padding: 8px 8px 6px; /* match top-card */
+    }
+
     .notes-actions {
       display: flex;
       justify-content: flex-end;
@@ -505,55 +565,6 @@
       padding-top: 2px;
     }
 
-    .music-row {
-      display: flex;
-      justify-content: center;
-      gap: 4px;
-      flex-wrap: wrap;
-      margin-bottom: 6px;
-      margin-top: 2px;
-    }
-
-    .music-btn {
-      padding: 5px 9px;
-      font-size: 7px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .music-btn.active {
-      background: var(--accent-soft);
-      color: #2a7d85;
-      border-color: rgba(43, 140, 149, 0.22);
-    }
-
-    .video-frame {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      border-radius: 10px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      background: transparent;
-    }
-
-    .video-frame iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-
-    .video-hint {
-      margin-top: 4px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 7px;
-      letter-spacing: 0.02em;
-    }
-
     .sr-only {
       position: absolute;
       width: 1px;
@@ -568,7 +579,7 @@
 
     @media (max-width: 600px) {
       .top-widgets {
-        flex-wrap: wrap;           /* only wrap on very small screens */
+        flex-wrap: wrap;    /* only wrap on very small screens */
       }
       .top-card {
         flex: 0 0 calc(50% - 6px);
@@ -669,7 +680,6 @@
       <details class="section" open>
         <summary>
           <span class="section-title">Sticky Notes</span>
-          <span class="chev" aria-hidden="true"></span>
         </summary>
         <div class="section-body">
           <div class="notes-actions">
@@ -752,8 +762,6 @@
     const resetBtn = document.getElementById('resetBtn');
     const wallclockTime = document.getElementById('wallclockTime');
     const wallclockDate = document.getElementById('wallclockDate');
-    const focusMinutes = document.getElementById('focusMinutes');
-    const breakMinutes = document.getElementById('breakMinutes');
     const notesList = document.getElementById('notesList');
     const notesEmpty = document.getElementById('notesEmpty');
     const addNoteBtn = document.getElementById('addNoteBtn');
