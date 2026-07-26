@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Notion Clock Single Line</title>
+  <title>Notion Clock Right-Centered</title>
   <style>
     :root {
       --fg: #2f3437;
-      --muted: #787774;
+      --muted: #787774; /* grey used by Notion */
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body {
       width: 100%;
+      height: 100%;
       background: transparent;
       color: var(--fg);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
@@ -21,28 +22,32 @@
       text-rendering: optimizeLegibility;
     }
 
+    /* Flex: vertical center, right align within the embed window */
     body {
       padding: 0;
-      display: block;
+      display: flex;
+      align-items: center;       /* vertical center */
+      justify-content: flex-end; /* push content to the right */
     }
 
     .clock-block {
-      width: 100%;
-      padding: 0;
+      padding-right: 16px;       /* small right margin */
     }
 
     /* One heading-style line */
     .clock-line {
       display: inline-block;
-      font-size: 32px;       /* Heading-like */
+      font-size: 32px;           /* heading-like */
       font-weight: 700;
       letter-spacing: -0.03em;
       line-height: 1.1;
       white-space: nowrap;
+      text-align: right;
     }
 
+    /* Grey day/date */
     .clock-muted {
-      color: var(--muted);   /* grey date */
+      color: var(--muted);
       font-weight: 600;
     }
   </style>
@@ -69,7 +74,6 @@
 
       const dateStr = `${weekday} ${month}/${day}/${year}`;
 
-      // Build inner HTML so date can be grey
       document.getElementById('clockLine').innerHTML =
         `${timeStr} · <span class="clock-muted">${dateStr}</span>`;
     }
