@@ -34,6 +34,13 @@
       padding: 4px 0;
     }
 
+    /* Row: time + date aligned horizontally */
+    .clock-row {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
     /* Time line: match Notion H1 ~32px */
     .clock-time {
       font-size: 32px;
@@ -43,17 +50,19 @@
     }
 
     .clock-sub {
-      margin-top: 4px;
       font-size: 12px;
       font-weight: 500;
       color: var(--muted);
+      white-space: nowrap;
     }
   </style>
 </head>
 <body>
   <div class="clock-block">
-    <div class="clock-time" id="clockTime"></div>
-    <div class="clock-sub" id="clockSub"></div>
+    <div class="clock-row">
+      <span class="clock-time" id="clockTime"></span>
+      <span class="clock-sub" id="clockSub"></span>
+    </div>
   </div>
 
   <script>
