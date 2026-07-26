@@ -72,7 +72,7 @@
 
     .top-widgets > .panel,
     .top-widgets > .section {
-      min-height: 200px;      /* much smaller than the big version */
+      min-height: 200px;
       display: flex;
       flex-direction: column;
     }
@@ -120,30 +120,30 @@
     }
 
     .clock-panel .panel-body {
-      flex: 1;
       display: flex;
       flex-direction: column;
-      justify-content: flex-end;
-      align-items: center;
-      padding: 0 0 4px;
+      justify-content: center;   /* vertical center */
+      align-items: center;       /* horizontal center */
+      padding: 12px 0 8px;
     }
 
     .clock-time {
-      width: 100%;
       display: flex;
-      justify-content: center;
+      justify-content: center;   /* horizontal center */
       align-items: center;
+      width: 100%;
       font-family: 'Inter', sans-serif;
-      font-size: 34px;        /* compact but clear */
+      font-size: 36px;
       font-weight: 700;
-      letter-spacing: -0.05em;
+      letter-spacing: -0.03em;
       color: var(--fg);
       line-height: 1;
+      text-align: center;
     }
 
     .clock-date {
       width: 100%;
-      margin-top: 8px;
+      margin-top: 6px;
       text-align: center;
       font-size: 11px;
       font-weight: 600;
@@ -395,7 +395,7 @@
       margin: 0;
     }
 
-    /* Alarm modal + alert (unchanged structurally, compact styles) */
+    /* Alarm modal + alert */
     .alarm-modal {
       position: fixed;
       inset: 0;
@@ -1253,6 +1253,22 @@
       } catch (e) {}
     }
 
+    function formatClock12(date) {
+      return new Intl.DateTimeFormat('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      }).format(date);
+    }
+
+    function formatHMS(totalSeconds) {
+      const h = Math.floor(totalSeconds / 3600);
+      const m = Math.floor((totalSeconds % 3600) / 60);
+      const s = totalSeconds % 60;
+      const pad = n => String(n).padStart(2, '0');
+      return h > 0 ? `${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+    }
+
     function fireAlert() {
       const target = state.alarmTarget || new Date();
       const timeStr = formatClock12(target);
@@ -1349,22 +1365,6 @@
       clearInterval(state.intervalId);
       state.intervalId = null;
       updateDisplay();
-    }
-
-    function formatClock12(date) {
-      return new Intl.DateTimeFormat('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-      }).format(date);
-    }
-
-    function formatHMS(totalSeconds) {
-      const h = Math.floor(totalSeconds / 3600);
-      const m = Math.floor((totalSeconds % 3600) / 60);
-      const s = totalSeconds % 60;
-      const pad = n => String(n).padStart(2, '0');
-      return h > 0 ? `${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
     }
 
     function formatLastEdited(timestamp) {
@@ -1580,11 +1580,16 @@
 
     function updateClock() {
       const now = new Date();
-      wallclockTime.textContent = now.toLocaleTimeString([], {
+
+      // 12-hour, no seconds
+      wallclockTime.textContent = now.toLocaleTimeString('en-US', {
         hour: 'numeric',
-        minute: '2-digit'
+        minute: '2-digit',
+        hour12: true
       });
-      wallclockDate.textContent = now.toLocaleDateString([], {
+
+      // "Sun, Jul 26 · Eastern Time"
+      wallclockDate.textContent = now.toLocaleDateString('en-US', {
         weekday: 'short',
         month: 'short',
         day: 'numeric'
