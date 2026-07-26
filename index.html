@@ -1,66 +1,1683 @@
-.top-widgets > .panel,
-.top-widgets > .section,
-.notes-panel {
-  display: flex;
-  flex-direction: column;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Focus Dash</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f1ea;
+      --card: rgba(255,255,255,0.82);
+      --card-strong: rgba(255,255,255,0.92);
+      --fg: #2b2a28;
+      --muted: #7b776f;
+      --line: rgba(63, 58, 49, 0.10);
+      --line-strong: rgba(63, 58, 49, 0.18);
+      --accent: #1f6f78;
+      --accent-soft: rgba(31, 111, 120, 0.10);
+      --accent-2: #d9895b;
+      --note-yellow: #f1e4b8;
+      --note-blue: #cfe0ee;
+      --note-rose: #ead4cf;
+      --radius: 18px;
+      --radius-sm: 12px;
+      --label-size: 10px;
+      --timer-size: 20px;
+      --shadow-soft: 0 8px 24px rgba(28, 27, 25, 0.06);
+      --shadow-note: 0 6px 18px rgba(28, 27, 25, 0.06);
+    }
 
-.panel-header,
-.timer-row,
-details.section > summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  min-height: 24px;
-  margin-bottom: 10px;
-}
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-.clock-label,
-.section-title {
-  display: inline-flex;
-  align-items: center;
-  min-height: 24px;
-  margin: 0;
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  font-weight: 800;
-  color: var(--muted);
-  line-height: 1;
-}
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at top left, rgba(217,137,91,0.10), transparent 28%),
+        radial-gradient(circle at top right, rgba(31,111,120,0.10), transparent 24%),
+        linear-gradient(180deg, #f8f5ef 0%, #f2eee7 100%);
+      color: var(--fg);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
 
-.clock-panel .clock-box {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: 0;
-  gap: 0;
-}
+    body {
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+    }
 
-.clock-panel .panel-header {
-  margin-bottom: 12px;
-}
+    .widget {
+      width: min(1120px, 100%);
+      max-width: 1120px;
+    }
 
-.clock-panel .clock-time {
-  margin-top: auto;
-}
+    .widget-shell {
+      display: grid;
+      gap: 10px;
+    }
 
-.clock-panel .clock-date {
-  margin-top: 8px;
-}
+    .top-widgets {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+    }
 
-details.section summary {
-  list-style: none;
-  cursor: pointer;
-  padding: 0;
-}
+    .top-widgets > .panel,
+    .top-widgets > .section,
+    .panel,
+    details.section {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px;
+      background: var(--card);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow-soft);
+    }
 
-details.section summary::-webkit-details-marker {
-  display: none;
-}
+    .top-widgets > .panel,
+    .top-widgets > .section {
+      min-height: 185px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
 
-.chev {
-  flex: 0 0 auto;
-  margin: 0;
-}
+    .notes-panel {
+      width: 100%;
+      background: var(--card-strong);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-header,
+    .timer-row,
+    details.section > summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-height: 24px;
+      margin-bottom: 10px;
+    }
+
+    .clock-label,
+    .section-title {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      margin: 0;
+      font-size: var(--label-size);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--muted);
+      line-height: 1;
+    }
+
+    .clock-panel .clock-box {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 0;
+      gap: 0;
+    }
+
+    .clock-panel .panel-header {
+      margin-bottom: 12px;
+    }
+
+    .clock-time {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      color: var(--fg);
+      line-height: 1;
+      margin-top: auto;
+    }
+
+    .clock-date {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.01em;
+      width: 100%;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .timer-panel {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mode-row {
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .mode,
+    .alarm-header-btn,
+    .mini-btn,
+    .music-btn {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.88);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 5px 8px;
+      font-size: 7px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: inherit;
+      transition: 160ms ease;
+    }
+
+    .mode:hover,
+    .alarm-header-btn:hover,
+    .mini-btn:hover,
+    .music-btn:hover {
+      background: rgba(255,255,255,1);
+      color: var(--fg);
+      transform: translateY(-1px);
+    }
+
+    .mode.active,
+    .music-btn.active {
+      background: var(--accent-soft);
+      border-color: rgba(31, 111, 120, 0.20);
+      color: var(--accent);
+    }
+
+    .alarm-header-btn.armed {
+      background: rgba(217,137,91,0.12);
+      border-color: rgba(217,137,91,0.20);
+      color: #9b5c36;
+    }
+
+    .timer-main {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      flex: 1;
+    }
+
+    .timer-main > div:first-child {
+      min-width: 94px;
+    }
+
+    .timer-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: var(--timer-size);
+      font-weight: 500;
+      line-height: 1;
+      padding: 2px 4px;
+      border-radius: 8px;
+      outline: none;
+      letter-spacing: -0.04em;
+      color: var(--fg);
+    }
+
+    .timer-time:hover, .timer-time:focus {
+      background: rgba(31, 111, 120, 0.06);
+    }
+
+    .status,
+    .daily-total,
+    .video-hint,
+    .notes-empty {
+      font-size: 8px;
+      color: var(--muted);
+    }
+
+    .status {
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .daily-total {
+      margin-top: 2px;
+    }
+
+    .daily-total strong {
+      font-weight: 700;
+      color: var(--fg);
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 5px;
+      background: rgba(43, 42, 40, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      min-width: 70px;
+    }
+
+    .progress-fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #4f9ba3);
+      border-radius: inherit;
+      transform-origin: left center;
+      transition: transform 0.9s linear;
+    }
+
+    .controls-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn, .icon-btn, .notes-add, .notes-clear {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.88);
+      color: var(--fg);
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: 160ms ease;
+    }
+
+    .btn:hover, .icon-btn:hover, .notes-add:hover, .notes-clear:hover {
+      background: rgba(255,255,255,1);
+      transform: translateY(-1px);
+    }
+
+    .btn {
+      padding: 6px 10px;
+      font-size: 8px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, var(--accent), #2a8792);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .icon-btn {
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+    }
+
+    .icon-btn svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+    }
+
+    .settings {
+      display: grid;
+      gap: 8px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 7px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .stepper {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.82);
+    }
+
+    .stepper button {
+      width: 24px;
+      height: 26px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .stepper button:hover { color: var(--fg); }
+
+    .stepper input {
+      flex: 1;
+      width: 100%;
+      border: none;
+      background: transparent;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--fg);
+      -moz-appearance: textfield;
+    }
+
+    .stepper input::-webkit-outer-spin-button,
+    .stepper input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .alarm-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(31, 27, 23, 0.14);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 999;
+      backdrop-filter: blur(12px);
+    }
+
+    .alarm-modal.open { display: flex; }
+
+    .alarm-card {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 18px;
+      width: 100%;
+      max-width: 300px;
+      border: 1px solid var(--line);
+      box-shadow: 0 16px 36px rgba(15,23,42,0.10);
+    }
+
+    .alarm-card-title {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .alarm-input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      text-align: center;
+      outline: none;
+      color: var(--fg);
+      background: rgba(245,241,234,0.8);
+    }
+
+    .alarm-input:focus {
+      border-color: rgba(31, 111, 120, 0.25);
+      box-shadow: 0 0 0 3px rgba(31, 111, 120, 0.08);
+    }
+
+    .alarm-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .alarm-countdown {
+      display: none;
+      margin-top: 8px;
+      padding: 8px 9px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--fg);
+      text-align: center;
+      letter-spacing: 0.02em;
+      background: rgba(217,137,91,0.08);
+    }
+
+    .alarm-countdown.visible { display: block; }
+
+    .alarm-countdown .cd-time {
+      font-size: 16px;
+      display: block;
+      margin-top: 2px;
+      letter-spacing: -0.02em;
+    }
+
+    .alert-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(31, 27, 23, 0.18);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 9999;
+      backdrop-filter: blur(12px);
+    }
+
+    .alert-overlay.open { display: flex; }
+
+    .alert-card {
+      background: rgba(255,255,255,0.96);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 22px 20px;
+      width: 100%;
+      max-width: 320px;
+      text-align: center;
+      box-shadow: 0 16px 38px rgba(15,23,42,0.12);
+    }
+
+    .alert-icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      background: rgba(217,137,91,0.14);
+      display: grid;
+      place-items: center;
+      color: #9b5c36;
+      font-size: 28px;
+    }
+
+    .alert-title {
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--fg);
+      margin-bottom: 6px;
+    }
+
+    .alert-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--fg);
+      margin-bottom: 4px;
+    }
+
+    .alert-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .alert-dismiss {
+      background: linear-gradient(135deg, var(--accent), #2a8792);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 22px;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    details.section summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    details.section summary::-webkit-details-marker { display: none; }
+
+    .chev {
+      width: 8px;
+      height: 8px;
+      border-right: 1.5px solid var(--muted);
+      border-bottom: 1.5px solid var(--muted);
+      transform: rotate(45deg);
+      transition: transform 0.2s ease;
+      flex: 0 0 auto;
+      margin: 0;
+    }
+
+    details[open] .chev {
+      transform: rotate(225deg);
+      margin-top: 3px;
+    }
+
+    .section-body {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .search-panel .perplexity-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+      gap: 6px;
+    }
+
+    .perplexity-form {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .perplexity-input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 10px;
+      font-size: 10px;
+      outline: none;
+      font-family: inherit;
+      background: rgba(255,255,255,0.88);
+      color: var(--fg);
+    }
+
+    .perplexity-input:focus {
+      border-color: rgba(31, 111, 120, 0.24);
+      box-shadow: 0 0 0 3px rgba(31, 111, 120, 0.08);
+      background: #ffffff;
+    }
+
+    .notes-panel .section-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .notes-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+      margin-bottom: 0;
+    }
+
+    .notes-add {
+      width: 26px;
+      height: 26px;
+      font-size: 16px;
+    }
+
+    .notes-clear {
+      padding: 0 10px;
+      font-size: 8px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      height: 26px;
+    }
+
+    .notes-clear:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .notes-clear.armed {
+      background: rgba(217,137,91,0.12);
+      color: #9b5c36;
+      border-color: rgba(217,137,91,0.18);
+    }
+
+    .notes-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 180px));
+      gap: 12px;
+      max-height: none;
+      overflow: visible;
+      padding-right: 0;
+      align-items: start;
+    }
+
+    .sticky {
+      --sticky-bg: var(--note-yellow);
+      position: relative;
+      width: 180px;
+      min-width: 180px;
+      height: 180px;
+      border-radius: 14px;
+      padding: 10px;
+      box-shadow: var(--shadow-note);
+      margin-bottom: 0;
+      background: var(--sticky-bg);
+      border: 1px solid rgba(63, 58, 49, 0.10);
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .sticky-toolbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: start;
+      margin-bottom: 8px;
+      padding-right: 20px;
+    }
+
+    .sticky-meta {
+      font-size: 8px;
+      letter-spacing: 0.01em;
+      color: rgba(43,42,40,0.55);
+      line-height: 1.35;
+      max-width: none;
+    }
+
+    .sticky-colors {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+    }
+
+    .color-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid rgba(43,42,40,0.12);
+      cursor: pointer;
+      padding: 0;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45);
+      flex: 0 0 auto;
+    }
+
+    .color-dot.active {
+      border-color: rgba(43,42,40,0.28);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.65), 0 0 0 1px rgba(43,42,40,0.08);
+      transform: scale(1.08);
+    }
+
+    .sticky-text {
+      width: 100%;
+      min-height: 0;
+      height: 100%;
+      border: none;
+      background: transparent;
+      resize: none;
+      outline: none;
+      font-size: 11px;
+      line-height: 1.45;
+      padding-right: 4px;
+      padding-bottom: 4px;
+      font-family: inherit;
+      color: var(--fg);
+      overflow-y: auto;
+    }
+
+    .sticky-del {
+      position: absolute;
+      top: 7px;
+      right: 7px;
+      width: 18px;
+      height: 18px;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      line-height: 1;
+      color: rgba(43,42,40,0.42);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+
+    .music-panel .section-body {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      height: 100%;
+    }
+
+    .music-row {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .video-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 8.8;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #000;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+      margin-top: auto;
+    }
+
+    .video-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .video-hint {
+      margin-top: 6px;
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+
+    .sparkle {
+      display: inline-block;
+      margin-left: 6px;
+      color: var(--accent-2);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 980px) {
+      .top-widgets {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 12px; }
+
+      .top-widgets {
+        grid-template-columns: 1fr;
+      }
+
+      .top-widgets > .panel,
+      .top-widgets > .section {
+        min-height: auto;
+      }
+
+      .field-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .perplexity-form {
+        grid-template-columns: 1fr;
+      }
+
+      .timer-main {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .timer-main > div:first-child {
+        min-width: 0;
+      }
+
+      .notes-list {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      }
+
+      .sticky {
+        width: 100%;
+        min-width: 0;
+        aspect-ratio: 1 / 1;
+        height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="widget">
+    <div class="widget-shell">
+      <div class="top-widgets">
+        <section class="panel clock-panel">
+          <div class="clock-box">
+            <div class="panel-header">
+              <div class="clock-label">Current Time <span class="sparkle">✦</span></div>
+            </div>
+            <div class="clock-time" id="wallclockTime"></div>
+            <div class="clock-date" id="wallclockDate">Eastern Time</div>
+          </div>
+        </section>
+
+        <section class="panel timer-panel">
+          <div class="timer-row">
+            <div class="section-title">Timer</div>
+            <div class="mode-row" role="tablist" aria-label="Timer modes">
+              <button class="mode active" data-mode="focus" type="button">Focus</button>
+              <button class="mode" data-mode="break" type="button">Break</button>
+              <button class="alarm-header-btn" id="alarmBtn" type="button">Alarm</button>
+            </div>
+          </div>
+
+          <div class="timer-main">
+            <div>
+              <div class="timer-time" id="timeDisplay" contenteditable="true" spellcheck="false">25:00</div>
+              <div class="status" id="statusText">Focus ready</div>
+              <div class="daily-total" id="dailyTotalText">Today: <strong>0m</strong> focus</div>
+            </div>
+            <div class="progress-bar" aria-hidden="true">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+          </div>
+
+          <div class="controls-row">
+            <button class="icon-btn" id="resetBtn" type="button" aria-label="Reset timer">
+              <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 3v6h6"></path></svg>
+            </button>
+            <button class="btn primary" id="startPauseBtn" type="button">Start</button>
+            <button class="icon-btn" id="settingsToggle" type="button" aria-label="Toggle settings">
+              <svg viewBox="0 0 24 24"><path d="M12 8v8"></path><path d="M8 12h8"></path></svg>
+            </button>
+          </div>
+
+          <div class="alarm-countdown" id="alarmCountdown">
+            <span id="alarmCountdownLabel">Alarm set for --:--</span>
+            <span class="cd-time" id="alarmCountdownTime">--:--:--</span>
+          </div>
+
+          <div class="settings" id="settingsPanel" hidden>
+            <div class="field-grid">
+              <div class="field">
+                <label for="focusMinutes">Focus</label>
+                <div class="stepper">
+                  <button type="button" data-step="-1" data-target="focusMinutes">−</button>
+                  <input id="focusMinutes" type="number" min="1" max="180" value="25">
+                  <button type="button" data-step="1" data-target="focusMinutes">+</button>
+                </div>
+              </div>
+              <div class="field">
+                <label for="breakMinutes">Break</label>
+                <div class="stepper">
+                  <button type="button" data-step="-1" data-target="breakMinutes">−</button>
+                  <input id="breakMinutes" type="number" min="1" max="60" value="5">
+                  <button type="button" data-step="1" data-target="breakMinutes">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel search-panel">
+          <div class="perplexity-panel">
+            <div class="panel-header">
+              <div class="section-title">Quick Search</div>
+            </div>
+            <form class="perplexity-form" id="perplexityForm">
+              <label class="sr-only" for="perplexityInput">Ask Perplexity</label>
+              <input id="perplexityInput" class="perplexity-input" type="text" placeholder="Ask anything..." autocomplete="off" required>
+              <button class="mini-btn" type="submit">Go</button>
+            </form>
+          </div>
+        </section>
+
+        <details class="section music-panel" open>
+          <summary>
+            <span class="section-title">Music</span>
+            <span class="chev" aria-hidden="true"></span>
+          </summary>
+          <div class="section-body">
+            <div class="music-row" id="videoPlaylists"></div>
+            <div class="video-frame">
+              <iframe
+                id="videoFrame"
+                src="https://www.youtube-nocookie.com/embed/oPVte6aMprI?autoplay=0&rel=0&list=RDoPVte6aMprI"
+                title="Music player"
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen></iframe>
+            </div>
+            <div class="video-hint">Mini focus vibes.</div>
+          </div>
+        </details>
+      </div>
+
+      <details class="section notes-panel" open>
+        <summary>
+          <span class="section-title">Sticky Notes</span>
+          <span class="chev" aria-hidden="true"></span>
+        </summary>
+        <div class="section-body">
+          <div class="notes-actions">
+            <button class="notes-add" id="addNoteBtn" type="button" aria-label="Add note">+</button>
+            <button class="notes-clear" id="clearNotesBtn" type="button" disabled>Clear</button>
+          </div>
+          <div class="notes-list" id="notesList"></div>
+          <div class="notes-empty" id="notesEmpty">No notes yet.</div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="alarm-modal" id="alarmModal" role="dialog" aria-modal="true" aria-labelledby="alarmModalTitle">
+    <div class="alarm-card">
+      <div class="alarm-card-title" id="alarmModalTitle">Set Alarm Time</div>
+      <input class="alarm-input" id="alarmTimeInput" type="time" step="60">
+      <div class="alarm-actions">
+        <button class="mini-btn" id="alarmCancel" type="button">Cancel</button>
+        <button class="mini-btn" id="alarmClear" type="button">Clear</button>
+        <button class="btn primary" id="alarmSet" type="button">Set</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert-overlay" id="alertOverlay" role="alertdialog" aria-modal="true" aria-labelledby="alertTitle">
+    <div class="alert-card">
+      <div class="alert-icon" aria-hidden="true">🔔</div>
+      <div class="alert-title" id="alertTitle">Alarm</div>
+      <div class="alert-time" id="alertTime">--:--</div>
+      <div class="alert-sub">Time's up</div>
+      <button class="alert-dismiss" id="alertDismiss" type="button">Dismiss</button>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'tsWidget_v2';
+    const NOTE_COLORS = ['#cfe0ee', '#f1e4b8', '#ead4cf'];
+
+    function loadStore() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return {};
+        return JSON.parse(raw) || {};
+      } catch (e) { return {}; }
+    }
+
+    function saveStore(patch) {
+      try {
+        const current = loadStore();
+        const next = Object.assign({}, current, patch);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      } catch (e) {}
+    }
+
+    function normalizeNotes(notes) {
+      if (!Array.isArray(notes)) return [];
+      return notes.map(note => {
+        if (typeof note === 'string') {
+          return { text: note, color: '#f1e4b8', updatedAt: Date.now() };
+        }
+        return {
+          text: typeof note?.text === 'string' ? note.text : '',
+          color: typeof note?.color === 'string' ? note.color : '#f1e4b8',
+          updatedAt: Number.isFinite(note?.updatedAt) ? note.updatedAt : Date.now()
+        };
+      });
+    }
+
+    function todayKey() {
+      const d = new Date();
+      return d.toISOString().slice(0, 10);
+    }
+
+    const stored = loadStore();
+
+    const state = {
+      durations: {
+        focus: (stored.durations && stored.durations.focus) || 25,
+        break: (stored.durations && stored.durations.break) || 5
+      },
+      mode: 'focus',
+      totalSeconds: 25 * 60,
+      remainingSeconds: 25 * 60,
+      running: false,
+      intervalId: null,
+      clearArmed: false,
+      notes: normalizeNotes(stored.notes),
+      alarmTarget: stored.alarmTarget ? new Date(stored.alarmTarget) : null,
+      alarmIntervalId: null,
+      alertSoundIntervalId: null,
+      titleFlashIntervalId: null,
+      originalTitle: document.title,
+      audioCtx: null,
+      focusTotals: stored.focusTotals || {},
+      currentDateKey: todayKey()
+    };
+
+    state.totalSeconds = state.durations.focus * 60;
+    state.remainingSeconds = state.totalSeconds;
+
+    const modes = document.querySelectorAll('.mode');
+    const timeDisplay = document.getElementById('timeDisplay');
+    const statusText = document.getElementById('statusText');
+    const dailyTotalText = document.getElementById('dailyTotalText');
+    const progressFill = document.getElementById('progressFill');
+    const startPauseBtn = document.getElementById('startPauseBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const settingsToggle = document.getElementById('settingsToggle');
+    const settingsPanel = document.getElementById('settingsPanel');
+    const wallclockTime = document.getElementById('wallclockTime');
+    const wallclockDate = document.getElementById('wallclockDate');
+    const focusMinutes = document.getElementById('focusMinutes');
+    const breakMinutes = document.getElementById('breakMinutes');
+    const notesList = document.getElementById('notesList');
+    const notesEmpty = document.getElementById('notesEmpty');
+    const addNoteBtn = document.getElementById('addNoteBtn');
+    const clearNotesBtn = document.getElementById('clearNotesBtn');
+    const perplexityForm = document.getElementById('perplexityForm');
+    const perplexityInput = document.getElementById('perplexityInput');
+    const videoFrame = document.getElementById('videoFrame');
+    const videoPlaylists = document.getElementById('videoPlaylists');
+
+    const alarmBtn = document.getElementById('alarmBtn');
+    const alarmModal = document.getElementById('alarmModal');
+    const alarmTimeInput = document.getElementById('alarmTimeInput');
+    const alarmSet = document.getElementById('alarmSet');
+    const alarmCancel = document.getElementById('alarmCancel');
+    const alarmClear = document.getElementById('alarmClear');
+    const alarmCountdown = document.getElementById('alarmCountdown');
+    const alarmCountdownLabel = document.getElementById('alarmCountdownLabel');
+    const alarmCountdownTime = document.getElementById('alarmCountdownTime');
+
+    const alertOverlay = document.getElementById('alertOverlay');
+    const alertTime = document.getElementById('alertTime');
+    const alertDismiss = document.getElementById('alertDismiss');
+
+    focusMinutes.value = state.durations.focus;
+    breakMinutes.value = state.durations.break;
+
+    const playlists = [
+      { label: 'Relax', url: 'https://www.youtube-nocookie.com/embed/oPVte6aMprI?autoplay=0&rel=0&list=RDoPVte6aMprI' },
+      { label: 'Country', url: 'https://www.youtube-nocookie.com/embed/TsfDpW7PYN8?autoplay=0&rel=0&list=RDTsfDpW7PYN8' }
+    ];
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function parseTime(text) {
+      const match = text.trim().match(/^(\d{1,3}):(\d{2})$/);
+      if (!match) return null;
+      const minutes = Number(match[1]);
+      const seconds = Number(match[2]);
+      if (seconds > 59) return null;
+      return minutes * 60 + seconds;
+    }
+
+    function ensureCurrentDateKey() {
+      const key = todayKey();
+      if (key !== state.currentDateKey) state.currentDateKey = key;
+    }
+
+    function getTodayFocusSeconds() {
+      ensureCurrentDateKey();
+      return state.focusTotals[state.currentDateKey] || 0;
+    }
+
+    function addFocusSeconds(seconds) {
+      if (seconds <= 0) return;
+      ensureCurrentDateKey();
+      const current = state.focusTotals[state.currentDateKey] || 0;
+      state.focusTotals[state.currentDateKey] = current + seconds;
+      saveStore({ focusTotals: state.focusTotals });
+      updateDailyTotalText();
+    }
+
+    function updateDailyTotalText() {
+      const seconds = getTodayFocusSeconds();
+      const minutes = Math.floor(seconds / 60);
+      const label = dailyTotalText.querySelector('strong');
+      if (label) label.textContent = `${minutes}m`;
+    }
+
+    function updateDisplay() {
+      timeDisplay.textContent = formatTime(state.remainingSeconds);
+      const ratio = state.totalSeconds > 0 ? state.remainingSeconds / state.totalSeconds : 0;
+      progressFill.style.transform = `scaleX(${ratio})`;
+      const label = state.mode === 'focus' ? 'Focus' : 'Break';
+      statusText.textContent = state.running
+        ? label + ' running'
+        : (state.remainingSeconds === 0 ? label + ' done' : label + ' ready');
+      startPauseBtn.textContent = state.running ? 'Pause' : 'Start';
+      updateDailyTotalText();
+    }
+
+    function getAudioCtx() {
+      if (!state.audioCtx) {
+        try { state.audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        catch (e) { return null; }
+      }
+      if (state.audioCtx.state === 'suspended') state.audioCtx.resume();
+      return state.audioCtx;
+    }
+
+    function playBeepBurst() {
+      const ctx = getAudioCtx();
+      if (!ctx) return;
+      const pattern = [880, 660, 880, 660];
+      pattern.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        const start = ctx.currentTime + i * 0.22;
+        gain.gain.setValueAtTime(0, start);
+        gain.gain.linearRampToValueAtTime(0.16, start + 0.03);
+        gain.gain.linearRampToValueAtTime(0, start + 0.2);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(start);
+        osc.stop(start + 0.22);
+      });
+    }
+
+    function startAlertSound() {
+      playBeepBurst();
+      state.alertSoundIntervalId = setInterval(playBeepBurst, 1200);
+    }
+
+    function stopAlertSound() {
+      if (state.alertSoundIntervalId) {
+        clearInterval(state.alertSoundIntervalId);
+        state.alertSoundIntervalId = null;
+      }
+    }
+
+    function startTitleFlash(timeStr) {
+      let toggle = false;
+      state.titleFlashIntervalId = setInterval(() => {
+        toggle = !toggle;
+        document.title = toggle ? `🔔 ALARM — ${timeStr}` : `⏰ ${state.originalTitle}`;
+      }, 800);
+    }
+
+    function stopTitleFlash() {
+      if (state.titleFlashIntervalId) {
+        clearInterval(state.titleFlashIntervalId);
+        state.titleFlashIntervalId = null;
+      }
+      document.title = state.originalTitle;
+    }
+
+    function requestNotificationPermission() {
+      if (!('Notification' in window)) return;
+      if (Notification.permission === 'default') {
+        Notification.requestPermission().catch(() => {});
+      }
+    }
+
+    function sendBrowserNotification(timeStr) {
+      if (!('Notification' in window)) return;
+      if (Notification.permission !== 'granted') return;
+      try {
+        const n = new Notification('⏰ Alarm', {
+          body: `It's ${timeStr} — your alarm is going off.`,
+          tag: 'widget-alarm',
+          requireInteraction: true
+        });
+        n.onclick = () => { window.focus(); n.close(); };
+      } catch (e) {}
+    }
+
+    function fireAlert() {
+      const target = state.alarmTarget || new Date();
+      const timeStr = formatClock12(target);
+      alertTime.textContent = timeStr;
+      alertOverlay.classList.add('open');
+      startAlertSound();
+      startTitleFlash(timeStr);
+      sendBrowserNotification(timeStr);
+      if (navigator.vibrate) {
+        try { navigator.vibrate([300, 180, 300, 180, 300]); } catch (e) {}
+      }
+    }
+
+    function dismissAlert() {
+      alertOverlay.classList.remove('open');
+      stopAlertSound();
+      stopTitleFlash();
+      if (navigator.vibrate) { try { navigator.vibrate(0); } catch (e) {} }
+      state.alarmTarget = null;
+      saveStore({ alarmTarget: null });
+      alarmCountdown.classList.remove('visible');
+      alarmBtn.classList.remove('armed');
+      alarmBtn.textContent = 'Alarm';
+    }
+
+    function setMode(mode) {
+      state.mode = mode;
+      state.running = false;
+      clearInterval(state.intervalId);
+      state.intervalId = null;
+      state.totalSeconds = state.durations[mode] * 60;
+      state.remainingSeconds = state.totalSeconds;
+      modes.forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
+      updateDisplay();
+    }
+
+    function tick() {
+      if (state.remainingSeconds > 0) {
+        state.remainingSeconds -= 1;
+        if (state.mode === 'focus') addFocusSeconds(1);
+        updateDisplay();
+      } else {
+        state.running = false;
+        clearInterval(state.intervalId);
+        state.intervalId = null;
+        updateDisplay();
+      }
+    }
+
+    function toggleTimer() {
+      if (state.running) {
+        state.running = false;
+        clearInterval(state.intervalId);
+        state.intervalId = null;
+      } else {
+        state.running = true;
+        state.intervalId = setInterval(tick, 1000);
+      }
+      updateDisplay();
+    }
+
+    function resetTimer() {
+      state.running = false;
+      clearInterval(state.intervalId);
+      state.intervalId = null;
+      state.totalSeconds = state.durations[state.mode] * 60;
+      state.remainingSeconds = state.totalSeconds;
+      updateDisplay();
+    }
+
+    function toggleSettings() {
+      const isHidden = settingsPanel.hasAttribute('hidden');
+      if (isHidden) settingsPanel.removeAttribute('hidden');
+      else settingsPanel.setAttribute('hidden', '');
+    }
+
+    function clampInputValue(input) {
+      const min = Number(input.min || 1);
+      const max = Number(input.max || 999);
+      let value = Number(input.value || min);
+      if (!Number.isFinite(value)) value = min;
+      value = Math.min(max, Math.max(min, value));
+      input.value = value;
+      return value;
+    }
+
+    function applyDurations() {
+      state.durations.focus = clampInputValue(focusMinutes);
+      state.durations.break = clampInputValue(breakMinutes);
+      saveStore({ durations: state.durations });
+      state.totalSeconds = state.durations[state.mode] * 60;
+      state.remainingSeconds = state.totalSeconds;
+      state.running = false;
+      clearInterval(state.intervalId);
+      state.intervalId = null;
+      updateDisplay();
+    }
+
+    function formatClock12(date) {
+      return new Intl.DateTimeFormat('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      }).format(date);
+    }
+
+    function formatHMS(totalSeconds) {
+      const h = Math.floor(totalSeconds / 3600);
+      const m = Math.floor((totalSeconds % 3600) / 60);
+      const s = totalSeconds % 60;
+      const pad = n => String(n).padStart(2, '0');
+      return h > 0 ? `${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+    }
+
+    function formatLastEdited(timestamp) {
+      if (!timestamp) return 'Last edited —';
+      const d = new Date(timestamp);
+      const now = new Date();
+      const sameDay =
+        d.getFullYear() === now.getFullYear() &&
+        d.getMonth() === now.getMonth() &&
+        d.getDate() === now.getDate();
+      const optionsDate = { month: 'short', day: 'numeric' };
+      const optionsTime = { hour: 'numeric', minute: '2-digit' };
+      const optionsFull = { month: 'short', day: 'numeric', year: 'numeric' };
+      if (sameDay) return 'Last edited Today at ' +
+        new Intl.DateTimeFormat('en-US', optionsTime).format(d);
+      if (d.getFullYear() === now.getFullYear())
+        return 'Last edited ' + new Intl.DateTimeFormat('en-US', optionsDate).format(d);
+      return 'Last edited ' + new Intl.DateTimeFormat('en-US', optionsFull).format(d);
+    }
+
+    function touchNote(index) {
+      if (!state.notes[index]) return;
+      state.notes[index].updatedAt = Date.now();
+    }
+
+    function openAlarmModal() {
+      let seed = state.alarmTarget
+        ? new Date(state.alarmTarget)
+        : new Date(Date.now() + 5 * 60 * 1000);
+      const hh = String(seed.getHours()).padStart(2, '0');
+      const mm = String(seed.getMinutes()).padStart(2, '0');
+      alarmTimeInput.value = `${hh}:${mm}`;
+      alarmModal.classList.add('open');
+      setTimeout(() => alarmTimeInput.focus(), 50);
+      requestNotificationPermission();
+      getAudioCtx();
+    }
+
+    function closeAlarmModal() { alarmModal.classList.remove('open'); }
+
+    function setAlarmFromInput() {
+      const val = alarmTimeInput.value;
+      if (!val) return;
+      const [h, m] = val.split(':').map(Number);
+      const now = new Date();
+      const target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0, 0);
+      if (target.getTime() <= now.getTime()) target.setDate(target.getDate() + 1);
+      state.alarmTarget = target;
+      saveStore({ alarmTarget: target.toISOString() });
+      startAlarmCountdown();
+      closeAlarmModal();
+    }
+
+    function clearAlarm() {
+      state.alarmTarget = null;
+      saveStore({ alarmTarget: null });
+      if (state.alarmIntervalId) {
+        clearInterval(state.alarmIntervalId);
+        state.alarmIntervalId = null;
+      }
+      alarmCountdown.classList.remove('visible');
+      alarmBtn.classList.remove('armed');
+      alarmBtn.textContent = 'Alarm';
+      closeAlarmModal();
+    }
+
+    function startAlarmCountdown() {
+      if (state.alarmIntervalId) {
+        clearInterval(state.alarmIntervalId);
+        state.alarmIntervalId = null;
+      }
+      alarmBtn.classList.add('armed');
+      alarmBtn.textContent = 'Alarm ●';
+      alarmCountdown.classList.add('visible');
+      updateAlarmCountdown();
+      state.alarmIntervalId = setInterval(updateAlarmCountdown, 1000);
+    }
+
+    function updateAlarmCountdown() {
+      if (!state.alarmTarget) return;
+      const now = new Date();
+      const diffMs = state.alarmTarget.getTime() - now.getTime();
+      const diffSec = Math.max(0, Math.floor(diffMs / 1000));
+      alarmCountdownLabel.textContent = `Alarm set for ${formatClock12(state.alarmTarget)}`;
+      alarmCountdownTime.textContent = formatHMS(diffSec);
+      if (diffSec <= 0) {
+        clearInterval(state.alarmIntervalId);
+        state.alarmIntervalId = null;
+        alarmCountdownLabel.textContent = `Alarm — ${formatClock12(state.alarmTarget)}`;
+        alarmCountdownTime.textContent = '00:00';
+        fireAlert();
+      }
+    }
+
+    function persistNotes() { saveStore({ notes: state.notes }); }
+
+    function renderNotes() {
+      notesList.innerHTML = '';
+      notesEmpty.style.display = state.notes.length ? 'none' : 'block';
+      clearNotesBtn.disabled = state.notes.length === 0;
+      if (state.notes.length === 0) return;
+
+      state.notes.forEach((note, index) => {
+        const card = document.createElement('div');
+        card.className = 'sticky';
+        card.style.setProperty('--sticky-bg', note.color || '#f1e4b8');
+
+        const del = document.createElement('button');
+        del.className = 'sticky-del';
+        del.type = 'button';
+        del.setAttribute('aria-label', 'Delete note');
+        del.textContent = '×';
+        del.addEventListener('click', () => {
+          state.notes.splice(index, 1);
+          persistNotes();
+          state.clearArmed = false;
+          clearNotesBtn.classList.remove('armed');
+          clearNotesBtn.textContent = 'Clear';
+          renderNotes();
+        });
+
+        const toolbar = document.createElement('div');
+        toolbar.className = 'sticky-toolbar';
+
+        const meta = document.createElement('div');
+        meta.className = 'sticky-meta';
+        meta.textContent = formatLastEdited(note.updatedAt);
+
+        const colors = document.createElement('div');
+        colors.className = 'sticky-colors';
+        colors.setAttribute('aria-label', 'Sticky note color choices');
+
+        NOTE_COLORS.forEach(color => {
+          const swatch = document.createElement('button');
+          swatch.className = 'color-dot' + ((note.color || '#f1e4b8') === color ? ' active' : '');
+          swatch.type = 'button';
+          swatch.style.background = color;
+          swatch.setAttribute('aria-label', `Set note color ${color}`);
+          swatch.addEventListener('click', () => {
+            state.notes[index].color = color;
+            touchNote(index);
+            persistNotes();
+            renderNotes();
+          });
+          colors.appendChild(swatch);
+        });
+
+        const text = document.createElement('textarea');
+        text.className = 'sticky-text';
+        text.value = note.text || '';
+        text.placeholder = 'Write here...';
+        text.addEventListener('input', () => {
+          state.notes[index].text = text.value;
+          touchNote(index);
+          meta.textContent = formatLastEdited(state.notes[index].updatedAt);
+          persistNotes();
+        });
+
+        toolbar.appendChild(meta);
+        toolbar.appendChild(colors);
+        card.appendChild(del);
+        card.appendChild(toolbar);
+        card.appendChild(text);
+        notesList.appendChild(card);
+      });
+    }
+
+    function addNote() {
+      state.notes.unshift({
+        text: '',
+        color: '#f1e4b8',
+        updatedAt: Date.now()
+      });
+      persistNotes();
+      state.clearArmed = false;
+      clearNotesBtn.classList.remove('armed');
+      clearNotesBtn.textContent = 'Clear';
+      renderNotes();
+      const first = notesList.querySelector('.sticky-text');
+      if (first) first.focus();
+    }
+
+    function clearNotes() {
+      if (!state.clearArmed) {
+        state.clearArmed = true;
+        clearNotesBtn.classList.add('armed');
+        clearNotesBtn.textContent = 'Sure?';
+        setTimeout(() => {
+          state.clearArmed = false;
+          clearNotesBtn.classList.remove('armed');
+          clearNotesBtn.textContent = 'Clear';
+        }, 2500);
+        return;
+      }
+      state.notes = [];
+      persistNotes();
+      state.clearArmed = false;
+      clearNotesBtn.classList.remove('armed');
+      clearNotesBtn.textContent = 'Clear';
+      renderNotes();
+    }
+
+    function setupVideoPlaylists() {
+      playlists.forEach((playlist, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'music-btn' + (index === 0 ? ' active' : '');
+        btn.type = 'button';
+        btn.textContent = playlist.label;
+        btn.addEventListener('click', () => {
+          videoFrame.src = playlist.url;
+          document.querySelectorAll('.music-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+        });
+        videoPlaylists.appendChild(btn);
+      });
+    }
+
+    function handlePerplexitySearch(e) {
+      e.preventDefault();
+      const query = perplexityInput.value.trim();
+      if (!query) return;
+      const url = 'https://www.perplexity.ai/search?q=' + encodeURIComponent(query);
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
+    function restoreAlarm() {
+      if (!state.alarmTarget) return;
+      const now = new Date();
+      if (state.alarmTarget.getTime() <= now.getTime()) {
+        state.alarmTarget = null;
+        saveStore({ alarmTarget: null });
+        return;
+      }
+      startAlarmCountdown();
+    }
+
+    function updateWallclock() {
+      const now = new Date();
+      const time = new Intl.DateTimeFormat('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+        timeZone: 'America/New_York'
+      }).format(now);
+      const date = new Intl.DateTimeFormat('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        timeZone: 'America/New_York'
+      }).format(now);
+      wallclockTime.textContent = time;
+      wallclockDate.textContent = `${date} · Eastern Time`;
+      ensureCurrentDateKey();
+    }
+
+    modes.forEach(btn => btn.addEventListener('click', () => setMode(btn.dataset.mode)));
+    startPauseBtn.addEventListener('click', toggleTimer);
+    resetBtn.addEventListener('click', resetTimer);
+    settingsToggle.addEventListener('click', toggleSettings);
+
+    [focusMinutes, breakMinutes].forEach(input => {
+      input.addEventListener('change', applyDurations);
+      input.addEventListener('blur', applyDurations);
+    });
+
+    document.querySelectorAll('.stepper button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = document.getElementById(btn.dataset.target);
+        const step = Number(btn.dataset.step || 0);
+        target.value = Number(target.value || 0) + step;
+        applyDurations();
+      });
+    });
+
+    timeDisplay.addEventListener('blur', () => {
+      const parsed = parseTime(timeDisplay.textContent);
+      if (parsed === null || parsed <= 0) {
+        updateDisplay();
+        return;
+      }
+      state.running = false;
+      clearInterval(state.intervalId);
+      state.intervalId = null;
+      state.totalSeconds = parsed;
+      state.remainingSeconds = parsed;
+      updateDisplay();
+    });
+
+    timeDisplay.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        timeDisplay.blur();
+      }
+    });
+
+    addNoteBtn.addEventListener('click', addNote);
+    clearNotesBtn.addEventListener('click', clearNotes);
+    perplexityForm.addEventListener('submit', handlePerplexitySearch);
+
+    alarmBtn.addEventListener('click', openAlarmModal);
+    alarmCancel.addEventListener('click', closeAlarmModal);
+    alarmSet.addEventListener('click', setAlarmFromInput);
+    alarmClear.addEventListener('click', clearAlarm);
+    alarmModal.addEventListener('click', (e) => {
+      if (e.target === alarmModal) closeAlarmModal();
+    });
+    alarmTimeInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        setAlarmFromInput();
+      }
+    });
+
+    alertDismiss.addEventListener('click', dismissAlert);
+
+    updateDailyTotalText();
+    updateDisplay();
+    updateWallclock();
+    setInterval(updateWallclock, 1000);
+    renderNotes();
+    setupVideoPlaylists();
+    restoreAlarm();
+  </script>
+</body>
+</html>
