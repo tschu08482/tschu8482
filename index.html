@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simple Clock</title>
+  <title>Simple Clock H1</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --fg: #2f3437;
@@ -31,27 +31,28 @@
 
     .clock-block {
       width: 100%;
-      padding: 4px 0;
+      padding: 2px 0;
     }
 
-    /* Row: time + date aligned horizontally */
+    /* Single heading-like line: time + date */
     .clock-row {
       display: inline-flex;
       align-items: baseline;
-      gap: 10px;
-    }
-
-    /* Time line: match Notion H1 ~32px */
-    .clock-time {
+      gap: 12px;
+      /* Approximate Notion H1 style */
       font-size: 32px;
       font-weight: 700;
       letter-spacing: -0.03em;
       line-height: 1.1;
     }
 
+    .clock-time {
+      /* Inherit heading style */
+    }
+
     .clock-sub {
-      font-size: 12px;
-      font-weight: 500;
+      font-size: 18px;         /* slightly smaller, but same baseline */
+      font-weight: 600;
       color: var(--muted);
       white-space: nowrap;
     }
@@ -76,7 +77,7 @@
         hour12: true
       });
 
-      // Weekday, month, day, year
+      // Weekday, month, day, year on the same line
       const dateStr = now.toLocaleDateString('en-US', {
         weekday: 'short',
         month: 'short',
