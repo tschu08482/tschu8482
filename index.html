@@ -15,9 +15,10 @@
       --line-strong: rgba(55, 53, 47, 0.18);
       --accent: #2b8c95;
       --accent-soft: rgba(43, 140, 149, 0.10);
-      --radius: 28px;
+      --radius: 24px;
+      --radius-sm: 12px;
       --label-size: 10px;
-      --timer-size: 24px;
+      --timer-size: 22px;
       --shadow-note: 0 1px 2px rgba(15, 23, 42, 0.05);
     }
 
@@ -40,17 +41,18 @@
     }
 
     .widget {
-      width: min(100%, 1560px);
+      width: min(100%, 1600px);
       background: transparent;
       padding: 0;
       border: none;
     }
 
+    /* Top row: 4x1, compact */
     .top-widgets {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-      align-items: stretch;
+      gap: 10px;
+      align-items: start;
     }
 
     .stack {
@@ -63,14 +65,14 @@
     details.section {
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: 18px 18px 16px;
+      padding: 14px 14px 12px;
       background: transparent;
       box-shadow: none;
     }
 
     .top-widgets > .panel,
     .top-widgets > .section {
-      min-height: 245px;
+      min-height: 200px;      /* much smaller than the big version */
       display: flex;
       flex-direction: column;
     }
@@ -82,8 +84,8 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      min-height: 24px;
-      margin-bottom: 16px;
+      min-height: 22px;
+      margin-bottom: 12px;
     }
 
     .panel-body {
@@ -97,21 +99,17 @@
     .section-title {
       display: inline-flex;
       align-items: center;
-      min-height: 24px;
-      margin: 0;
       font-size: var(--label-size);
       letter-spacing: 0.14em;
       text-transform: uppercase;
       font-weight: 700;
       color: var(--muted);
-      line-height: 1;
     }
 
     .clock-accent {
       color: #d7a077;
-      margin-left: 6px;
-      font-size: 12px;
-      line-height: 1;
+      margin-left: 4px;
+      font-size: 11px;
     }
 
     .clock-box {
@@ -136,7 +134,7 @@
       justify-content: center;
       align-items: center;
       font-family: 'Inter', sans-serif;
-      font-size: 42px;
+      font-size: 34px;        /* compact but clear */
       font-weight: 700;
       letter-spacing: -0.05em;
       color: var(--fg);
@@ -145,10 +143,9 @@
 
     .clock-date {
       width: 100%;
-      margin-top: 12px;
+      margin-top: 8px;
       text-align: center;
-      font-family: 'Inter', sans-serif;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       color: #6f6e6b;
       letter-spacing: 0.01em;
@@ -160,7 +157,7 @@
 
     .mode-row {
       display: inline-flex;
-      gap: 8px;
+      gap: 6px;
       align-items: center;
       flex-wrap: wrap;
       justify-content: flex-end;
@@ -171,7 +168,7 @@
       background: transparent;
       color: var(--muted);
       border-radius: 999px;
-      padding: 8px 14px;
+      padding: 7px 12px;
       font-size: 8px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -186,10 +183,9 @@
     }
 
     .mode.active {
-      background: rgba(43, 140, 149, 0.08);
+      background: var(--accent-soft);
       border-color: rgba(43, 140, 149, 0.22);
       color: #2a7d85;
-      box-shadow: none;
     }
 
     .alarm-header-btn {
@@ -197,7 +193,7 @@
       background: transparent;
       color: var(--muted);
       border-radius: 999px;
-      padding: 8px 14px;
+      padding: 7px 12px;
       font-size: 8px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -220,12 +216,12 @@
     .timer-main {
       display: flex;
       align-items: center;
-      gap: 14px;
-      margin-top: 18px;
+      gap: 12px;
+      margin-top: 12px;
     }
 
     .timer-left {
-      min-width: 130px;
+      min-width: 124px;
     }
 
     .timer-time {
@@ -234,7 +230,7 @@
       font-weight: 500;
       line-height: 1;
       padding: 0;
-      border-radius: 8px;
+      border-radius: var(--radius-sm);
       outline: none;
       letter-spacing: -0.04em;
       color: var(--fg);
@@ -253,11 +249,11 @@
       text-transform: uppercase;
       font-weight: 700;
       color: var(--muted);
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     .daily-total {
-      margin-top: 4px;
+      margin-top: 3px;
       font-size: 9px;
       color: var(--muted);
     }
@@ -269,11 +265,11 @@
 
     .progress-bar {
       flex: 1;
-      height: 8px;
+      height: 6px;
       background: rgba(55, 53, 47, 0.08);
       border-radius: 999px;
       overflow: hidden;
-      margin-top: 6px;
+      margin-top: 4px;
     }
 
     .progress-fill {
@@ -288,8 +284,8 @@
     .controls-row {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-top: 18px;
+      gap: 8px;
+      margin-top: 14px;
       flex-wrap: wrap;
     }
 
@@ -303,13 +299,14 @@
       transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
     }
 
-    .btn:hover, .icon-btn:hover, .mini-btn:hover, .music-btn:hover, .notes-add:hover, .notes-clear:hover {
+    .btn:hover, .icon-btn:hover, .mini-btn:hover, .music-btn:hover,
+    .notes-add:hover, .notes-clear:hover {
       background: rgba(55, 53, 47, 0.04);
       transform: translateY(-1px);
     }
 
     .btn {
-      padding: 10px 18px;
+      padding: 9px 16px;
       font-size: 9px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -322,15 +319,15 @@
     }
 
     .icon-btn {
-      width: 40px;
-      height: 40px;
+      width: 34px;
+      height: 34px;
       display: grid;
       place-items: center;
     }
 
     .icon-btn svg {
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       stroke: currentColor;
       fill: none;
       stroke-width: 1.75;
@@ -338,21 +335,21 @@
 
     .settings {
       display: grid;
-      gap: 10px;
-      margin-top: 14px;
-      padding-top: 14px;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
       border-top: 1px solid var(--line);
     }
 
     .field-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
     }
 
     .field label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       font-size: 7px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
@@ -366,12 +363,12 @@
       border-radius: 18px;
       overflow: hidden;
       background: transparent;
-      height: 42px;
+      height: 38px;
     }
 
     .stepper button {
-      width: 42px;
-      height: 42px;
+      width: 40px;
+      height: 38px;
       border: none;
       background: transparent;
       cursor: pointer;
@@ -383,7 +380,6 @@
 
     .stepper input {
       flex: 1;
-      width: 100%;
       border: none;
       background: transparent;
       text-align: center;
@@ -399,6 +395,7 @@
       margin: 0;
     }
 
+    /* Alarm modal + alert (unchanged structurally, compact styles) */
     .alarm-modal {
       position: fixed;
       inset: 0;
@@ -428,14 +425,14 @@
       text-transform: uppercase;
       font-weight: 700;
       color: var(--muted);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .alarm-input {
       width: 100%;
       border: 1px solid var(--line);
       border-radius: 12px;
-      padding: 11px;
+      padding: 10px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 16px;
       text-align: center;
@@ -453,26 +450,25 @@
       display: flex;
       justify-content: flex-end;
       gap: 8px;
-      margin-top: 12px;
+      margin-top: 10px;
     }
 
     .alarm-countdown {
       display: none;
-      margin-top: 14px;
-      padding: 10px 10px;
+      margin-top: 10px;
+      padding: 8px 10px;
       border: 1px solid var(--line);
       border-radius: 12px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       color: var(--fg);
       text-align: center;
-      letter-spacing: 0.02em;
       background: transparent;
     }
 
     .alarm-countdown.visible { display: block; }
     .alarm-countdown .cd-time {
-      font-size: 18px;
+      font-size: 16px;
       display: block;
       margin-top: 2px;
       letter-spacing: -0.02em;
@@ -495,37 +491,36 @@
     .alert-card {
       background: transparent;
       border: 1px solid var(--line);
-      border-radius: 22px;
-      padding: 22px 20px;
+      border-radius: 20px;
+      padding: 18px 16px;
       width: 100%;
-      max-width: 320px;
+      max-width: 280px;
       text-align: center;
     }
 
     .alert-icon {
-      width: 56px;
-      height: 56px;
-      margin: 0 auto 12px;
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 10px;
       border-radius: 50%;
-      background: transparent;
       display: grid;
       place-items: center;
       color: var(--fg);
-      font-size: 28px;
+      font-size: 26px;
     }
 
     .alert-title {
-      font-size: 13px;
+      font-size: 12px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
       font-weight: 800;
       color: var(--fg);
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .alert-time {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 28px;
+      font-size: 24px;
       font-weight: 500;
       color: var(--fg);
       margin-bottom: 4px;
@@ -534,7 +529,7 @@
     .alert-sub {
       font-size: 11px;
       color: var(--muted);
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .alert-dismiss {
@@ -542,7 +537,7 @@
       color: var(--fg);
       border: 1px solid var(--fg);
       border-radius: 999px;
-      padding: 10px 22px;
+      padding: 8px 18px;
       font-size: 10px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
@@ -579,7 +574,6 @@
 
     .search-panel .panel-body {
       justify-content: center;
-      padding-bottom: 8px;
     }
 
     .perplexity-panel {
@@ -602,30 +596,30 @@
       width: 100%;
       border: 1px solid var(--line);
       border-radius: 999px;
-      padding: 12px 16px;
+      padding: 11px 16px;
       font-size: 10px;
       outline: none;
       font-family: inherit;
       background: transparent;
       color: var(--fg);
-      min-height: 46px;
+      min-height: 42px;
     }
 
     .perplexity-input:focus {
       border-color: var(--line-strong);
       box-shadow: 0 0 0 3px rgba(55, 53, 47, 0.08);
-      background: transparent;
     }
 
     .mini-btn {
-      padding: 0 16px;
+      padding: 0 14px;
       font-size: 8px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       white-space: nowrap;
-      min-height: 46px;
+      min-height: 42px;
     }
 
+    /* Sticky notes below row */
     .notes-actions {
       display: flex;
       justify-content: flex-end;
@@ -665,7 +659,6 @@
       gap: 10px;
       max-height: none;
       overflow: visible;
-      padding-right: 0;
     }
 
     .sticky {
@@ -675,7 +668,7 @@
       padding: 11px;
       box-shadow: var(--shadow-note);
       margin-bottom: 0;
-      min-height: 170px;
+      min-height: 160px;
       aspect-ratio: 1 / 1;
       background: var(--sticky-bg);
       border: 1px solid rgba(55, 53, 47, 0.10);
@@ -728,8 +721,6 @@
 
     .sticky-text {
       width: 100%;
-      min-height: 58px;
-      height: 100%;
       border: none;
       background: transparent;
       resize: none;
@@ -772,14 +763,14 @@
     .music-row {
       display: flex;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
       margin-top: 2px;
     }
 
     .music-btn {
-      padding: 8px 14px;
+      padding: 7px 12px;
       font-size: 8px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -787,7 +778,7 @@
     }
 
     .music-btn.active {
-      background: rgba(43, 140, 149, 0.10);
+      background: var(--accent-soft);
       color: #2a7d85;
       border-color: rgba(43, 140, 149, 0.22);
     }
@@ -796,11 +787,10 @@
       position: relative;
       width: 100%;
       aspect-ratio: 16 / 9;
-      border-radius: 24px;
+      border-radius: 18px;
       overflow: hidden;
       border: 1px solid var(--line);
       background: transparent;
-      margin-top: 0;
     }
 
     .video-frame iframe {
@@ -861,7 +851,7 @@
       }
 
       .clock-time {
-        font-size: 36px;
+        font-size: 30px;
       }
     }
   </style>
@@ -869,6 +859,7 @@
 <body>
   <div class="widget">
     <div class="top-widgets">
+      <!-- Clock -->
       <section class="panel clock-panel">
         <div class="clock-box">
           <div class="panel-header">
@@ -881,6 +872,7 @@
         </div>
       </section>
 
+      <!-- Timer -->
       <section class="panel timer-panel">
         <div class="timer-row">
           <div class="section-title">Timer</div>
@@ -896,9 +888,7 @@
             <div class="timer-left">
               <div class="timer-time" id="timeDisplay" contenteditable="true" spellcheck="false">25:00</div>
               <div class="status" id="statusText">Focus ready</div>
-              <div class="daily-total" id="dailyTotalText">
-                Today: <strong>0m</strong> focus
-              </div>
+              <div class="daily-total" id="dailyTotalText">Today: <strong>0m</strong> focus</div>
             </div>
             <div class="progress-bar" aria-hidden="true">
               <div class="progress-fill" id="progressFill"></div>
@@ -943,6 +933,7 @@
         </div>
       </section>
 
+      <!-- Perplexity Search -->
       <section class="panel search-panel">
         <div class="panel-header">
           <div class="section-title">Perplexity Search</div>
@@ -956,6 +947,7 @@
         </div>
       </section>
 
+      <!-- Music -->
       <details class="section music-panel" open>
         <summary>
           <span class="section-title">Music</span>
@@ -978,6 +970,7 @@
       </details>
     </div>
 
+    <!-- Sticky notes row below -->
     <div class="stack">
       <details class="section" open>
         <summary>
@@ -996,6 +989,7 @@
     </div>
   </div>
 
+  <!-- Alarm modal -->
   <div class="alarm-modal" id="alarmModal" role="dialog" aria-modal="true" aria-labelledby="alarmModalTitle">
     <div class="alarm-card">
       <div class="alarm-card-title" id="alarmModalTitle">Set Alarm Time</div>
@@ -1008,6 +1002,7 @@
     </div>
   </div>
 
+  <!-- Alarm alert -->
   <div class="alert-overlay" id="alertOverlay" role="alertdialog" aria-modal="true" aria-labelledby="alertTitle">
     <div class="alert-card">
       <div class="alert-icon" aria-hidden="true">🔔</div>
