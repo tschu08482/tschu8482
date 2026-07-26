@@ -7,7 +7,7 @@
   <style>
     :root {
       --fg: #2f3437;
-      --muted: #787774; /* grey used by Notion */
+      --muted: #787774; /* grey for time */
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,22 +22,22 @@
       text-rendering: optimizeLegibility;
     }
 
-    /* Flex: vertical center, right align within the embed window */
+    /* Flex: center vertically, align text to the right in the window */
     body {
       padding: 0;
       display: flex;
-      align-items: center;       /* vertical center */
-      justify-content: flex-end; /* push content to the right */
+      align-items: center;        /* vertical center */
+      justify-content: flex-end;  /* right side */
     }
 
     .clock-block {
-      padding-right: 16px;       /* small right margin */
+      padding-right: 16px;
     }
 
-    /* One heading-style line */
+    /* Single heading-style line */
     .clock-line {
       display: inline-block;
-      font-size: 32px;           /* heading-like */
+      font-size: 32px;            /* heading-ish */
       font-weight: 700;
       letter-spacing: -0.03em;
       line-height: 1.1;
@@ -45,10 +45,10 @@
       text-align: right;
     }
 
-    /* Grey day/date */
-    .clock-muted {
+    /* Time in grey */
+    .clock-time-grey {
       color: var(--muted);
-      font-weight: 600;
+      font-weight: 700;
     }
   </style>
 </head>
@@ -61,21 +61,23 @@
     function updateClock() {
       const now = new Date();
 
+      // Time
       const timeStr = now.toLocaleTimeString('en-US', {
         hour: 'numeric',
         minute: '2-digit',
         hour12: true
       });
 
-      const weekday = now.toLocaleDateString('en-US', { weekday: 'short' });
+      // Day + date with full weekday name
+      const weekday = now.toLocaleDateString('en-US', { weekday: 'long' });
       const month = now.getMonth() + 1;
       const day = now.getDate();
       const year = now.getFullYear();
-
       const dateStr = `${weekday} ${month}/${day}/${year}`;
 
+      // TODAY IS + full day/date in black, time in grey
       document.getElementById('clockLine').innerHTML =
-        `${timeStr} · <span class="clock-muted">${dateStr}</span>`;
+        `TODAY IS ${dateStr} · <span class="clock-time-grey">${timeStr}</span>`;
     }
 
     updateClock();
