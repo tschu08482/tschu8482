@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Notion Clock</title>
+  <title>Notion Clock Compact</title>
   <style>
     :root {
       --fg: #2f3437;
@@ -31,15 +31,16 @@
       padding: 2px 0;
     }
 
-    /* Single line: time + date, styled like Notion H1 */
+    /* Single line: time + short date */
     .clock-row {
       display: inline-flex;
       align-items: baseline;
-      gap: 12px;
-      font-size: 32px;          /* approximate Notion H1 */
+      gap: 8px;
+      font-size: 32px;       /* heading-like */
       font-weight: 700;
       letter-spacing: -0.03em;
       line-height: 1.1;
+      white-space: nowrap;   /* prevent wrap inside row */
     }
 
     .clock-time {
@@ -47,10 +48,9 @@
     }
 
     .clock-sub {
-      font-size: 18px;          /* smaller, but same baseline */
+      font-size: 16px;       /* smaller, fits better */
       font-weight: 600;
       color: var(--muted);
-      white-space: nowrap;      /* keep on same line */
     }
   </style>
 </head>
@@ -72,12 +72,12 @@
         hour12: true
       });
 
-      const dateStr = now.toLocaleDateString('en-US', {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-      });
+      // Shorter date to avoid wrapping in Notion
+      const weekday = now.toLocaleDateString('en-US', { weekday: 'short' });
+      const month = now.getMonth() + 1;
+      const day = now.getDate();
+
+      const dateStr = `${weekday} ${month}/${day}`;
 
       document.getElementById('clockTime').textContent = timeStr;
       document.getElementById('clockSub').textContent = dateStr;
