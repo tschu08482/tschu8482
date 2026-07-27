@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Notion Clock Right-Centered</title>
+  <title>Notion Clock Left-Aligned</title>
   <style>
     :root {
       --fg: #2f3437;
-      --muted: #787774; /* grey for time */
+      --muted: #787774;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,62 +22,53 @@
       text-rendering: optimizeLegibility;
     }
 
-    /* Flex: center vertically, align text to the right in the window */
     body {
-      padding: 0;
       display: flex;
-      align-items: center;        /* vertical center */
-      justify-content: flex-end;  /* right side */
+      align-items: center;
+      justify-content: flex-start;
+      padding-left: 16px;
     }
 
-    .clock-block {
-      padding-right: 16px;
-    }
-
-    /* Single heading-style line */
     .clock-line {
-      display: inline-block;
-      font-size: 32px;            /* heading-ish */
+      font-size: 30px;
       font-weight: 700;
       letter-spacing: -0.03em;
       line-height: 1.1;
       white-space: nowrap;
-      text-align: right;
+      text-align: left;
+      font-variant-numeric: tabular-nums;
     }
 
-    /* Time in grey */
     .clock-time-grey {
       color: var(--muted);
-      font-weight: 700;
     }
   </style>
 </head>
 <body>
-  <div class="clock-block">
-    <span class="clock-line" id="clockLine"></span>
+  <div class="clock-line">
+    <span id="clockDate"></span>
+    <span aria-hidden="true"> · </span>
+    <span id="clockTime" class="clock-time-grey"></span>
   </div>
 
   <script>
     function updateClock() {
       const now = new Date();
 
-      // Time
       const timeStr = now.toLocaleTimeString('en-US', {
         hour: 'numeric',
         minute: '2-digit',
         hour12: true
       });
 
-      // Day + date with full weekday name
       const weekday = now.toLocaleDateString('en-US', { weekday: 'long' });
       const month = now.getMonth() + 1;
       const day = now.getDate();
       const year = now.getFullYear();
-      const dateStr = `${weekday} ${month}/${day}/${year}`;
 
-      // TODAY IS: + full day/date in black, time in grey
-      document.getElementById('clockLine').innerHTML =
-        `TODAY IS ${dateStr} · <span class="clock-time-grey">${timeStr}</span>`;
+      document.getElementById('clockDate').textContent =
+        `TODAY IS: ${weekday} ${month}/${day}/${year}`;
+      document.getElementById('clockTime').textContent = timeStr;
     }
 
     updateClock();
